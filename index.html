@@ -1,0 +1,711 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Sell-Side Connector</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Tailwind via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Smooth expand/collapse */
+    .expander {
+      overflow: hidden;
+      transition: height 220ms ease, opacity 180ms ease;
+      height: 0; opacity: 0;
+    }
+    .expander.open {
+      height: auto; opacity: 1;
+    }
+    /* Abbreviation tag pill */
+    .abbr-pill {
+      display: inline-block; font-size: 11px; line-height: 1rem;
+      border: 1px solid rgb(147 197 253); color: rgb(29 78 216);
+      background: rgb(239 246 255); border-radius: 6px; padding: 0 6px;
+      margin-left: 6px;
+    }
+    /* Pretty checkboxes accent color */
+    input[type="checkbox"] {
+      accent-color: rgb(16 185 129); /* emerald-500 */
+    }
+    /* Simple pulse dot for Start here */
+    @keyframes pulseDot { 0%{opacity:.3} 50%{opacity:1} 100%{opacity:.3} }
+    .pulse-dot { animation: pulseDot 1.4s infinite; }
+  </style>
+</head>
+<body class="min-h-screen bg-white text-zinc-900">
+  <!-- Header -->
+  <header class="sticky top-0 z-40 backdrop-blur bg-white/70 border-b">
+    <div class="mx-auto max-w-6xl px-4 py-3 flex items-center gap-3">
+      <span class="font-semibold tracking-tight">Sell-Side Connector</span>
+      <nav class="ml-6 hidden md:flex gap-2 text-sm">
+        <a href="#simple" class="px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-medium">
+          Start here <span class="ml-2 inline-block h-1.5 w-1.5 rounded-full bg-emerald-500 pulse-dot align-middle"></span>
+        </a>
+        <a href="#overview" class="px-3 py-1 rounded-full text-zinc-600 hover:text-black">Overview</a>
+        <a href="#steps" class="px-3 py-1 rounded-full text-zinc-600 hover:text-black">Steps</a>
+        <a href="#docs" class="px-3 py-1 rounded-full text-zinc-600 hover:text-black">Docs</a>
+        <a href="#ioi" class="px-3 py-1 rounded-full text-zinc-600 hover:text-black">IOI</a>
+        <a href="#signatures" class="px-3 py-1 rounded-full text-zinc-600 hover:text-black">Signatures</a>
+        <a href="#vdr" class="px-3 py-1 rounded-full text-zinc-600 hover:text-black">VDR</a>
+        <a href="#packs" class="px-3 py-1 rounded-full text-zinc-600 hover:text-black">Packs</a>
+        <a href="#pitfalls" class="px-3 py-1 rounded-full text-zinc-600 hover:text-black">Pitfalls</a>
+      </nav>
+      <div class="ml-auto flex items-center gap-2">
+        <button id="btn-open-all" class="rounded-full border px-3 py-1.5 text-sm hover:bg-zinc-50">Open all</button>
+        <button id="btn-close-all" class="rounded-full border px-3 py-1.5 text-sm hover:bg-zinc-50">Close all</button>
+        <button id="btn-print" class="rounded-full border px-3 py-1.5 text-sm hover:bg-zinc-50">PDF</button>
+        <button id="btn-copy" class="rounded-full border px-3 py-1.5 text-sm hover:bg-zinc-50">Copy link</button>
+      </div>
+    </div>
+    <!-- Progress -->
+    <div class="mx-auto max-w-6xl px-4 pb-3">
+      <div class="h-[6px] w-full rounded-full bg-zinc-200 overflow-hidden">
+        <div id="progress-bar" class="h-full rounded-full bg-gradient-to-r from-emerald-500 via-cyan-500 to-indigo-500" style="width:0%"></div>
+      </div>
+      <div class="mt-1 text-[11px] text-zinc-500"><span id="progress-text">Progress: 0/0</span></div>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="mx-auto max-w-6xl px-4 pt-10 md:pt-16 pb-6">
+    <h1 class="text-[36px] md:text-[56px] font-semibold tracking-tight leading-[1.04]">
+      The simple M&A <span data-abbr>path</span>
+    </h1>
+    <p class="mt-4 text-zinc-600 text-lg max-w-2xl" data-abbr>
+      Just enough to get a deal done. Click a step for a one-line explanation, check the boxes, and keep moving.
+    </p>
+    <div class="mt-6">
+      <a href="#simple" class="inline-flex items-center rounded-full bg-black text-white px-4 py-2 text-sm hover:bg-zinc-800">Start here</a>
+    </div>
+  </section>
+
+  <!-- Utility: section template -->
+  <template id="section-template">
+    <section class="border-b last:border-b-0">
+      <button type="button" class="w-full text-left py-5 md:py-7 section-toggle">
+        <div class="mx-auto max-w-5xl px-2 md:px-4 flex items-center gap-4">
+          <span class="h-2.5 w-2.5 rounded-full dot"></span>
+          <div class="h-5 w-5 icon"></div>
+          <h2 class="flex-1 text-[20px] md:text-[28px] font-semibold tracking-tight title"></h2>
+          <label class="mr-3 hidden sm:inline-flex items-center gap-2 text-sm text-zinc-600 done-wrap">
+            <input type="checkbox" class="h-4 w-4 done-box" />
+            <span>Done</span>
+          </label>
+          <svg class="h-5 w-5 chevron" viewBox="0 0 20 20" fill="none"><path d="M6 8l4 4 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </button>
+      <div class="expander">
+        <div class="mx-auto max-w-5xl px-2 md:px-4 pb-6 md:pb-10">
+          <p class="text-zinc-600 leading-6 md:leading-7 md:text-lg mb-4 copy" data-abbr></p>
+          <div class="content"></div>
+        </div>
+      </div>
+    </section>
+  </template>
+
+  <!-- Content -->
+  <main id="content"></main>
+
+  <!-- Footer -->
+  <footer class="mx-auto max-w-6xl px-4 py-10 text-sm text-zinc-600">
+    <p>Share the link to keep progress in sync (the URL carries a <code>p</code> parameter). Print to PDF for a snapshot.</p>
+    <p class="mt-2">© <span id="year"></span> For discussion only; not legal, tax, or investment advice.</p>
+  </footer>
+
+  <script>
+    // ---------------- Config (colors + order) ----------------
+    const tones = {
+      emerald: { dot: "bg-emerald-500" },
+      indigo:  { dot: "bg-indigo-500"  },
+      blue:    { dot: "bg-blue-500"    },
+      cyan:    { dot: "bg-cyan-500"    },
+      amber:   { dot: "bg-amber-500"   },
+      violet:  { dot: "bg-violet-500"  },
+      fuchsia: { dot: "bg-fuchsia-500" },
+      rose:    { dot: "bg-rose-500"    },
+    };
+
+    const sections = [
+      { id: "simple",     tone: "emerald", copy: "Zero-to-close guide. Six steps. Keep it moving.", doneKey: null },
+      { id: "overview",   tone: "emerald", copy: "Lock our mandate and gather the core data to market the business.", doneKey: "s0_done" },
+      { id: "steps",      tone: "indigo",  copy: "A six-move path from teaser to close—just what matters.", doneKey: "s1_done" },
+      { id: "docs",       tone: "blue",    copy: "The essential forms and who signs them.", doneKey: "s2_done" },
+      { id: "ioi",        tone: "cyan",    copy: "Exactly what each buyer must include in their IOI.", doneKey: "s3_done" },
+      { id: "signatures", tone: "amber",   copy: "Who signs what, and when—at a glance.", doneKey: "s4_done" },
+      { id: "vdr",        tone: "violet",  copy: "How we structure the VDR and control access.", doneKey: "s5_done" },
+      { id: "packs",      tone: "fuchsia", copy: "Minimum materials to launch, plus extras.", doneKey: "s6_done" },
+      { id: "pitfalls",   tone: "rose",    copy: "Common traps that cost time or price—avoid these.", doneKey: "s7_done" },
+    ];
+
+    // --- Steps and details (trimmed to keep this single file manageable) ---
+    // Simple path with sub-steps + “More” blurbs
+    const simpleSteps = [
+      {
+        id: "s0",
+        title: "Step 0 · Kickoff and Sign",
+        doneKey: "s0_done",
+        note: {
+          intro: "Get permission to represent the seller and gather only the files needed to start.",
+          bullets: [
+            "Sign a short Engagement Agreement with the seller.",
+            "Prepare a simple NDA for buyers.",
+            "Upload basic financials so you can build the CIM."
+          ]
+        },
+        checks: [
+          { key: "s0_engage", label: "Engagement Agreement signed (you and seller)", more: ["Use a short letter: scope, success fee, expenses, exclusivity window, tail period.", "Fill names, dates, and fee percent or formula.", "File signed copy in VDR → 01 Corporate/Engagement."] },
+          { key: "s0_nda", label: "Short NDA template ready (buyers sign before CIM)", more: ["Mutual NDA; include you as a permitted representative.", "2–3 year term + 'no contact except through us'.", "Export to PDF for e-signature."] },
+          { key: "s0_financials", label: "Upload last 3 years + TTM financials to data room", more: ["Monthly P&L, Balance Sheet, Cash Flow (36 months + TTM).", "AR/AP agings + last 3 years of tax returns.", "Name files clearly (e.g., 2024-06 P&L.pdf)."] },
+          { key: "s0_buyerlist", label: "Draft buyer list (strategic and financial)", more: ["Spreadsheet: Company, Contact, Email, Why Fit, Notes.", "10–25 strategics and 10–25 financial buyers.", "Flag competitors to avoid."] },
+        ]
+      },
+      {
+        id: "s1",
+        title: "Step 1 · Prep and Package",
+        doneKey: "s1_done",
+        note: {
+          intro: "Package the company so buyers can quickly understand it.",
+          bullets: ["Create a one-page teaser (no names).","Draft a clear, short CIM (20–30 pages).","Open a light VDR with only the essentials."]
+        },
+        checks: [
+          { key: "s1_teaser", label: "Teaser (no names) ready", more: ["What the company does + 3–5 points on why interesting.", "Size (Revenue/EBITDA ranges), growth, margins, customer mix.", "No names, logos, or unique identifiers."] },
+          { key: "s1_cim", label: "CIM (20–30 pages) ready", more: ["Overview; Products/Services; Customers/Markets; Team.", "Financials (monthly TTM table) + labeled add-backs.", "Growth opportunities + top risks with mitigations."] },
+          { key: "s1_vdr", label: "VDR basic folders live", more: ["Start: 01 Corporate, 02 Financials, 03 Customers, 04 Operations, 05 Legal.", "View-only; watermark downloads. Keep a Q&A log.", "Add more only when buyers progress."] },
+          { key: "s1_process", label: "Process letter + IOI template ready", more: ["What IOI must include (value, structure, timing, assumptions).", "Submission email + deadline (date + time zone).", "How to ask questions: email you; answers shared to all."] },
+        ]
+      },
+      {
+        id: "s2",
+        title: "Step 2 · Outreach and NDA",
+        doneKey: "s2_done",
+        note: {
+          intro: "Contact buyers, collect NDAs, and share the CIM/VDR only with qualified parties.",
+          bullets: ["Send teaser and track interest.","Send NDA to serious buyers and collect signatures.","After NDA, release CIM + limited VDR."]
+        },
+        checks: [
+          { key: "s2_outreach", label: "Send teaser to qualified buyers", more: ["Email teaser and log replies.", "If interested, send NDA + buyer profile.", "If declined, note why to refine your list."] },
+          { key: "s2_nda_signed", label: "Collect NDAs and buyer profiles", more: ["Signed NDA (PDF).", "Buyer profile: strategy, proof of funds or lender, decision makers.", "File in VDR → 01 Corporate/NDAs."] },
+          { key: "s2_release", label: "Release CIM + limited VDR after NDA", more: ["Send CIM and grant limited folders.", "Mention IOI deadline and Q&A method.", "Log who received what and when."] },
+        ]
+      },
+      {
+        id: "s3",
+        title: "Step 3 · IOIs and Shortlist",
+        doneKey: "s3_done",
+        note: {
+          intro: "Get comparable IOIs and pick finalists.",
+          bullets: ["Use a simple IOI template so offers match.","Score in a bid matrix (value, terms, timing).","Choose two or three finalists."]
+        },
+        checks: [
+          { key: "s3_ioi", label: "Receive IOIs using your template", more: ["State value range and deal type (asset or stock).", "Cash vs note/rollover/earn-out + basic terms.", "Assumptions (peg, add-backs, debt-free/cash-free), plan, timing."] },
+          { key: "s3_matrix", label: "Compare in a simple bid matrix", more: ["Columns: Value, Cash%, Note%, Rollover%, Earn-out%, Assumptions, Timing, Approvals, Special asks.", "Rank green/yellow/red for quick compare."] },
+          { key: "s3_shortlist", label: "Pick two to three finalists", more: ["Choose top offers on price, terms, certainty.", "Inform non-finalists; keep warm as back-ups."] },
+        ]
+      },
+      {
+        id: "s4",
+        title: "Step 4 · Meetings and LOI",
+        doneKey: "s4_done",
+        note: {
+          intro: "Run meetings and sign an LOI with exclusivity.",
+          bullets: ["Host Q&A calls or site visit and capture answers.","Negotiate price, structure, peg, escrow/holdback.","Sign LOI and start the exclusivity countdown."]
+        },
+        checks: [
+          { key: "s4_meet", label: "Run management calls / site visit; log Q&A", more: ["Agenda (60–90 min) and attendees.", "Record all questions and answers in one log.", "Offer site visit only after solid IOI."] },
+          { key: "s4_loi", label: "Negotiate LOI and sign", more: ["Price & structure (asset/stock); working capital peg; escrow/holdback.", "Exclusivity length (e.g., 45 days); key reps & warranties (high level).", "Sign by both parties; file in VDR → 01 Corporate/LOI."] },
+          { key: "s4_excl", label: "Exclusivity clock started", more: ["Weekly check-in with buyer.", "Track exclusivity end date on calendar.", "Keep back-ups warm in case of slip."] },
+        ]
+      },
+      {
+        id: "s5",
+        title: "Step 5 · Confirm and Close",
+        doneKey: "s5_done",
+        note: {
+          intro: "Finish diligence, sign the purchase agreement, and close.",
+          bullets: ["Give full VDR access to the chosen buyer.","Negotiate APA/SPA and run the closing checklist.","Confirm funds flow (all wires and your fee)."]
+        },
+        checks: [
+          { key: "s5_fullvdr", label: "Open full VDR to chosen buyer", more: ["Grant deeper folders based on diligence list.", "Watermark & log downloads; answer within 2 days.", "Keep everything in the Q&A log—no side channels."] },
+          { key: "s5_apa", label: "Negotiate Asset or Stock Purchase Agreement", more: ["Counsel drafts APA/SPA; compare to LOI and flag gaps.", "Build schedules: assets/liabilities, contracts, IP, employees, litigation.", "Iterate redlines and confirm final business points."] },
+          { key: "s5_close", label: "Run closing checklist & consents", more: ["Live checklist: consents, payoff letters, good-standing, resolutions, assignments.", "Owner & due date for each; update daily near close."] },
+          { key: "s5_funds", label: "Confirm funds flow", more: ["One-page funds flow: who gets paid, amounts, wires.", "Collect bank letters and wiring instructions early; double-check numbers.", "Prepare final settlement statement for signatures."] },
+        ]
+      }
+    ];
+
+    // Advanced (compact)
+    const advancedBlocks = {
+      overview: {
+        leftTitle: "Documents to sign",
+        left: [
+          { key: "doc_engage", label: "Engagement Agreement", more: simpleSteps[0].checks[0].more },
+          { key: "doc_nda", label: "NDA (buyers sign before CIM)", more: simpleSteps[0].checks[1].more },
+        ],
+        rightTitle: "Data to collect",
+        right: [
+          { key: "doc_teaser", label: "Corporate/formation docs; EIN; good-standing", more: simpleSteps[0].checks[3].more },
+          { key: "doc_cim", label: "3 years + TTM P&L/BS/CF", more: simpleSteps[0].checks[2].more },
+          { key: "doc_vdr", label: "Customer list, leases, inventory, systems, IP, licenses", more: simpleSteps[1].checks[2].more },
+        ]
+      },
+      steps: [
+        { key: "adv_build",  label: "Build market materials", more: simpleSteps[1].checks[3].more },
+        { key: "adv_source", label: "Source and qualify buyers", more: simpleSteps[2].checks[0].more },
+        { key: "adv_ioi",    label: "Collect IOIs and shortlist", more: simpleSteps[3].checks[0].more },
+        { key: "adv_meet",   label: "Management meetings", more: simpleSteps[4].checks[0].more },
+        { key: "adv_loi",    label: "Drive to an LOI", more: simpleSteps[4].checks[1].more },
+        { key: "adv_close",  label: "Confirmatory diligence to close", more: simpleSteps[5].checks[1].more },
+      ],
+      ioi: [
+        { key: "ioi_a", label: "Valuation and deal structure", more: simpleSteps[3].checks[0].more },
+        { key: "ioi_b", label: "Consideration mix", more: simpleSteps[3].checks[0].more },
+        { key: "ioi_c", label: "Assumptions and working-capital peg", more: simpleSteps[3].checks[0].more },
+        { key: "ioi_d", label: "Plan, financing, and timing", more: simpleSteps[3].checks[0].more },
+        { key: "ioi_e", label: "People and non-compete", more: simpleSteps[3].checks[2].more },
+        { key: "ioi_f", label: "Additional data or site visit", more: simpleSteps[3].checks[2].more },
+      ],
+      signatures: [
+        ["sign_engage","Engagement","You & Seller","Kickoff"],
+        ["sign_nda","NDA","Buyer & Seller (you named)","Before CIM"],
+        ["sign_ioi","IOI","Buyer → Seller (via you)","After CIM"],
+        ["sign_loi","LOI","Buyer & Seller","Shortlist"],
+        ["sign_apa","Asset/Stock Purchase Agreement","Buyer & Seller","Closing"],
+      ],
+      vdrFolders: [
+        "01 Corporate","02 Financials","03 Customers","04 Supply Chain","05 Operations","06 Human Resources","07 Legal & IP","08 IT & Security","09 Compliance","10 KPIs & QoE"
+      ],
+      packsMin: [
+        "Teaser (no company name)","Short NDA (names you as permitted representative)",
+        "CIM with monthly TTM & documented add-backs","VDR with key folders only",
+        "Process letter + IOI template","Management deck (10–15 slides)"
+      ],
+      packsNice: [
+        "Light sell-side QoE","Customer concentration & retention cuts",
+        "Working-capital peg worksheet","Draft APA/SPA term sheet"
+      ],
+      pitfalls: [
+        "Messy or unsubstantiated add-backs → price reductions later",
+        "Teaser that reveals identity",
+        "Missing AR/AP agings, tax returns, or lease details",
+        "No process letter → incomparable IOIs",
+        "Opening full VDR before NDA & qualification"
+      ]
+    };
+
+    // ---------------- Persistence (URL + localStorage) ----------------
+    const KEY_ORDER = [
+      // section done flags
+      "s0_done","s1_done","s2_done","s3_done","s4_done","s5_done",
+      // s0
+      "s0_engage","s0_nda","s0_financials","s0_buyerlist",
+      // s1
+      "s1_teaser","s1_cim","s1_vdr","s1_process",
+      // s2
+      "s2_outreach","s2_nda_signed","s2_release",
+      // s3
+      "s3_ioi","s3_matrix","s3_shortlist",
+      // s4
+      "s4_meet","s4_loi","s4_excl",
+      // s5
+      "s5_fullvdr","s5_apa","s5_close","s5_funds",
+      // advanced highlights
+      "adv_build","adv_source","adv_ioi","adv_meet","adv_loi","adv_close",
+      // docs
+      "doc_engage","doc_nda","doc_teaser","doc_cim","doc_vdr",
+      // ioi
+      "ioi_a","ioi_b","ioi_c","ioi_d","ioi_e","ioi_f",
+      // signatures
+      "sign_engage","sign_nda","sign_ioi","sign_loi","sign_apa"
+    ];
+    let state = Object.fromEntries(KEY_ORDER.map(k => [k,false]));
+
+    function bitsToState(bits){
+      const obj = {};
+      KEY_ORDER.forEach((k,i)=>{ obj[k] = bits[i] === "1"; });
+      return obj;
+    }
+    function stateToBits(obj){
+      return KEY_ORDER.map(k => obj[k] ? "1" : "0").join("");
+    }
+    function loadState(){
+      const url = new URL(window.location.href);
+      const p = url.searchParams.get("p");
+      if(p && /^[01]+$/.test(p) && p.length === KEY_ORDER.length) {
+        state = bitsToState(p); return;
+      }
+      const ls = localStorage.getItem("ssc-progress");
+      if(ls && /^[01]+$/.test(ls) && ls.length === KEY_ORDER.length) {
+        state = bitsToState(ls);
+      }
+    }
+    function saveState(){
+      const bits = stateToBits(state);
+      const url = new URL(window.location.href);
+      url.searchParams.set("p", bits);
+      window.history.replaceState({}, "", url.toString());
+      localStorage.setItem("ssc-progress", bits);
+      updateProgress();
+    }
+
+    // ---------------- Abbreviation helper ----------------
+    const ABBR = {
+      "M&A": "Mergers and Acquisitions",
+      "NDA": "Non-Disclosure Agreement",
+      "CIM": "Confidential Information Memorandum",
+      "VDR": "Virtual Data Room",
+      "IOI": "Indication of Interest",
+      "LOI": "Letter of Intent",
+      "APA/SPA": "Asset Purchase Agreement / Stock Purchase Agreement",
+      "APA": "Asset Purchase Agreement",
+      "SPA": "Stock Purchase Agreement",
+      "TTM": "Trailing Twelve Months",
+      "AR/AP": "Accounts Receivable / Accounts Payable",
+      "P&L": "Profit and Loss",
+      "QoE": "Quality of Earnings",
+      "KPI": "Key Performance Indicator"
+    };
+    function annotateAbbr(node){
+      if(!node || !node.childNodes) return;
+      for(const child of Array.from(node.childNodes)){
+        if(child.nodeType === Node.TEXT_NODE){
+          const s = child.textContent;
+          if(!s) continue;
+          // Find earliest abbreviation occurrence
+          let hitIndex = -1, hitShort = "", hitLong = "";
+          for(const short of Object.keys(ABBR)){
+            const idx = s.indexOf(short);
+            if(idx !== -1 && (hitIndex === -1 || idx < hitIndex)){ hitIndex = idx; hitShort = short; hitLong = ABBR[short]; }
+          }
+          if(hitIndex === -1) continue;
+
+          const before = document.createTextNode(s.slice(0, hitIndex));
+          const after  = document.createTextNode(s.slice(hitIndex + hitShort.length));
+          const span = document.createElement("span");
+          span.textContent = hitShort;
+          const pill = document.createElement("span");
+          pill.className = "abbr-pill";
+          pill.textContent = `(${hitLong})`;
+
+          const frag = document.createDocumentFragment();
+          frag.appendChild(before); frag.appendChild(span); frag.appendChild(pill); frag.appendChild(after);
+          node.replaceChild(frag, child);
+        } else if(child.nodeType === Node.ELEMENT_NODE){
+          annotateAbbr(child);
+        }
+      }
+    }
+
+    // ---------------- Rendering helpers ----------------
+    function el(tag, cls, text){
+      const e = document.createElement(tag);
+      if(cls) e.className = cls;
+      if(text != null) e.textContent = text;
+      return e;
+    }
+    function makeMoreBox(id, bullets, intro){
+      const box = el("div","expander border border-blue-300 bg-blue-50/40 rounded-xl p-3 text-sm text-zinc-800");
+      box.id = id;
+      if(intro) {
+        const d = el("div","mb-2"); d.textContent = intro; d.setAttribute("data-abbr",""); box.appendChild(d);
+      }
+      const ul = el("ul","list-disc pl-5 space-y-1");
+      bullets.forEach(b => { const li = el("li","", b); li.setAttribute("data-abbr",""); ul.appendChild(li); });
+      box.appendChild(ul);
+      return box;
+    }
+    function attachMoreHandler(btn, targetId){
+      btn.addEventListener("click", () => {
+        // close any open
+        document.querySelectorAll(".expander.open.more").forEach(div => { div.classList.remove("open"); div.style.height = "0px"; div.style.opacity = "0"; });
+        const box = document.getElementById(targetId);
+        const isOpen = box.classList.contains("open");
+        if(!isOpen){
+          box.classList.add("open","more");
+          box.style.height = "auto"; box.style.opacity = "1";
+          // scroll into view if off-screen for mobile
+          box.scrollIntoView({ block: "nearest", behavior: "smooth" });
+        } else {
+          box.classList.remove("open");
+          box.style.height = "0px"; box.style.opacity = "0";
+        }
+      });
+    }
+    function attachSectionToggle(sec, startOpen){
+      const btn = sec.querySelector(".section-toggle");
+      const expander = sec.querySelector(".expander");
+      const chevron = sec.querySelector(".chevron");
+      function set(open){
+        if(open){ expander.classList.add("open"); expander.style.height = "auto"; expander.style.opacity = "1"; chevron.style.transform = "rotate(180deg)"; }
+        else    { expander.classList.remove("open"); expander.style.height = "0px"; expander.style.opacity = "0"; chevron.style.transform = ""; }
+      }
+      set(startOpen);
+      btn.addEventListener("click", ()=> set(!expander.classList.contains("open")));
+      return { set };
+    }
+
+    function render(){
+      const content = document.getElementById("content");
+      const sectionTpl = document.getElementById("section-template");
+      content.innerHTML = "";
+
+      // --- SIMPLE (emphasized, open) ---
+      const simpleSec = sectionTpl.content.cloneNode(true);
+      const sec = simpleSec.querySelector("section");
+      sec.id = "simple";
+      sec.querySelector(".title").textContent = "Start here · 6 steps";
+      sec.querySelector(".dot").className = "h-2.5 w-2.5 rounded-full bg-emerald-500";
+      sec.querySelector(".done-wrap").remove(); // no Done on the container
+      sec.querySelector(".copy").textContent = sections.find(s=>s.id==="simple").copy;
+      const container = sec.querySelector(".content");
+
+      // Render simple steps
+      simpleSteps.forEach(step => {
+        const card = el("div","rounded-2xl border p-4 md:p-5");
+        // Row
+        const row = el("div","flex items-center gap-3");
+        const done = el("input","h-4 w-4");
+        done.type = "checkbox";
+        done.checked = !!state[step.doneKey];
+        done.addEventListener("change", ()=> { state[step.doneKey] = done.checked; saveState(); });
+        row.appendChild(done);
+        const h3 = el("h3","text-[18px] md:text-[20px] font-semibold flex-1", step.title);
+        row.appendChild(h3);
+        const moreBtn = el("button","text-sm text-zinc-600 hover:text-black","More");
+        const noteId = step.id + "_note";
+        moreBtn.addEventListener("click", ()=> {
+          // close others
+          document.querySelectorAll(".expander.open.more").forEach(d => { d.classList.remove("open"); d.style.height="0px"; d.style.opacity="0"; });
+          const box = document.getElementById(noteId);
+          const open = box.classList.contains("open");
+          if(!open){ box.classList.add("open","more"); box.style.height="auto"; box.style.opacity="1"; }
+          else { box.classList.remove("open"); box.style.height="0px"; box.style.opacity="0"; }
+        });
+        row.appendChild(moreBtn);
+        card.appendChild(row);
+
+        // Note box
+        const note = makeMoreBox(noteId, step.note.bullets, "Goal: " + step.note.intro);
+        card.appendChild(note);
+
+        // Checklist + detail boxes
+        const grid = el("div","mt-3 grid md:grid-cols-2 gap-x-8");
+        const ul = el("ul","space-y-2");
+        const popouts = el("div","col-span-1 md:col-span-2");
+
+        step.checks.forEach(c => {
+          const li = el("li","flex items-start gap-3");
+          const cb = el("input","mt-1 h-4 w-4"); cb.type="checkbox"; cb.checked = !!state[c.key];
+          cb.addEventListener("change", ()=>{ state[c.key] = cb.checked; saveState(); });
+          li.appendChild(cb);
+          const span = el("span","flex-1 text-[15px] leading-6"); span.textContent = c.label; span.setAttribute("data-abbr","");
+          li.appendChild(span);
+          const b = el("button","text-sm text-zinc-600 hover:text-black","More");
+          const id = c.key + "_detail";
+          attachMoreHandler(b, id);
+          li.appendChild(b);
+          ul.appendChild(li);
+
+          const detail = makeMoreBox(id, c.more);
+          popouts.appendChild(detail);
+        });
+
+        grid.appendChild(ul);
+        grid.appendChild(popouts);
+        card.appendChild(grid);
+        container.appendChild(card);
+      });
+
+      // Mount section
+      content.appendChild(sec);
+      const { set: setSimpleOpen } = attachSectionToggle(content.querySelector("#simple").closest("section"), true); // open by default
+
+      // --- ADVANCED / OPTIONAL (compact to keep file shorter) ---
+      // Overview
+      addSimpleSection({
+        id: "overview", title: "Advanced · Mandate and guardrails", tone: "emerald",
+        copy: sections.find(s=>s.id==="overview").copy, doneKey: "s0_done",
+        builder: (wrap) => {
+          const grid = el("div","grid md:grid-cols-2 gap-x-10");
+          const left = el("div","");
+          left.appendChild(el("h3","font-medium mb-2","Documents to sign"));
+          advancedBlocks.overview.left.forEach(item => left.appendChild(makeLineItem(item)));
+          const right = el("div","");
+          right.appendChild(el("h3","font-medium mb-2","Data to collect"));
+          advancedBlocks.overview.right.forEach(item => right.appendChild(makeLineItem(item)));
+          grid.appendChild(left); grid.appendChild(right);
+          wrap.appendChild(grid);
+        }
+      }, content);
+
+      // Steps
+      addSimpleSection({
+        id: "steps", title: "Advanced · Full process map", tone: "indigo",
+        copy: sections.find(s=>s.id==="steps").copy, doneKey: "s1_done",
+        builder: (wrap) => {
+          const ul = el("ul","space-y-2");
+          advancedBlocks.steps.forEach(item => { const li = el("li","py-1"); li.appendChild(makeLineItem(item)); ul.appendChild(li); });
+          wrap.appendChild(ul);
+        }
+      }, content);
+
+      // Docs
+      addSimpleSection({
+        id: "docs", title: "Advanced · Forms and who signs", tone: "blue",
+        copy: sections.find(s=>s.id==="docs").copy, doneKey: "s2_done",
+        builder: (wrap) => {
+          const ul = el("ul","grid md:grid-cols-2 gap-x-10");
+          [
+            { key:"doc_engage", label:"Engagement Agreement · You & Seller", more: advancedBlocks.overview.left[0].more },
+            { key:"doc_nda",    label:"NDA (two-party or three-party) · Buyer & Seller (you named)", more: advancedBlocks.overview.left[1].more },
+            { key:"doc_teaser", label:"Teaser (no company name) · You issue", more: simpleSteps[1].checks[0].more },
+            { key:"doc_cim",    label:"CIM (about 20–35 pages) · You issue after NDA", more: simpleSteps[1].checks[1].more },
+            { key:"doc_vdr",    label:"VDR and Q&A log · You control", more: simpleSteps[1].checks[2].more },
+            { key:"doc_process",label:"Process letter · You issue", more: simpleSteps[1].checks[3].more },
+            { key:"doc_profile",label:"Buyer profile & proof of funds · Buyer completes", more: simpleSteps[2].checks[1].more },
+            { key:"doc_ioi",    label:"IOI template · Buyer fills", more: simpleSteps[3].checks[0].more },
+            { key:"doc_loi",    label:"LOI · Buyer & Seller", more: simpleSteps[4].checks[1].more },
+          ].forEach(item => {
+            const li = el("li","py-2"); li.appendChild(makeLineItem(item)); ul.appendChild(li);
+          });
+          wrap.appendChild(ul);
+        }
+      }, content);
+
+      // IOI
+      addSimpleSection({
+        id: "ioi", title: "Advanced · IOI requirements", tone: "cyan",
+        copy: sections.find(s=>s.id==="ioi").copy, doneKey: "s3_done",
+        builder: (wrap) => {
+          const grid = el("div","grid md:grid-cols-2 gap-x-10");
+          const left = el("div",""); const right = el("div","");
+          advancedBlocks.ioi.slice(0,3).forEach(item=> left.appendChild(makeLineItem(item)));
+          advancedBlocks.ioi.slice(3).forEach(item=> right.appendChild(makeLineItem(item)));
+          grid.appendChild(left); grid.appendChild(right); wrap.appendChild(grid);
+        }
+      }, content);
+
+      // Signatures
+      addSimpleSection({
+        id: "signatures", title: "Advanced · Who signs what", tone: "amber",
+        copy: sections.find(s=>s.id==="signatures").copy, doneKey: "s4_done",
+        builder: (wrap) => {
+          const grid = el("div","text-sm text-zinc-700 grid md:grid-cols-3 gap-y-2 items-center");
+          advancedBlocks.signatures.forEach(([key,label,who,when])=>{
+            const lab = el("label","flex items-center gap-2");
+            const cb = el("input","h-4 w-4"); cb.type="checkbox"; cb.checked = !!state[key]; cb.addEventListener("change",()=>{state[key]=cb.checked; saveState();});
+            lab.appendChild(cb); const sp = el("span","font-medium",label); lab.appendChild(sp);
+            grid.appendChild(lab);
+            grid.appendChild(el("div","",who));
+            grid.appendChild(el("div","",when));
+          });
+          wrap.appendChild(grid);
+        }
+      }, content);
+
+      // VDR
+      addSimpleSection({
+        id: "vdr", title: "Advanced · Virtual Data Room map", tone: "violet",
+        copy: sections.find(s=>s.id==="vdr").copy, doneKey: "s5_done",
+        builder: (wrap) => {
+          const p = el("p","mb-2 text-sm text-zinc-700","Gate deeper folders after NDA and qualification.");
+          const list = el("div","flex flex-wrap gap-2 text-sm");
+          advancedBlocks.vdrFolders.forEach(f => { const chip = el("span","rounded-full border px-3 py-1",f); list.appendChild(chip); });
+          wrap.appendChild(p); wrap.appendChild(list);
+        }
+      }, content);
+
+      // Packs
+      addSimpleSection({
+        id: "packs", title: "Advanced · Minimum pack and extras", tone: "fuchsia",
+        copy: sections.find(s=>s.id==="packs").copy, doneKey: "s6_done",
+        builder: (wrap) => {
+          const grid = el("div","grid md:grid-cols-2 gap-x-10");
+          const left = el("div",""); left.appendChild(el("h3","font-medium mb-2","Minimum to launch"));
+          const ulL = el("ul","space-y-1 text-[15px]"); advancedBlocks.packsMin.forEach(x=> ulL.appendChild(el("li","",x))); left.appendChild(ulL);
+          const right = el("div",""); right.appendChild(el("h3","font-medium mb-2","Nice to have"));
+          const ulR = el("ul","space-y-1 text-[15px]"); advancedBlocks.packsNice.forEach(x=> ulR.appendChild(el("li","",x))); right.appendChild(ulR);
+          grid.appendChild(left); grid.appendChild(right); wrap.appendChild(grid);
+        }
+      }, content);
+
+      // Pitfalls
+      addSimpleSection({
+        id: "pitfalls", title: "Advanced · Pitfalls to avoid", tone: "rose",
+        copy: sections.find(s=>s.id==="pitfalls").copy, doneKey: "s7_done",
+        builder: (wrap) => {
+          const ul = el("ul","list-disc pl-5 space-y-1 text-[15px]");
+          advancedBlocks.pitfalls.forEach(x=> ul.appendChild(el("li","",x)));
+          wrap.appendChild(ul);
+        }
+      }, content);
+
+      // After render: annotate abbreviations
+      document.querySelectorAll("[data-abbr]").forEach(n => annotateAbbr(n));
+    }
+
+    function addSimpleSection({id,title,tone,copy,doneKey,builder}, mount){
+      const tpl = document.getElementById("section-template");
+      const frag = tpl.content.cloneNode(true);
+      const sec = frag.querySelector("section"); sec.id = id;
+      const dot = frag.querySelector(".dot"); dot.className = "h-2.5 w-2.5 rounded-full " + tones[tone].dot;
+      frag.querySelector(".title").textContent = title;
+      const doneWrap = frag.querySelector(".done-wrap");
+      const doneBox  = frag.querySelector(".done-box");
+      if(!doneKey){ doneWrap.remove(); } else {
+        doneBox.checked = !!state[doneKey];
+        doneBox.addEventListener("change", ()=>{ state[doneKey]=doneBox.checked; saveState(); });
+      }
+      frag.querySelector(".copy").textContent = copy;
+      const contentWrap = frag.querySelector(".content");
+      builder(contentWrap);
+      mount.appendChild(frag);
+      // Start closed, except simple (handled earlier)
+      const { set } = attachSectionToggle(mount.lastElementChild, id==="simple");
+      return { set };
+    }
+
+    function makeLineItem(item){
+      const row = el("div","py-2");
+      const label = el("label","flex items-start gap-3");
+      const cb = el("input","mt-1 h-4 w-4"); cb.type = "checkbox"; cb.checked = !!state[item.key];
+      cb.addEventListener("change",()=>{ state[item.key] = cb.checked; saveState(); });
+      const text = el("span","flex-1 text-[15px] leading-6"); text.textContent = item.label; text.setAttribute("data-abbr","");
+      const btn = el("button","text-sm text-zinc-600 hover:text-black","More");
+      const id = item.key + "_detail";
+      const detail = makeMoreBox(id, item.more || []);
+      attachMoreHandler(btn, id);
+      label.appendChild(cb); label.appendChild(text); label.appendChild(btn);
+      row.appendChild(label); row.appendChild(detail);
+      return row;
+    }
+
+    // ---------------- Progress bar ----------------
+    function updateProgress(){
+      const total = KEY_ORDER.length;
+      const done = KEY_ORDER.reduce((n,k)=> n + (state[k] ? 1 : 0), 0);
+      const pct = Math.min(100, Math.round(done / total * 100));
+      document.getElementById("progress-bar").style.width = pct + "%";
+      document.getElementById("progress-text").textContent = `Progress: ${done}/${total}`;
+    }
+
+    // ---------------- Top header actions ----------------
+    document.getElementById("btn-open-all").addEventListener("click", ()=>{
+      document.querySelectorAll("section .expander").forEach(exp => { exp.classList.add("open"); exp.style.height="auto"; exp.style.opacity="1"; });
+    });
+    document.getElementById("btn-close-all").addEventListener("click", ()=>{
+      document.querySelectorAll("section .expander").forEach(exp => { if(exp.parentElement.id!=="simple"){ exp.classList.remove("open"); exp.style.height="0px"; exp.style.opacity="0"; } });
+      document.querySelector("#simple .expander").classList.add("open"); // keep start here open
+    });
+    document.getElementById("btn-print").addEventListener("click", ()=> window.print());
+    document.getElementById("btn-copy").addEventListener("click", async ()=>{
+      try { await navigator.clipboard.writeText(window.location.href); } catch {}
+    });
+
+    // ---------------- Boot ----------------
+    document.getElementById("year").textContent = new Date().getFullYear();
+    loadState();
+    render();
+    saveState(); // ensures URL gets ?p=... and progress shows correctly
+  </script>
+</body>
+</html>
