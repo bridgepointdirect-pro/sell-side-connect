@@ -3,2764 +3,1059 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AEC M&A Deal Platform</title>
-    <link rel="stylesheet" href="./assets/css/style.css">
+    <title>AEC M&A Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2563eb;
+            --secondary: #10b981;
+            --danger: #ef4444;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-600: #4b5563;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--gray-800);
+            background: var(--gray-50);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        /* Hero */
+        .hero {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 70vh;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            text-align: center;
+            padding: 2rem 1rem;
+        }
+
+        .hero-content h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero-subhead {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .home-footer {
+            background: white;
+            padding: 3rem 1rem;
+            text-align: center;
+            border-top: 1px solid var(--gray-200);
+        }
+
+        .footer-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+            border-radius: 8px;
+            cursor: pointer;
+            border: none;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1e40af;
+        }
+
+        .btn-secondary {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #059669;
+        }
+
+        .btn-outline {
+            background: white;
+            color: var(--gray-800);
+            border: 1px solid var(--gray-200);
+        }
+
+        .btn-outline:hover {
+            background: var(--gray-50);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            border-bottom: 1px solid var(--gray-200);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .nav {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav a {
+            color: var(--gray-600);
+            text-decoration: none;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .nav a.active {
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary);
+        }
+
+        /* Toolbar */
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .toolbar-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        /* Kanban */
+        .kanban {
+            display: flex;
+            gap: 1rem;
+            overflow-x: auto;
+            padding-bottom: 1rem;
+        }
+
+        .kanban-col {
+            flex: 0 0 280px;
+            background: var(--gray-100);
+            border-radius: 8px;
+            padding: 1rem;
+            min-height: 400px;
+        }
+
+        .kanban-col h3 {
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            color: var(--gray-600);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--gray-200);
+        }
+
+        .kanban-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .deal-card {
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: 8px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .deal-card:hover {
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+
+        .deal-card h4 {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .deal-card p {
+            font-size: 0.875rem;
+            color: var(--gray-600);
+            margin-bottom: 0.25rem;
+        }
+
+        .tags {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .tag {
+            font-size: 0.75rem;
+            padding: 0.125rem 0.5rem;
+            border-radius: 12px;
+            background: var(--gray-200);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            color: var(--gray-600);
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid var(--gray-200);
+            border-radius: 4px;
+            font-family: inherit;
+        }
+
+        /* Checklist Layout */
+        .checklist-layout {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .sidebar {
+            position: sticky;
+            top: 80px;
+            height: fit-content;
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+
+        .sidebar h2 {
+            margin-bottom: 1rem;
+        }
+
+        .sidebar nav a {
+            display: block;
+            padding: 0.5rem;
+            color: var(--gray-600);
+            text-decoration: none;
+            border-radius: 4px;
+            margin-bottom: 0.25rem;
+            cursor: pointer;
+        }
+
+        .sidebar nav a:hover {
+            background: var(--gray-100);
+        }
+
+        .sidebar nav a.complete {
+            color: var(--secondary);
+        }
+
+        .main-content {
+            min-height: 100vh;
+        }
+
+        .stage-card {
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+
+        .stage-header {
+            padding: 1.5rem;
+            background: var(--gray-50);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .stage-header h3 {
+            font-size: 1.25rem;
+        }
+
+        .stage-body {
+            padding: 1.5rem;
+        }
+
+        .stage-body h4 {
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+            color: var(--gray-800);
+        }
+
+        .stage-body ul {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .checklist-items {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem;
+            background: var(--gray-50);
+            border-radius: 4px;
+        }
+
+        .checklist-item input {
+            width: 1.25rem;
+            height: 1.25rem;
+        }
+
+        .checklist-item.checked label {
+            text-decoration: line-through;
+            color: var(--gray-600);
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--gray-900);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 10px 15px rgba(0,0,0,0.2);
+            opacity: 0;
+            transform: translateY(100%);
+            transition: all 0.3s;
+            z-index: 2000;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .toast.success {
+            background: var(--secondary);
+        }
+
+        /* Print */
+        @media print {
+            .header, .sidebar, .toolbar, .toast {
+                display: none !important;
+            }
+            .stage-body {
+                display: block !important;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-content h1 {
+                font-size: 2rem;
+            }
+            .hero-actions {
+                flex-direction: column;
+                width: 100%;
+            }
+            .checklist-layout {
+                grid-template-columns: 1fr;
+            }
+            .sidebar {
+                position: static;
+            }
+        }
+
+        /* Page visibility */
+        .page {
+            display: none;
+        }
+        .page.active {
+            display: block;
+        }
+    </style>
 </head>
 <body>
-    <div class="hero">
-        <div class="hero-content">
-            <h1>AEC M&A Deal Platform</h1>
-            <p class="hero-subhead">Architecture, Engineering & Construction | $2M–$50M Transactions</p>
-            <div class="hero-actions">
-                <a class="btn btn-primary" href="./crm.html" aria-label="Open CRM">CRM</a>
-                <a class="btn btn-secondary" href="./checklist.html" aria-label="Open Checklist">Checklist</a>
+    <!-- HOME PAGE -->
+    <div id="homePage" class="page active">
+        <div class="hero">
+            <div class="hero-content">
+                <h1>AEC M&A Platform</h1>
+                <p class="hero-subhead">Architecture, Engineering & Construction | $2M–$50M Deals</p>
+                <div class="hero-actions">
+                    <button class="btn btn-primary" onclick="showPage('crm')">CRM</button>
+                    <button class="btn btn-secondary" onclick="showPage('checklist')">Checklist</button>
+                </div>
             </div>
         </div>
+
+        <footer class="home-footer">
+            <div class="container">
+                <h2>Data Management</h2>
+                <p>Export and import your CRM data</p>
+                <div class="footer-actions">
+                    <button class="btn btn-outline" onclick="exportData()">Export Data</button>
+                    <button class="btn btn-outline" onclick="document.getElementById('importFile').click()">Import Data</button>
+                    <input type="file" id="importFile" accept=".json" style="display:none;" onchange="importData(event)">
+                </div>
+            </div>
+        </footer>
     </div>
 
-    <footer class="home-footer">
-        <div class="container">
-            <h2>Data Management</h2>
-            <p>Export and import your CRM data for backup or migration.</p>
-            <div class="footer-actions">
-                <button class="btn btn-outline" id="exportDataBtn" aria-label="Export CRM data">Export Data (JSON)</button>
-                <button class="btn btn-outline" id="importDataBtn" aria-label="Import CRM data">Import Data (JSON)</button>
-                <input type="file" id="importFileInput" accept=".json" style="display:none;" aria-label="Choose JSON file to import">
-            </div>
-        </div>
-    </footer>
-
-    <div id="toast" class="toast" role="alert" aria-live="polite"></div>
-
-    <script src="./assets/js/utils.js"></script>
-    <script src="./assets/js/app.js"></script>
-</body>
-</html>
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CRM - AEC M&A Platform</title>
-    <link rel="stylesheet" href="./assets/css/style.css">
-</head>
-<body>
-    <header class="app-header">
-        <nav class="container">
-            <a href="./index.html" class="logo" aria-label="Home">AEC M&A</a>
-            <ul class="nav-links">
-                <li><a href="./crm.html" class="active" aria-current="page">CRM</a></li>
-                <li><a href="./checklist.html">Checklist</a></li>
-            </ul>
-        </nav>
-    </header>
-
-    <main class="crm-container">
-        <div class="crm-toolbar">
-            <div class="toolbar-left">
-                <h1>Deal Pipeline</h1>
-                <button class="btn btn-primary btn-sm" id="addDealBtn" aria-label="Add new deal">+ New Deal</button>
-            </div>
-            <div class="toolbar-right">
-                <button class="btn btn-outline btn-sm" id="exportCsvBtn" aria-label="Export deals to CSV">Export CSV</button>
-                <button class="btn btn-outline btn-sm" id="exportJsonBtn" aria-label="Export all data to JSON">Export JSON</button>
-                <button class="btn btn-outline btn-sm" id="filterToggleBtn" aria-label="Toggle filters">Filters</button>
-            </div>
-        </div>
-
-        <div class="filter-panel" id="filterPanel" style="display:none;">
-            <div class="filter-group">
-                <label for="searchInput">Search:</label>
-                <input type="text" id="searchInput" placeholder="Company name or notes..." aria-label="Search deals">
-            </div>
-            <div class="filter-group">
-                <label for="stageFilter">Stage:</label>
-                <select id="stageFilter" aria-label="Filter by stage">
-                    <option value="">All Stages</option>
-                </select>
-            </div>
-            <div class="filter-group">
-                <label for="verticalFilter">Vertical:</label>
-                <select id="verticalFilter" aria-label="Filter by vertical">
-                    <option value="">All Verticals</option>
-                    <option value="Architecture">Architecture</option>
-                    <option value="Engineering">Engineering</option>
-                    <option value="Construction">Construction</option>
-                </select>
-            </div>
-            <div class="filter-group">
-                <label for="revenueMinFilter">Min Revenue ($M):</label>
-                <input type="number" id="revenueMinFilter" placeholder="0" step="0.1" aria-label="Minimum revenue">
-            </div>
-            <div class="filter-group">
-                <label for="revenueMaxFilter">Max Revenue ($M):</label>
-                <input type="number" id="revenueMaxFilter" placeholder="100" step="0.1" aria-label="Maximum revenue">
-            </div>
-            <button class="btn btn-sm" id="clearFiltersBtn">Clear Filters</button>
-        </div>
-
-        <div class="kanban-board" id="kanbanBoard" role="region" aria-label="Deal pipeline kanban board">
-            <!-- Kanban columns generated by JS -->
-        </div>
-
-        <div class="mobile-list" id="mobileList" role="region" aria-label="Deal list">
-            <!-- Mobile list view generated by JS -->
-        </div>
-    </main>
-
-    <!-- Deal Detail Modal -->
-    <div class="modal" id="dealModal" role="dialog" aria-modal="true" aria-labelledby="dealModalTitle">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 id="dealModalTitle">Deal Details</h2>
-                <button class="modal-close" id="closeDealModal" aria-label="Close modal">&times;</button>
-            </div>
-            <div class="modal-tabs">
-                <button class="tab-btn active" data-tab="overview">Overview</button>
-                <button class="tab-btn" data-tab="contacts">Contacts</button>
-                <button class="tab-btn" data-tab="tasks">Tasks</button>
-                <button class="tab-btn" data-tab="notes">Notes</button>
-                <button class="tab-btn" data-tab="documents">Documents</button>
-                <button class="tab-btn" data-tab="metrics">Metrics</button>
-            </div>
-            <div class="modal-body">
-                <div class="tab-content active" id="tab-overview">
-                    <!-- Overview content -->
+    <!-- CRM PAGE -->
+    <div id="crmPage" class="page">
+        <header class="header">
+            <nav class="container">
+                <span class="logo" onclick="showPage('home')">AEC M&A</span>
+                <div class="nav">
+                    <a onclick="showPage('crm')" class="active">CRM</a>
+                    <a onclick="showPage('checklist')">Checklist</a>
                 </div>
-                <div class="tab-content" id="tab-contacts">
-                    <!-- Contacts content -->
-                </div>
-                <div class="tab-content" id="tab-tasks">
-                    <!-- Tasks content -->
-                </div>
-                <div class="tab-content" id="tab-notes">
-                    <!-- Notes content -->
-                </div>
-                <div class="tab-content" id="tab-documents">
-                    <!-- Documents content -->
-                </div>
-                <div class="tab-content" id="tab-metrics">
-                    <!-- Metrics content -->
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="toast" class="toast" role="alert" aria-live="polite"></div>
-
-    <script src="./assets/js/utils.js"></script>
-    <script src="./assets/js/crm.js"></script>
-</body>
-</html>
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Deal Checklist - AEC M&A Platform</title>
-    <link rel="stylesheet" href="./assets/css/style.css">
-</head>
-<body>
-    <header class="app-header">
-        <nav class="container">
-            <a href="./index.html" class="logo" aria-label="Home">AEC M&A</a>
-            <ul class="nav-links">
-                <li><a href="./crm.html">CRM</a></li>
-                <li><a href="./checklist.html" class="active" aria-current="page">Checklist</a></li>
-            </ul>
-        </nav>
-    </header>
-
-    <div class="checklist-container">
-        <aside class="checklist-sidebar" role="navigation" aria-label="Checklist stages">
-            <h2>Deal Stages</h2>
-            <nav id="stageNav">
-                <!-- Stage navigation generated by JS -->
             </nav>
-        </aside>
+        </header>
 
-        <main class="checklist-main">
-            <div class="checklist-toolbar">
-                <h1>AEC M&A Deal Checklist</h1>
+        <main class="container" style="padding: 2rem 1rem;">
+            <div class="toolbar">
+                <h1>Deal Pipeline</h1>
                 <div class="toolbar-actions">
-                    <button class="btn btn-outline btn-sm" id="printBtn" aria-label="Print or save as PDF">Print / Save PDF</button>
-                    <button class="btn btn-outline btn-sm" id="expandAllBtn" aria-label="Expand all stages">Expand All</button>
-                    <button class="btn btn-outline btn-sm" id="collapseAllBtn" aria-label="Collapse all stages">Collapse All</button>
-                    <button class="btn btn-outline btn-sm" id="resetChecklistBtn" aria-label="Reset all checklists">Reset Checklists</button>
+                    <button class="btn btn-primary btn-sm" onclick="openDealModal(null)">+ New Deal</button>
+                    <button class="btn btn-outline btn-sm" onclick="exportCSV()">Export CSV</button>
                 </div>
             </div>
 
-            <div id="checklistContent" role="region" aria-label="Checklist content">
-                <!-- Stage cards generated by JS -->
-            </div>
+            <div class="kanban" id="kanban"></div>
         </main>
     </div>
 
-    <div id="toast" class="toast" role="alert" aria-live="polite"></div>
-
-    <script src="./assets/js/utils.js"></script>
-    <script src="./assets/js/checklist.js"></script>
-</body>
-</html>
-
-  GLOBAL STYLES & RESET
-   =================================== */
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-:root {
-    --primary: #2563eb;
-    --primary-dark: #1e40af;
-    --secondary: #10b981;
-    --secondary-dark: #059669;
-    --danger: #ef4444;
-    --danger-dark: #dc2626;
-    --gray-50: #f9fafb;
-    --gray-100: #f3f4f6;
-    --gray-200: #e5e7eb;
-    --gray-300: #d1d5db;
-    --gray-400: #9ca3af;
-    --gray-500: #6b7280;
-    --gray-600: #4b5563;
-    --gray-700: #374151;
-    --gray-800: #1f2937;
-    --gray-900: #111827;
-    --white: #ffffff;
-    --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
-    --shadow: 0 1px 3px rgba(0,0,0,0.1);
-    --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
-    --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
-    --radius: 8px;
-    --radius-sm: 4px;
-    --transition: all 0.2s ease;
-}
-
-body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    font-size: 16px;
-    line-height: 1.6;
-    color: var(--gray-800);
-    background: var(--gray-50);
-}
-
-a {
-    color: var(--primary);
-    text-decoration: none;
-    transition: var(--transition);
-}
-
-a:hover, a:focus {
-    color: var(--primary-dark);
-    outline: 2px solid var(--primary);
-    outline-offset: 2px;
-}
-
-button {
-    font-family: inherit;
-    cursor: pointer;
-    border: none;
-    transition: var(--transition);
-}
-
-button:focus {
-    outline: 2px solid var(--primary);
-    outline-offset: 2px;
-}
-
-input, select, textarea {
-    font-family: inherit;
-    font-size: 1rem;
-    border: 1px solid var(--gray-300);
-    border-radius: var(--radius-sm);
-    padding: 0.5rem 0.75rem;
-    transition: var(--transition);
-}
-
-input:focus, select:focus, textarea:focus {
-    outline: none;
-    border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-}
-
-.container {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 0 1rem;
-}
-
-/* ===================================
-   BUTTONS
-   =================================== */
-
-.btn {
-    display: inline-block;
-    padding: 0.75rem 1.5rem;
-    font-size: 1rem;
-    font-weight: 500;
-    border-radius: var(--radius);
-    transition: var(--transition);
-    text-align: center;
-}
-
-.btn-sm {
-    padding: 0.5rem 1rem;
-    font-size: 0.875rem;
-}
-
-.btn-primary {
-    background: var(--primary);
-    color: var(--white);
-}
-
-.btn-primary:hover, .btn-primary:focus {
-    background: var(--primary-dark);
-    color: var(--white);
-}
-
-.btn-secondary {
-    background: var(--secondary);
-    color: var(--white);
-}
-
-.btn-secondary:hover, .btn-secondary:focus {
-    background: var(--secondary-dark);
-    color: var(--white);
-}
-
-.btn-outline {
-    background: var(--white);
-    color: var(--gray-700);
-    border: 1px solid var(--gray-300);
-}
-
-.btn-outline:hover, .btn-outline:focus {
-    background: var(--gray-50);
-    border-color: var(--gray-400);
-}
-
-.btn-danger {
-    background: var(--danger);
-    color: var(--white);
-}
-
-.btn-danger:hover, .btn-danger:focus {
-    background: var(--danger-dark);
-    color: var(--white);
-}
-
-/* ===================================
-   HERO (HOME PAGE)
-   =================================== */
-
-.hero {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 70vh;
-    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-    color: var(--white);
-    text-align: center;
-    padding: 2rem 1rem;
-}
-
-.hero-content h1 {
-    font-size: 3rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
-}
-
-.hero-subhead {
-    font-size: 1.25rem;
-    margin-bottom: 2rem;
-    opacity: 0.95;
-}
-
-.hero-actions {
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
-    flex-wrap: wrap;
-}
-
-.hero-actions .btn {
-    min-width: 200px;
-    padding: 1rem 2rem;
-    font-size: 1.125rem;
-}
-
-@media (max-width: 768px) {
-    .hero-content h1 {
-        font-size: 2rem;
-    }
-    
-    .hero-subhead {
-        font-size: 1rem;
-    }
-    
-    .hero-actions {
-        flex-direction: column;
-        width: 100%;
-    }
-    
-    .hero-actions .btn {
-        width: 100%;
-    }
-}
-
-.home-footer {
-    background: var(--white);
-    padding: 3rem 1rem;
-    text-align: center;
-    border-top: 1px solid var(--gray-200);
-}
-
-.home-footer h2 {
-    font-size: 1.5rem;
-    margin-bottom: 0.5rem;
-}
-
-.home-footer p {
-    color: var(--gray-600);
-    margin-bottom: 1.5rem;
-}
-
-.footer-actions {
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
-    flex-wrap: wrap;
-}
-
-/* ===================================
-   HEADER NAVIGATION
-   =================================== */
-
-.app-header {
-    background: var(--white);
-    border-bottom: 1px solid var(--gray-200);
-    padding: 1rem 0;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-}
-
-.app-header nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.logo {
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: var(--primary);
-}
-
-.nav-links {
-    display: flex;
-    gap: 2rem;
-    list-style: none;
-}
-
-.nav-links a {
-    color: var(--gray-700);
-    font-weight: 500;
-    padding: 0.5rem 0;
-}
-
-.nav-links a.active {
-    color: var(--primary);
-    border-bottom: 2px solid var(--primary);
-}
-
-/* ===================================
-   CRM STYLES
-   =================================== */
-
-.crm-container {
-    padding: 2rem 1rem;
-    max-width: 1600px;
-    margin: 0 auto;
-}
-
-.crm-toolbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1.5rem;
-    flex-wrap: wrap;
-    gap: 1rem;
-}
-
-.toolbar-left, .toolbar-right {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    flex-wrap: wrap;
-}
-
-.toolbar-left h1 {
-    font-size: 1.75rem;
-    color: var(--gray-900);
-}
-
-.filter-panel {
-    background: var(--white);
-    border: 1px solid var(--gray-200);
-    border-radius: var(--radius);
-    padding: 1rem;
-    margin-bottom: 1.5rem;
-    display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
-    align-items: flex-end;
-}
-
-.filter-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-    min-width: 150px;
-}
-
-.filter-group label {
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: var(--gray-700);
-}
-
-.filter-group input,
-.filter-group select {
-    width: 100%;
-}
-
-/* Kanban Board */
-
-.kanban-board {
-    display: flex;
-    gap: 1rem;
-    overflow-x: auto;
-    padding-bottom: 1rem;
-}
-
-.kanban-column {
-    flex: 0 0 300px;
-    background: var(--gray-100);
-    border-radius: var(--radius);
-    padding: 1rem;
-    min-height: 400px;
-}
-
-.kanban-column-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 2px solid var(--gray-300);
-}
-
-.kanban-column-header h3 {
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: var(--gray-700);
-    text-transform: uppercase;
-}
-
-.kanban-column-count {
-    background: var(--gray-300);
-    color: var(--gray-700);
-    font-size: 0.75rem;
-    font-weight: 600;
-    padding: 0.125rem 0.5rem;
-    border-radius: 12px;
-}
-
-.kanban-cards {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    min-height: 100px;
-}
-
-.kanban-cards.drag-over {
-    background: rgba(37, 99, 235, 0.05);
-    border: 2px dashed var(--primary);
-    border-radius: var(--radius);
-}
-
-.deal-card {
-    background: var(--white);
-    border: 1px solid var(--gray-200);
-    border-radius: var(--radius);
-    padding: 1rem;
-    cursor: grab;
-    transition: var(--transition);
-    box-shadow: var(--shadow-sm);
-}
-
-.deal-card:hover {
-    box-shadow: var(--shadow-md);
-    transform: translateY(-2px);
-}
-
-.deal-card.dragging {
-    opacity: 0.5;
-    cursor: grabbing;
-}
-
-.deal-card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 0.75rem;
-}
-
-.deal-card-title {
-    font-size: 1rem;
-    font-weight: 600;
-    color: var(--gray-900);
-    margin-bottom: 0.25rem;
-}
-
-.deal-card-subtitle {
-    font-size: 0.875rem;
-    color: var(--gray-600);
-}
-
-.deal-card-meta {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-    font-size: 0.875rem;
-    color: var(--gray-700);
-    margin-bottom: 0.5rem;
-}
-
-.deal-card-tags {
-    display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-}
-
-.tag {
-    font-size: 0.75rem;
-    padding: 0.125rem 0.5rem;
-    border-radius: 12px;
-    background: var(--gray-200);
-    color: var(--gray-700);
-}
-
-.tag.tag-architecture {
-    background: #dbeafe;
-    color: #1e40af;
-}
-
-.tag.tag-engineering {
-    background: #d1fae5;
-    color: #065f46;
-}
-
-.tag.tag-construction {
-    background: #fed7aa;
-    color: #92400e;
-}
-
-/* Mobile List View */
-
-.mobile-list {
-    display: none;
-}
-
-@media (max-width: 1024px) {
-    .kanban-board {
-        display: none;
-    }
-    
-    .mobile-list {
-        display: block;
-    }
-    
-    .mobile-deal-item {
-        background: var(--white);
-        border: 1px solid var(--gray-200);
-        border-radius: var(--radius);
-        padding: 1rem;
-        margin-bottom: 1rem;
-        cursor: pointer;
-        transition: var(--transition);
-    }
-    
-    .mobile-deal-item:hover {
-        box-shadow: var(--shadow-md);
-    }
-}
-
-/* ===================================
-   MODAL
-   =================================== */
-
-.modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 1000;
-    overflow-y: auto;
-    padding: 2rem 1rem;
-}
-
-.modal.active {
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-}
-
-.modal-content {
-    background: var(--white);
-    border-radius: var(--radius);
-    width: 100%;
-    max-width: 900px;
-    box-shadow: var(--shadow-lg);
-    margin: auto;
-}
-
-.modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1.5rem;
-    border-bottom: 1px solid var(--gray-200);
-}
-
-.modal-header h2 {
-    font-size: 1.5rem;
-    color: var(--gray-900);
-}
-
-.modal-close {
-    font-size: 2rem;
-    background: none;
-    color: var(--gray-500);
-    padding: 0;
-    width: 2rem;
-    height: 2rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.modal-close:hover {
-    color: var(--gray-700);
-}
-
-.modal-tabs {
-    display: flex;
-    gap: 0.5rem;
-    padding: 1rem 1.5rem 0;
-    border-bottom: 1px solid var(--gray-200);
-    overflow-x: auto;
-}
-
-.tab-btn {
-    padding: 0.75rem 1rem;
-    background: none;
-    color: var(--gray-600);
-    font-weight: 500;
-    border-bottom: 2px solid transparent;
-    white-space: nowrap;
-}
-
-.tab-btn:hover {
-    color: var(--gray-800);
-}
-
-.tab-btn.active {
-    color: var(--primary);
-    border-bottom-color: var(--primary);
-}
-
-.modal-body {
-    padding: 1.5rem;
-    max-height: 60vh;
-    overflow-y: auto;
-}
-
-.tab-content {
-    display: none;
-}
-
-.tab-content.active {
-    display: block;
-}
-
-.form-group {
-    margin-bottom: 1rem;
-}
-
-.form-group label {
-    display: block;
-    font-weight: 500;
-    margin-bottom: 0.25rem;
-    color: var(--gray-700);
-}
-
-.form-group input,
-.form-group select,
-.form-group textarea {
-    width: 100%;
-}
-
-.form-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-}
-
-@media (max-width: 768px) {
-    .form-row {
-        grid-template-columns: 1fr;
-    }
-}
-
-.item-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-}
-
-.item-card {
-    background: var(--gray-50);
-    border: 1px solid var(--gray-200);
-    border-radius: var(--radius-sm);
-    padding: 1rem;
-}
-
-.item-card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 0.5rem;
-}
-
-.item-actions {
-    display: flex;
-    gap: 0.5rem;
-}
-
-.icon-btn {
-    background: none;
-    padding: 0.25rem;
-    color: var(--gray-500);
-    font-size: 1.25rem;
-}
-
-.icon-btn:hover {
-    color: var(--gray-700);
-}
-
-.icon-btn.danger:hover {
-    color: var(--danger);
-}
-
-.add-item-form {
-    background: var(--gray-50);
-    border: 1px solid var(--gray-200);
-    border-radius: var(--radius-sm);
-    padding: 1rem;
-    margin-top: 1rem;
-}
-
-/* ===================================
-   CHECKLIST STYLES
-   =================================== */
-
-.checklist-container {
-    display: grid;
-    grid-template-columns: 250px 1fr;
-    gap: 2rem;
-    max-width: 1600px;
-    margin: 0 auto;
-    padding: 2rem 1rem;
-}
-
-@media (max-width: 1024px) {
-    .checklist-container {
-        grid-template-columns: 1fr;
-    }
-    
-    .checklist-sidebar {
-        position: static;
-    }
-}
-
-.checklist-sidebar {
-    position: sticky;
-    top: 80px;
-    height: fit-content;
-    background: var(--white);
-    border: 1px solid var(--gray-200);
-    border-radius: var(--radius);
-    padding: 1.5rem;
-}
-
-.checklist-sidebar h2 {
-    font-size: 1.125rem;
-    margin-bottom: 1rem;
-    color: var(--gray-900);
-}
-
-.checklist-sidebar nav a {
-    display: block;
-    padding: 0.5rem 0.75rem;
-    color: var(--gray-700);
-    border-radius: var(--radius-sm);
-    margin-bottom: 0.25rem;
-    font-size: 0.875rem;
-    transition: var(--transition);
-}
-
-.checklist-sidebar nav a:hover,
-.checklist-sidebar nav a:focus {
-    background: var(--gray-100);
-    color: var(--primary);
-}
-
-.checklist-sidebar nav a.complete {
-    color: var(--secondary);
-}
-
-.checklist-toolbar {
-    margin-bottom: 2rem;
-}
-
-.checklist-toolbar h1 {
-    font-size: 2rem;
-    margin-bottom: 1rem;
-    color: var(--gray-900);
-}
-
-.toolbar-actions {
-    display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-}
-
-.stage-card {
-    background: var(--white);
-    border: 1px solid var(--gray-200);
-    border-radius: var(--radius);
-    margin-bottom: 2rem;
-    box-shadow: var(--shadow-sm);
-    page-break-inside: avoid;
-}
-
-.stage-card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1.5rem;
-    border-bottom: 1px solid var(--gray-200);
-    cursor: pointer;
-    transition: var(--transition);
-}
-
-.stage-card-header:hover {
-    background: var(--gray-50);
-}
-
-.stage-card-title {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
-
-.stage-number {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 2.5rem;
-    height: 2.5rem;
-    background: var(--primary);
-    color: var(--white);
-    border-radius: 50%;
-    font-weight: 600;
-}
-
-.stage-card.complete .stage-number {
-    background: var(--secondary);
-}
-
-.stage-card-title h3 {
-    font-size: 1.25rem;
-    color: var(--gray-900);
-}
-
-.stage-toggle {
-    font-size: 1.5rem;
-    color: var(--gray-500);
-    transition: var(--transition);
-}
-
-.stage-card.collapsed .stage-toggle {
-    transform: rotate(-90deg);
-}
-
-.stage-card-body {
-    padding: 1.5rem;
-}
-
-.stage-card.collapsed .stage-card-body {
-    display: none;
-}
-
-.stage-section {
-    margin-bottom: 1.5rem;
-}
-
-.stage-section h4 {
-    font-size: 1rem;
-    font-weight: 600;
-    color: var(--gray-700);
-    margin-bottom: 0.75rem;
-}
-
-.stage-section ul {
-    list-style: none;
-    padding-left: 1rem;
-}
-
-.stage-section li {
-    position: relative;
-    padding-left: 1.5rem;
-    margin-bottom: 0.5rem;
-    color: var(--gray-700);
-}
-
-.stage-section li::before {
-    content: "•";
-    position: absolute;
-    left: 0;
-    color: var(--primary);
-    font-weight: bold;
-}
-
-.checklist-items {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.checklist-item {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.75rem;
-    background: var(--gray-50);
-    border-radius: var(--radius-sm);
-    transition: var(--transition);
-}
-
-.checklist-item:hover {
-    background: var(--gray-100);
-}
-
-.checklist-item input[type="checkbox"] {
-    width: 1.25rem;
-    height: 1.25rem;
-    cursor: pointer;
-}
-
-.checklist-item label {
-    flex: 1;
-    cursor: pointer;
-    color: var(--gray-800);
-}
-
-.checklist-item.checked label {
-    text-decoration: line-through;
-    color: var(--gray-500);
-}
-
-.template-buttons {
-    display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-    margin-top: 1rem;
-}
-
-.template-buttons .btn {
-    font-size: 0.875rem;
-}
-
-.stage-complete-section {
-    margin-top: 1.5rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--gray-200);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.complete-timestamp {
-    font-size: 0.875rem;
-    color: var(--secondary);
-    font-weight: 500;
-}
-
-/* ===================================
-   TEMPLATE PAGES
-   =================================== */
-
-.template-container {
-    max-width: 900px;
-    margin: 2rem auto;
-    padding: 0 1rem;
-}
-
-.template-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 2rem;
-    flex-wrap: wrap;
-    gap: 1rem;
-}
-
-.template-header h1 {
-    font-size: 2rem;
-    color: var(--gray-900);
-}
-
-.template-actions {
-    display: flex;
-    gap: 0.5rem;
-}
-
-.template-content {
-    background: var(--white);
-    border: 1px solid var(--gray-200);
-    border-radius: var(--radius);
-    padding: 2rem;
-    box-shadow: var(--shadow-sm);
-}
-
-.template-content h2 {
-    font-size: 1.5rem;
-    margin-top: 1.5rem;
-    margin-bottom: 0.75rem;
-    color: var(--gray-900);
-}
-
-.template-content h3 {
-    font-size: 1.25rem;
-    margin-top: 1rem;
-    margin-bottom: 0.5rem;
-    color: var(--gray-800);
-}
-
-.template-content p {
-    margin-bottom: 1rem;
-}
-
-.template-content ul, .template-content ol {
-    margin-bottom: 1rem;
-    padding-left: 2rem;
-}
-
-.template-content li {
-    margin-bottom: 0.5rem;
-}
-
-/* ===================================
-   TOAST NOTIFICATIONS
-   =================================== */
-
-.toast {
-    position: fixed;
-    bottom: 2rem;
-    right: 2rem;
-    background: var(--gray-900);
-    color: var(--white);
-    padding: 1rem 1.5rem;
-    border-radius: var(--radius);
-    box-shadow: var(--shadow-lg);
-    opacity: 0;
-    transform: translateY(100%);
-    transition: var(--transition);
-    z-index: 2000;
-    max-width: 400px;
-}
-
-.toast.show {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-.toast.success {
-    background: var(--secondary);
-}
-
-.toast.error {
-    background: var(--danger);
-}
-
-/* ===================================
-   PRINT STYLES
-   =================================== */
-
-@media print {
-    body {
-        background: white;
-    }
-    
-    .app-header,
-    .checklist-sidebar,
-    .checklist-toolbar,
-    .toast,
-    .template-actions,
-    .btn,
-    button {
-        display: none !important;
-    }
-    
-    .checklist-main {
-        padding: 0;
-    }
-    
-    .stage-card {
-        page-break-inside: avoid;
-        border: 1px solid #000;
-        margin-bottom: 1rem;
-    }
-    
-    .stage-card-body {
-        display: block !important;
-    }
-    
-    .stage-toggle {
-        display: none;
-    }
-}
-
-/* ===================================
-   UTILITY CLASSES
-   =================================== */
-
-.text-center {
-    text-align: center;
-}
-
-.mt-1 {
-    margin-top: 0.5rem;
-}
-
-.mt-2 {
-    margin-top: 1rem;
-}
-
-.mb-1 {
-    margin-bottom: 0.5rem;
-}
-
-.mb-2 {
-    margin-bottom: 1rem;
-}
-
-.text-muted {
-    color: var(--gray-600);
-}
-
-.text-success {
-    color: var(--secondary);
-}
-
-.text-danger {
-    color: var(--danger);
-}
-
-// ===================================
-// UTILITY FUNCTIONS
-// Shared helpers for toast, storage, formatting, etc.
-// ===================================
-
-const Utils = {
-    // Generate UUID
-    generateId() {
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-            const r = Math.random() * 16 | 0;
-            const v = c === 'x' ? r : (r & 0x3 | 0x8);
-            return v.toString(16);
-        });
-    },
-
-    // Format currency
-    formatCurrency(amount) {
-        if (!amount && amount !== 0) return 'N/A';
-        return new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: 'USD',
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0
-        }).format(amount);
-    },
-
-    // Format number with M/K suffix
-    formatNumber(num) {
-        if (!num && num !== 0) return 'N/A';
-        if (num >= 1000000) {
-            return '$' + (num / 1000000).toFixed(1) + 'M';
-        } else if (num >= 1000) {
-            return '$' + (num / 1000).toFixed(0) + 'K';
-        }
-        return '$' + num.toFixed(0);
-    },
-
-    // Format date
-    formatDate(dateString) {
-        if (!dateString) return '';
-        const date = new Date(dateString);
-        return date.toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric'
-        });
-    },
-
-    // Format datetime
-    formatDateTime(dateString) {
-        if (!dateString) return '';
-        const date = new Date(dateString);
-        return date.toLocaleString('en-US', {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-        });
-    },
-
-    // Show toast notification
-    showToast(message, type = 'info') {
-        const toast = document.getElementById('toast');
-        if (!toast) return;
-
-        toast.textContent = message;
-        toast.className = 'toast';
-        
-        if (type === 'success') toast.classList.add('success');
-        if (type === 'error') toast.classList.add('error');
-        
-        toast.classList.add('show');
-
-        setTimeout(() => {
-            toast.classList.remove('show');
-        }, 3000);
-    },
-
-    // Download JSON file
-    downloadJSON(data, filename) {
-        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = filename;
-        a.click();
-        URL.revokeObjectURL(url);
-    },
-
-    // Download CSV file
-    downloadCSV(rows, filename) {
-        const csvContent = rows.map(row => 
-            row.map(cell => {
-                // Escape quotes and wrap in quotes if contains comma
-                const str = String(cell || '');
-                if (str.includes(',') || str.includes('"') || str.includes('\n')) {
-                    return '"' + str.replace(/"/g, '""') + '"';
-                }
-                return str;
-            }).join(',')
-        ).join('\n');
-
-        const blob = new Blob([csvContent], { type: 'text/csv' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = filename;
-        a.click();
-        URL.revokeObjectURL(url);
-    },
-
-    // Download .docx (simple text-based version)
-    downloadDocx(content, filename) {
-        // Create a basic .docx-compatible format (HTML wrapped in proper headers)
-        const docxContent = `
-            <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
-            <head><meta charset='utf-8'><title>${filename}</title></head>
-            <body>${content}</body>
-            </html>
-        `;
-        
-        const blob = new Blob(['\ufeff', docxContent], {
-            type: 'application/msword'
-        });
-        
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = filename;
-        a.click();
-        URL.revokeObjectURL(url);
-    },
-
-    // Sanitize HTML (basic protection)
-    sanitizeHTML(str) {
-        const div = document.createElement('div');
-        div.textContent = str;
-        return div.innerHTML;
-    },
-
-    // Debounce function
-    debounce(func, wait) {
-        let timeout;
-        return function executedFunction(...args) {
-            const later = () => {
-                clearTimeout(timeout);
-                func(...args);
-            };
-            clearTimeout(timeout);
-            timeout = setTimeout(later, wait);
+    <!-- CHECKLIST PAGE -->
+    <div id="checklistPage" class="page">
+        <header class="header">
+            <nav class="container">
+                <span class="logo" onclick="showPage('home')">AEC M&A</span>
+                <div class="nav">
+                    <a onclick="showPage('crm')">CRM</a>
+                    <a onclick="showPage('checklist')" class="active">Checklist</a>
+                </div>
+            </nav>
+        </header>
+
+        <div class="checklist-layout">
+            <aside class="sidebar">
+                <h2>Stages</h2>
+                <nav id="sideNav"></nav>
+            </aside>
+
+            <main class="main-content">
+                <div class="toolbar">
+                    <h1>Deal Checklist</h1>
+                    <div class="toolbar-actions">
+                        <button class="btn btn-outline btn-sm" onclick="window.print()">Print PDF</button>
+                        <button class="btn btn-outline btn-sm" onclick="resetChecklist()">Reset</button>
+                    </div>
+                </div>
+
+                <div id="checklistContent"></div>
+            </main>
+        </div>
+    </div>
+
+    <!-- DEAL MODAL -->
+    <div class="modal" id="dealModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Deal Details</h2>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="modalBody"></div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <script>
+        // Utility functions
+        const Utils = {
+            generateId() {
+                return 'id_' + Math.random().toString(36).substr(2, 9);
+            },
+            formatCurrency(num) {
+                if (!num) return '$0';
+                return '$' + (num / 1000000).toFixed(1) + 'M';
+            },
+            showToast(message, type = 'info') {
+                const toast = document.getElementById('toast');
+                if (!toast) return;
+                toast.textContent = message;
+                toast.className = 'toast show';
+                if (type === 'success') toast.classList.add('success');
+                setTimeout(() => toast.classList.remove('show'), 3000);
+            },
+            downloadJSON(data, filename) {
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                a.click();
+                URL.revokeObjectURL(url);
+            },
+            downloadCSV(rows, filename) {
+                const csv = rows.map(row => row.join(',')).join('\n');
+                const blob = new Blob([csv], { type: 'text/csv' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                a.click();
+                URL.revokeObjectURL(url);
+            }
         };
-    }
-};
 
-// ===================================
-// HOME PAGE (index.html)
-// Export/Import CRM data functionality
-// ===================================
+        // Page Navigation
+        function showPage(page) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(page + 'Page').classList.add('active');
+            if (page === 'crm') renderKanban();
+            if (page === 'checklist') initChecklist();
+        }
 
-document.addEventListener('DOMContentLoaded', () => {
-    // Export Data Button
-    const exportBtn = document.getElementById('exportDataBtn');
-    if (exportBtn) {
-        exportBtn.addEventListener('click', () => {
+        // Export/Import
+        function exportData() {
             const data = {
-                deals: JSON.parse(localStorage.getItem('mna_crm_deals_v1') || '[]'),
+                deals: JSON.parse(localStorage.getItem('aec_deals') || '[]'),
+                checklist: JSON.parse(localStorage.getItem('aec_checklist') || '{}'),
                 exportDate: new Date().toISOString()
             };
-            
-            const filename = `aec-mna-data-${new Date().toISOString().split('T')[0]}.json`;
-            Utils.downloadJSON(data, filename);
+            Utils.downloadJSON(data, 'aec-data.json');
             Utils.showToast('Data exported successfully', 'success');
-        });
-    }
+        }
 
-    // Import Data Button
-    const importBtn = document.getElementById('importDataBtn');
-    const importFileInput = document.getElementById('importFileInput');
-    
-    if (importBtn && importFileInput) {
-        importBtn.addEventListener('click', () => {
-            importFileInput.click();
-        });
-
-        importFileInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
+        function importData(event) {
+            const file = event.target.files[0];
             if (!file) return;
-
             const reader = new FileReader();
-            reader.onload = (event) => {
+            reader.onload = (e) => {
                 try {
-                    const data = JSON.parse(event.target.result);
-                    
-                    if (data.deals && Array.isArray(data.deals)) {
-                        localStorage.setItem('mna_crm_deals_v1', JSON.stringify(data.deals));
-                        Utils.showToast('Data imported successfully! Refresh CRM to see changes.', 'success');
-                    } else {
-                        Utils.showToast('Invalid data format', 'error');
-                    }
+                    const data = JSON.parse(e.target.result);
+                    if (data.deals) localStorage.setItem('aec_deals', JSON.stringify(data.deals));
+                    if (data.checklist) localStorage.setItem('aec_checklist', JSON.stringify(data.checklist));
+                    Utils.showToast('Data imported successfully', 'success');
                 } catch (error) {
-                    Utils.showToast('Error parsing file: ' + error.message, 'error');
+                    Utils.showToast('Error importing data', 'error');
                 }
-                
-                // Reset input
-                importFileInput.value = '';
+                event.target.value = '';
             };
-            
             reader.readAsText(file);
-        });
-    }
-});
-
-// ===================================
-// CRM APPLICATION
-// Deal pipeline, Kanban, filters, modal
-// ===================================
-
-// Deal stages in order
-const DealStages = [
-    "Sourcing", "NDA", "Teaser Sent", "CIM Shared", "Qualified Buyers",
-    "Management Calls", "IOIs", "Diligence", "LOI", "Confirmatory Diligence",
-    "Financing/Docs", "SPA/APA", "Closing", "Post-Close"
-];
-
-// Task templates by stage
-const StageTaskTemplates = {
-    "NDA": [
-        "Route NDA for signature",
-        "Add buyer to interest log"
-    ],
-    "Teaser Sent": [
-        "Log date sent",
-        "Schedule follow-up in 3 business days"
-    ],
-    "CIM Shared": [
-        "Add buyer to Q&A log",
-        "Confirm data room access",
-        "Watermark policy confirmed"
-    ],
-    "Qualified Buyers": [
-        "Validate mandate fit",
-        "Confirm proof of funds"
-    ],
-    "Management Calls": [
-        "Send agenda",
-        "Capture call notes",
-        "Update Q&A"
-    ],
-    "IOIs": [
-        "Request IOI by date",
-        "Build bid matrix row"
-    ],
-    "Diligence": [
-        "Share diligence list v2",
-        "Track red flags",
-        "Request QoE if needed"
-    ],
-    "LOI": [
-        "Draft LOI terms",
-        "Track exclusivity clock",
-        "Notify counsel"
-    ],
-    "Confirmatory Diligence": [
-        "Maintain DD tracker",
-        "Collect EMR/bonding letters",
-        "Confirm liens/equipment list"
-    ],
-    "Financing/Docs": [
-        "Coordinate debt term sheets",
-        "Draft SPA/APA",
-        "Prepare disclosure schedules"
-    ],
-    "SPA/APA": [
-        "Route for signature",
-        "Prepare funds flow",
-        "Prep wire instructions"
-    ],
-    "Closing": [
-        "Final signatures",
-        "Wire confirmations",
-        "Issue press note"
-    ],
-    "Post-Close": [
-        "30/60/90-day plan",
-        "KPI handoff",
-        "Governance cadence"
-    ]
-};
-
-// Seed data
-const SeedDeals = [
-    {
-        id: Utils.generateId(),
-        companyName: "BlueBeam Studio Architects",
-        vertical: "Architecture",
-        geography: "Seattle, WA",
-        revenue: 14200000,
-        ebitda: 2100000,
-        evEstimate: { min: 18000000, max: 24000000 },
-        stage: "CIM Shared",
-        ownerTimelineMonths: 12,
-        tags: ["AEC", "Non-union"],
-        contacts: [],
-        tasks: [],
-        notes: [],
-        documents: [],
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-    },
-    {
-        id: Utils.generateId(),
-        companyName: "Cascade Civil Engineers",
-        vertical: "Engineering",
-        geography: "Portland, OR",
-        revenue: 9800000,
-        ebitda: 1600000,
-        evEstimate: { min: 13000000, max: 17000000 },
-        stage: "Diligence",
-        ownerTimelineMonths: 9,
-        tags: ["AEC", "LEED"],
-        contacts: [],
-        tasks: [],
-        notes: [],
-        documents: [],
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-    },
-    {
-        id: Utils.generateId(),
-        companyName: "Redline General Contractors",
-        vertical: "Construction",
-        geography: "Boise, ID",
-        revenue: 42000000,
-        ebitda: 4800000,
-        evEstimate: { min: 38000000, max: 48000000 },
-        stage: "Sourcing",
-        ownerTimelineMonths: 18,
-        tags: ["AEC", "Union", "Heavy Civil"],
-        contacts: [],
-        tasks: [],
-        notes: [],
-        documents: [],
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-    }
-];
-
-// CRM State
-let deals = [];
-let currentDealId = null;
-let filters = {
-    search: '',
-    stage: '',
-    vertical: '',
-    revenueMin: null,
-    revenueMax: null
-};
-
-// Initialize CRM
-document.addEventListener('DOMContentLoaded', () => {
-    loadDeals();
-    initializeUI();
-    renderKanban();
-    setupEventListeners();
-});
-
-// Load deals from localStorage
-function loadDeals() {
-    const stored = localStorage.getItem('mna_crm_deals_v1');
-    
-    if (stored) {
-        deals = JSON.parse(stored);
-    } else {
-        // Load seed data on first run
-        deals = SeedDeals;
-        saveDeals();
-    }
-}
-
-// Save deals to localStorage
-function saveDeals() {
-    localStorage.setItem('mna_crm_deals_v1', JSON.stringify(deals));
-}
-
-// Initialize UI elements
-function initializeUI() {
-    // Populate stage filter
-    const stageFilter = document.getElementById('stageFilter');
-    if (stageFilter) {
-        DealStages.forEach(stage => {
-            const option = document.createElement('option');
-            option.value = stage;
-            option.textContent = stage;
-            stageFilter.appendChild(option);
-        });
-    }
-}
-
-// Setup event listeners
-function setupEventListeners() {
-    // Add deal button
-    document.getElementById('addDealBtn')?.addEventListener('click', () => {
-        openDealModal(null);
-    });
-
-    // Export CSV
-    document.getElementById('exportCsvBtn')?.addEventListener('click', exportCSV);
-
-    // Export JSON
-    document.getElementById('exportJsonBtn')?.addEventListener('click', () => {
-        const filename = `aec-deals-${new Date().toISOString().split('T')[0]}.json`;
-        Utils.downloadJSON(deals, filename);
-        Utils.showToast('Deals exported successfully', 'success');
-    });
-
-    // Filter toggle
-    document.getElementById('filterToggleBtn')?.addEventListener('click', () => {
-        const panel = document.getElementById('filterPanel');
-        panel.style.display = panel.style.display === 'none' ? 'flex' : 'none';
-    });
-
-    // Filter inputs
-    document.getElementById('searchInput')?.addEventListener('input', Utils.debounce((e) => {
-        filters.search = e.target.value.toLowerCase();
-        renderKanban();
-    }, 300));
-
-    document.getElementById('stageFilter')?.addEventListener('change', (e) => {
-        filters.stage = e.target.value;
-        renderKanban();
-    });
-
-    document.getElementById('verticalFilter')?.addEventListener('change', (e) => {
-        filters.vertical = e.target.value;
-        renderKanban();
-    });
-
-    document.getElementById('revenueMinFilter')?.addEventListener('input', Utils.debounce((e) => {
-        filters.revenueMin = e.target.value ? parseFloat(e.target.value) * 1000000 : null;
-        renderKanban();
-    }, 300));
-
-    document.getElementById('revenueMaxFilter')?.addEventListener('input', Utils.debounce((e) => {
-        filters.revenueMax = e.target.value ? parseFloat(e.target.value) * 1000000 : null;
-        renderKanban();
-    }, 300));
-
-    document.getElementById('clearFiltersBtn')?.addEventListener('click', () => {
-        filters = { search: '', stage: '', vertical: '', revenueMin: null, revenueMax: null };
-        document.getElementById('searchInput').value = '';
-        document.getElementById('stageFilter').value = '';
-        document.getElementById('verticalFilter').value = '';
-        document.getElementById('revenueMinFilter').value = '';
-        document.getElementById('revenueMaxFilter').value = '';
-        renderKanban();
-    });
-
-    // Modal close
-    document.getElementById('closeDealModal')?.addEventListener('click', closeDealModal);
-
-    // Modal tabs
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            const tabName = e.target.dataset.tab;
-            switchTab(tabName);
-        });
-    });
-
-    // Close modal on background click
-    document.getElementById('dealModal')?.addEventListener('click', (e) => {
-        if (e.target.id === 'dealModal') {
-            closeDealModal();
-        }
-    });
-}
-
-// Filter deals
-function getFilteredDeals() {
-    return deals.filter(deal => {
-        // Search filter
-        if (filters.search) {
-            const searchStr = filters.search;
-            const matchCompany = deal.companyName.toLowerCase().includes(searchStr);
-            const matchNotes = deal.notes.some(note => 
-                note.body.toLowerCase().includes(searchStr)
-            );
-            if (!matchCompany && !matchNotes) return false;
         }
 
-        // Stage filter
-        if (filters.stage && deal.stage !== filters.stage) return false;
+        // CRM Functions
+        const STAGES = ['Sourcing', 'NDA', 'CIM Shared', 'IOIs', 'LOI', 'Diligence', 'Closing', 'Post-Close'];
+        let deals = [];
+        let currentDeal = null;
 
-        // Vertical filter
-        if (filters.vertical && deal.vertical !== filters.vertical) return false;
+        function loadDeals() {
+            const stored = localStorage.getItem('aec_deals');
+            if (stored) {
+                deals = JSON.parse(stored);
+            } else {
+                deals = [
+                    {
+                        id: Utils.generateId(),
+                        name: 'BlueBeam Architects',
+                        vertical: 'Architecture',
+                        location: 'Seattle, WA',
+                        revenue: 14200000,
+                        ebitda: 2100000,
+                        stage: 'CIM Shared',
+                        notes: ''
+                    },
+                    {
+                        id: Utils.generateId(),
+                        name: 'Cascade Engineers',
+                        vertical: 'Engineering',
+                        location: 'Portland, OR',
+                        revenue: 9800000,
+                        ebitda: 1600000,
+                        stage: 'Diligence',
+                        notes: ''
+                    },
+                    {
+                        id: Utils.generateId(),
+                        name: 'Redline GC',
+                        vertical: 'Construction',
+                        location: 'Boise, ID',
+                        revenue: 42000000,
+                        ebitda: 4800000,
+                        stage: 'Sourcing',
+                        notes: ''
+                    }
+                ];
+                saveDeals();
+            }
+        }
 
-        // Revenue filters
-        if (filters.revenueMin !== null && deal.revenue < filters.revenueMin) return false;
-        if (filters.revenueMax !== null && deal.revenue > filters.revenueMax) return false;
+        function saveDeals() {
+            localStorage.setItem('aec_deals', JSON.stringify(deals));
+        }
 
-        return true;
-    });
-}
-
-// Render Kanban board
-function renderKanban() {
-    const board = document.getElementById('kanbanBoard');
-    if (!board) return;
-
-    const filteredDeals = getFilteredDeals();
-    board.innerHTML = '';
-
-    DealStages.forEach(stage => {
-        const column = createKanbanColumn(stage, filteredDeals);
-        board.appendChild(column);
-    });
-
-    // Render mobile list
-    renderMobileList(filteredDeals);
-}
-
-// Create Kanban column
-function createKanbanColumn(stage, filteredDeals) {
-    const stageDeals = filteredDeals.filter(d => d.stage === stage);
-    
-    const column = document.createElement('div');
-    column.className = 'kanban-column';
-    column.dataset.stage = stage;
-
-    column.innerHTML = `
-        <div class="kanban-column-header">
-            <h3>${stage}</h3>
-            <span class="kanban-column-count">${stageDeals.length}</span>
-        </div>
-        <div class="kanban-cards" data-stage="${stage}"></div>
-    `;
-
-    const cardsContainer = column.querySelector('.kanban-cards');
-    
-    // Add drag/drop listeners
-    cardsContainer.addEventListener('dragover', handleDragOver);
-    cardsContainer.addEventListener('drop', handleDrop);
-    cardsContainer.addEventListener('dragleave', handleDragLeave);
-
-    stageDeals.forEach(deal => {
-        const card = createDealCard(deal);
-        cardsContainer.appendChild(card);
-    });
-
-    return column;
-}
-
-// Create deal card
-function createDealCard(deal) {
-    const card = document.createElement('div');
-    card.className = 'deal-card';
-    card.draggable = true;
-    card.dataset.dealId = deal.id;
-
-    const verticalClass = deal.vertical.toLowerCase().replace(/\s+/g, '-');
-    const evRange = deal.evEstimate 
-        ? `${Utils.formatNumber(deal.evEstimate.min)} - ${Utils.formatNumber(deal.evEstimate.max)}`
-        : 'TBD';
-
-    card.innerHTML = `
-        <div class="deal-card-header">
-            <div>
-                <div class="deal-card-title">${Utils.sanitizeHTML(deal.companyName)}</div>
-                <div class="deal-card-subtitle">${deal.geography}</div>
-            </div>
-        </div>
-        <div class="deal-card-meta">
-            <div>Rev: ${Utils.formatNumber(deal.revenue)}</div>
-            <div>EBITDA: ${Utils.formatNumber(deal.ebitda)}</div>
-            <div>EV Est: ${evRange}</div>
-        </div>
-        <div class="deal-card-tags">
-            <span class="tag tag-${verticalClass}">${deal.vertical}</span>
-            ${deal.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
-        </div>
-    `;
-
-    // Drag events
-    card.addEventListener('dragstart', handleDragStart);
-    card.addEventListener('dragend', handleDragEnd);
-
-    // Click to open modal
-    card.addEventListener('click', () => openDealModal(deal.id));
-
-    return card;
-}
-
-// Drag and drop handlers
-let draggedDealId = null;
-
-function handleDragStart(e) {
-    draggedDealId = e.target.dataset.dealId;
-    e.target.classList.add('dragging');
-    e.dataTransfer.effectAllowed = 'move';
-}
-
-function handleDragEnd(e) {
-    e.target.classList.remove('dragging');
-}
-
-function handleDragOver(e) {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = 'move';
-    e.currentTarget.classList.add('drag-over');
-}
-
-function handleDragLeave(e) {
-    if (e.currentTarget === e.target) {
-        e.currentTarget.classList.remove('drag-over');
-    }
-}
-
-function handleDrop(e) {
-    e.preventDefault();
-    e.currentTarget.classList.remove('drag-over');
-
-    const newStage = e.currentTarget.dataset.stage;
-    const deal = deals.find(d => d.id === draggedDealId);
-    
-    if (deal && deal.stage !== newStage) {
-        deal.stage = newStage;
-        deal.updatedAt = new Date().toISOString();
-        
-        // Add stage-specific tasks
-        addStageTasks(deal, newStage);
-        
-        saveDeals();
-        renderKanban();
-        Utils.showToast(`${deal.companyName} moved to ${newStage}`, 'success');
-    }
-
-    draggedDealId = null;
-}
-
-// Add stage-specific tasks (avoid duplicates)
-function addStageTasks(deal, stage) {
-    const templates = StageTaskTemplates[stage] || [];
-    
-    templates.forEach(title => {
-        // Check if task already exists
-        const exists = deal.tasks.some(t => 
-            t.title === title && t.stage === stage
-        );
-        
-        if (!exists) {
-            deal.tasks.push({
-                id: Utils.generateId(),
-                dealId: deal.id,
-                title,
-                stage,
-                due: null,
-                status: 'Todo',
-                assignee: '',
-                notes: ''
+        function renderKanban() {
+            loadDeals();
+            const kanban = document.getElementById('kanban');
+            kanban.innerHTML = '';
+            
+            STAGES.forEach(stage => {
+                const col = document.createElement('div');
+                col.className = 'kanban-col';
+                col.innerHTML = `<h3>${stage}</h3><div class="kanban-cards"></div>`;
+                
+                const stageDeals = deals.filter(d => d.stage === stage);
+                const cards = col.querySelector('.kanban-cards');
+                
+                stageDeals.forEach(deal => {
+                    const card = document.createElement('div');
+                    card.className = 'deal-card';
+                    card.innerHTML = `
+                        <h4>${deal.name}</h4>
+                        <p>${deal.location}</p>
+                        <p>Rev: ${Utils.formatCurrency(deal.revenue)}</p>
+                        <p>EBITDA: ${Utils.formatCurrency(deal.ebitda)}</p>
+                        <div class="tags"><span class="tag">${deal.vertical}</span></div>
+                    `;
+                    card.onclick = () => openDealModal(deal.id);
+                    cards.appendChild(card);
+                });
+                
+                kanban.appendChild(col);
             });
         }
-    });
-}
 
-// Render mobile list
-function renderMobileList(filteredDeals) {
-    const list = document.getElementById('mobileList');
-    if (!list) return;
-
-    list.innerHTML = '';
-
-    filteredDeals.forEach(deal => {
-        const item = document.createElement('div');
-        item.className = 'mobile-deal-item';
-        
-        const evRange = deal.evEstimate 
-            ? `${Utils.formatNumber(deal.evEstimate.min)} - ${Utils.formatNumber(deal.evEstimate.max)}`
-            : 'TBD';
-
-        item.innerHTML = `
-            <div class="deal-card-title">${Utils.sanitizeHTML(deal.companyName)}</div>
-            <div class="deal-card-subtitle">${deal.geography} • ${deal.vertical}</div>
-            <div class="deal-card-meta">
-                <div>Stage: ${deal.stage}</div>
-                <div>Rev: ${Utils.formatNumber(deal.revenue)} | EBITDA: ${Utils.formatNumber(deal.ebitda)}</div>
-                <div>EV Est: ${evRange}</div>
-            </div>
-        `;
-
-        item.addEventListener('click', () => openDealModal(deal.id));
-        list.appendChild(item);
-    });
-}
-
-// Open deal modal
-function openDealModal(dealId) {
-    currentDealId = dealId;
-    const modal = document.getElementById('dealModal');
-    
-    if (dealId) {
-        // Edit existing deal
-        const deal = deals.find(d => d.id === dealId);
-        if (!deal) return;
-        
-        document.getElementById('dealModalTitle').textContent = deal.companyName;
-        renderOverviewTab(deal);
-        renderContactsTab(deal);
-        renderTasksTab(deal);
-        renderNotesTab(deal);
-        renderDocumentsTab(deal);
-        renderMetricsTab(deal);
-    } else {
-        // New deal
-        document.getElementById('dealModalTitle').textContent = 'New Deal';
-        renderNewDealForm();
-    }
-
-    modal.classList.add('active');
-    switchTab('overview');
-}
-
-// Close deal modal
-function closeDealModal() {
-    const modal = document.getElementById('dealModal');
-    modal.classList.remove('active');
-    currentDealId = null;
-}
-
-// Switch modal tab
-function switchTab(tabName) {
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.tab === tabName);
-    });
-    
-    document.querySelectorAll('.tab-content').forEach(content => {
-        content.classList.toggle('active', content.id === `tab-${tabName}`);
-    });
-}
-
-// Render Overview Tab
-function renderOverviewTab(deal) {
-    const tab = document.getElementById('tab-overview');
-    
-    const evRange = deal.evEstimate 
-        ? `${Utils.formatCurrency(deal.evEstimate.min)} - ${Utils.formatCurrency(deal.evEstimate.max)}`
-        : 'TBD';
-
-    tab.innerHTML = `
-        <form id="overviewForm">
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="companyName">Company Name *</label>
-                    <input type="text" id="companyName" value="${deal.companyName}" required>
-                </div>
-                <div class="form-group">
-                    <label for="vertical">Vertical *</label>
-                    <select id="vertical" required>
-                        <option value="Architecture" ${deal.vertical === 'Architecture' ? 'selected' : ''}>Architecture</option>
-                        <option value="Engineering" ${deal.vertical === 'Engineering' ? 'selected' : ''}>Engineering</option>
-                        <option value="Construction" ${deal.vertical === 'Construction' ? 'selected' : ''}>Construction</option>
-                    </select>
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="geography">Geography</label>
-                    <input type="text" id="geography" value="${deal.geography}">
-                </div>
-                <div class="form-group">
-                    <label for="stage">Stage *</label>
-                    <select id="stage" required>
-                        ${DealStages.map(s => `<option value="${s}" ${deal.stage === s ? 'selected' : ''}>${s}</option>`).join('')}
-                    </select>
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="revenue">Revenue ($)</label>
-                    <input type="number" id="revenue" value="${deal.revenue}" step="1000">
-                </div>
-                <div class="form-group">
-                    <label for="ebitda">EBITDA ($)</label>
-                    <input type="number" id="ebitda" value="${deal.ebitda}" step="1000">
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="evMin">EV Estimate Min ($)</label>
-                    <input type="number" id="evMin" value="${deal.evEstimate?.min || ''}" step="1000">
-                </div>
-                <div class="form-group">
-                    <label for="evMax">EV Estimate Max ($)</label>
-                    <input type="number" id="evMax" value="${deal.evEstimate?.max || ''}" step="1000">
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="ownerTimeline">Owner Timeline (Months)</label>
-                <input type="number" id="ownerTimeline" value="${deal.ownerTimelineMonths || ''}" min="1">
-            </div>
-            <div class="form-group">
-                <label for="tags">Tags (comma-separated)</label>
-                <input type="text" id="tags" value="${deal.tags.join(', ')}">
-            </div>
-            <div style="display: flex; gap: 1rem; justify-content: space-between; margin-top: 1.5rem;">
-                <button type="submit" class="btn btn-primary">Save Changes</button>
-                <button type="button" class="btn btn-danger" id="deleteDealBtn">Delete Deal</button>
-            </div>
-        </form>
-    `;
-
-    document.getElementById('overviewForm').addEventListener('submit', (e) => {
-        e.preventDefault();
-        updateDealOverview(deal);
-    });
-
-    document.getElementById('deleteDealBtn').addEventListener('click', () => {
-        if (confirm(`Are you sure you want to delete ${deal.companyName}?`)) {
-            deleteDeal(deal.id);
+        function openDealModal(dealId) {
+            const modal = document.getElementById('dealModal');
+            const title = document.getElementById('modalTitle');
+            const body = document.getElementById('modalBody');
+            
+            if (dealId) {
+                currentDeal = deals.find(d => d.id === dealId);
+                title.textContent = currentDeal.name;
+                body.innerHTML = `
+                    <form onsubmit="updateDeal(event)">
+                        <div class="form-group">
+                            <label>Company Name</label>
+                            <input type="text" id="dealName" value="${currentDeal.name}" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Vertical</label>
+                            <select id="dealVertical">
+                                <option value="Architecture" ${currentDeal.vertical === 'Architecture' ? 'selected' : ''}>Architecture</option>
+                                <option value="Engineering" ${currentDeal.vertical === 'Engineering' ? 'selected' : ''}>Engineering</option>
+                                <option value="Construction" ${currentDeal.vertical === 'Construction' ? 'selected' : ''}>Construction</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Location</label>
+                            <input type="text" id="dealLocation" value="${currentDeal.location}">
+                        </div>
+                        <div class="form-group">
+                            <label>Revenue ($)</label>
+                            <input type="number" id="dealRevenue" value="${currentDeal.revenue}" step="1000">
+                        </div>
+                        <div class="form-group">
+                            <label>EBITDA ($)</label>
+                            <input type="number" id="dealEbitda" value="${currentDeal.ebitda}" step="1000">
+                        </div>
+                        <div class="form-group">
+                            <label>Stage</label>
+                            <select id="dealStage">
+                                ${STAGES.map(s => `<option value="${s}" ${currentDeal.stage === s ? 'selected' : ''}>${s}</option>`).join('')}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Notes</label>
+                            <textarea id="dealNotes" rows="4">${currentDeal.notes}</textarea>
+                        </div>
+                        <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                            <button type="submit" class="btn btn-primary">Save</button>
+                            <button type="button" class="btn btn-danger" onclick="deleteDeal()">Delete</button>
+                        </div>
+                    </form>
+                `;
+            } else {
+                title.textContent = 'New Deal';
+                body.innerHTML = `
+                    <form onsubmit="createDeal(event)">
+                        <div class="form-group">
+                            <label>Company Name</label>
+                            <input type="text" id="dealName" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Vertical</label>
+                            <select id="dealVertical">
+                                <option value="Architecture">Architecture</option>
+                                <option value="Engineering">Engineering</option>
+                                <option value="Construction">Construction</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Location</label>
+                            <input type="text" id="dealLocation">
+                        </div>
+                        <div class="form-group">
+                            <label>Revenue ($)</label>
+                            <input type="number" id="dealRevenue" step="1000">
+                        </div>
+                        <div class="form-group">
+                            <label>EBITDA ($)</label>
+                            <input type="number" id="dealEbitda" step="1000">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Create Deal</button>
+                    </form>
+                `;
+            }
+            modal.classList.add('active');
         }
-    });
-}
 
-// Update deal overview
-function updateDealOverview(deal) {
-    deal.companyName = document.getElementById('companyName').value;
-    deal.vertical = document.getElementById('vertical').value;
-    deal.geography = document.getElementById('geography').value;
-    deal.stage = document.getElementById('stage').value;
-    deal.revenue = parseFloat(document.getElementById('revenue').value) || 0;
-    deal.ebitda = parseFloat(document.getElementById('ebitda').value) || 0;
-    
-    const evMin = parseFloat(document.getElementById('evMin').value);
-    const evMax = parseFloat(document.getElementById('evMax').value);
-    deal.evEstimate = (evMin && evMax) ? { min: evMin, max: evMax } : null;
-    
-    deal.ownerTimelineMonths = parseInt(document.getElementById('ownerTimeline').value) || null;
-    
-    const tagsStr = document.getElementById('tags').value;
-    deal.tags = tagsStr ? tagsStr.split(',').map(t => t.trim()) : [];
-    
-    deal.updatedAt = new Date().toISOString();
-    
-    saveDeals();
-    renderKanban();
-    Utils.showToast('Deal updated successfully', 'success');
-}
-
-// Delete deal
-function deleteDeal(dealId) {
-    deals = deals.filter(d => d.id !== dealId);
-    saveDeals();
-    closeDealModal();
-    renderKanban();
-    Utils.showToast('Deal deleted', 'success');
-}
-
-// Render new deal form
-function renderNewDealForm() {
-    const tab = document.getElementById('tab-overview');
-    
-    tab.innerHTML = `
-        <form id="newDealForm">
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="companyName">Company Name *</label>
-                    <input type="text" id="companyName" required>
-                </div>
-                <div class="form-group">
-                    <label for="vertical">Vertical *</label>
-                    <select id="vertical" required>
-                        <option value="Architecture">Architecture</option>
-                        <option value="Engineering">Engineering</option>
-                        <option value="Construction">Construction</option>
-                    </select>
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="geography">Geography</label>
-                    <input type="text" id="geography">
-                </div>
-                <div class="form-group">
-                    <label for="stage">Stage *</label>
-                    <select id="stage" required>
-                        ${DealStages.map(s => `<option value="${s}" ${s === 'Sourcing' ? 'selected' : ''}>${s}</option>`).join('')}
-                    </select>
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="revenue">Revenue ($)</label>
-                    <input type="number" id="revenue" step="1000">
-                </div>
-                <div class="form-group">
-                    <label for="ebitda">EBITDA ($)</label>
-                    <input type="number" id="ebitda" step="1000">
-                </div>
-            </div>
-            <button type="submit" class="btn btn-primary" style="margin-top: 1rem;">Create Deal</button>
-        </form>
-    `;
-
-    document.getElementById('newDealForm').addEventListener('submit', (e) => {
-        e.preventDefault();
-        createNewDeal();
-    });
-
-    // Hide other tabs for new deal
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-        if (btn.dataset.tab !== 'overview') {
-            btn.style.display = 'none';
+        function closeModal() {
+            document.getElementById('dealModal').classList.remove('active');
+            currentDeal = null;
         }
-    });
-}
 
-// Create new deal
-function createNewDeal() {
-    const newDeal = {
-        id: Utils.generateId(),
-        companyName: document.getElementById('companyName').value,
-        vertical: document.getElementById('vertical').value,
-        geography: document.getElementById('geography').value,
-        stage: document.getElementById('stage').value,
-        revenue: parseFloat(document.getElementById('revenue').value) || 0,
-        ebitda: parseFloat(document.getElementById('ebitda').value) || 0,
-        evEstimate: null,
-        ownerTimelineMonths: null,
-        tags: [],
-        contacts: [],
-        tasks: [],
-        notes: [],
-        documents: [],
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-    };
-
-    deals.push(newDeal);
-    saveDeals();
-    closeDealModal();
-    renderKanban();
-    Utils.showToast('Deal created successfully', 'success');
-}
-
-// Render Contacts Tab
-function renderContactsTab(deal) {
-    const tab = document.getElementById('tab-contacts');
-    
-    tab.innerHTML = `
-        <div class="item-list" id="contactsList"></div>
-        <div class="add-item-form" id="addContactForm" style="display: none;">
-            <h4>Add Contact</h4>
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="contactRole">Role</label>
-                    <select id="contactRole">
-                        <option value="Seller">Seller</option>
-                        <option value="Buyer">Buyer</option>
-                        <option value="Advisor">Advisor</option>
-                        <option value="Legal">Legal</option>
-                        <option value="Other">Other</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="contactName">Name</label>
-                    <input type="text" id="contactName">
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="contactEmail">Email</label>
-                    <input type="email" id="contactEmail">
-                </div>
-                <div class="form-group">
-                    <label for="contactPhone">Phone</label>
-                    <input type="tel" id="contactPhone">
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="contactCompany">Company</label>
-                <input type="text" id="contactCompany">
-            </div>
-            <button class="btn btn-primary btn-sm" id="saveContactBtn">Add Contact</button>
-            <button class="btn btn-outline btn-sm" id="cancelContactBtn">Cancel</button>
-        </div>
-        <button class="btn btn-outline btn-sm" id="showAddContactBtn" style="margin-top: 1rem;">+ Add Contact</button>
-    `;
-
-    renderContactsList(deal);
-
-    document.getElementById('showAddContactBtn').addEventListener('click', () => {
-        document.getElementById('addContactForm').style.display = 'block';
-        document.getElementById('showAddContactBtn').style.display = 'none';
-    });
-
-    document.getElementById('cancelContactBtn').addEventListener('click', () => {
-        document.getElementById('addContactForm').style.display = 'none';
-        document.getElementById('showAddContactBtn').style.display = 'block';
-    });
-
-    document.getElementById('saveContactBtn').addEventListener('click', () => {
-        const contact = {
-            id: Utils.generateId(),
-            role: document.getElementById('contactRole').value,
-            name: document.getElementById('contactName').value,
-            email: document.getElementById('contactEmail').value,
-            phone: document.getElementById('contactPhone').value,
-            company: document.getElementById('contactCompany').value,
-            notes: ''
-        };
-
-        deal.contacts.push(contact);
-        deal.updatedAt = new Date().toISOString();
-        saveDeals();
-        renderContactsList(deal);
-        
-        // Reset form
-        document.getElementById('contactName').value = '';
-        document.getElementById('contactEmail').value = '';
-        document.getElementById('contactPhone').value = '';
-        document.getElementById('contactCompany').value = '';
-        document.getElementById('addContactForm').style.display = 'none';
-        document.getElementById('showAddContactBtn').style.display = 'block';
-        
-        Utils.showToast('Contact added', 'success');
-    });
-}
-
-function renderContactsList(deal) {
-    const list = document.getElementById('contactsList');
-    
-    if (deal.contacts.length === 0) {
-        list.innerHTML = '<p class="text-muted">No contacts yet.</p>';
-        return;
-    }
-
-    list.innerHTML = deal.contacts.map(contact => `
-        <div class="item-card">
-            <div class="item-card-header">
-                <div>
-                    <strong>${Utils.sanitizeHTML(contact.name)}</strong>
-                    <div class="text-muted">${contact.role}</div>
-                </div>
-                <div class="item-actions">
-                    <button class="icon-btn danger" onclick="deleteContact('${deal.id}', '${contact.id}')" aria-label="Delete contact">🗑</button>
-                </div>
-            </div>
-            <div>
-                ${contact.company ? `<div>${contact.company}</div>` : ''}
-                ${contact.email ? `<div>${contact.email}</div>` : ''}
-                ${contact.phone ? `<div>${contact.phone}</div>` : ''}
-            </div>
-        </div>
-    `).join('');
-}
-
-// Delete contact (global for onclick)
-window.deleteContact = function(dealId, contactId) {
-    const deal = deals.find(d => d.id === dealId);
-    if (!deal) return;
-    
-    deal.contacts = deal.contacts.filter(c => c.id !== contactId);
-    deal.updatedAt = new Date().toISOString();
-    saveDeals();
-    renderContactsList(deal);
-    Utils.showToast('Contact deleted', 'success');
-};
-
-// Render Tasks Tab
-function renderTasksTab(deal) {
-    const tab = document.getElementById('tab-tasks');
-    
-    tab.innerHTML = `
-        <div class="item-list" id="tasksList"></div>
-        <div class="add-item-form" id="addTaskForm" style="display: none;">
-            <h4>Add Task</h4>
-            <div class="form-group">
-                <label for="taskTitle">Title</label>
-                <input type="text" id="taskTitle">
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="taskStage">Stage</label>
-                    <select id="taskStage">
-                        ${DealStages.map(s => `<option value="${s}" ${s === deal.stage ? 'selected' : ''}>${s}</option>`).join('')}
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="taskDue">Due Date</label>
-                    <input type="date" id="taskDue">
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="taskStatus">Status</label>
-                    <select id="taskStatus">
-                        <option value="Todo">Todo</option>
-                        <option value="Doing">Doing</option>
-                        <option value="Done">Done</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="taskAssignee">Assignee</label>
-                    <input type="text" id="taskAssignee">
-                </div>
-            </div>
-            <button class="btn btn-primary btn-sm" id="saveTaskBtn">Add Task</button>
-            <button class="btn btn-outline btn-sm" id="cancelTaskBtn">Cancel</button>
-        </div>
-        <button class="btn btn-outline btn-sm" id="showAddTaskBtn" style="margin-top: 1rem;">+ Add Task</button>
-    `;
-
-    renderTasksList(deal);
-
-    document.getElementById('showAddTaskBtn').addEventListener('click', () => {
-        document.getElementById('addTaskForm').style.display = 'block';
-        document.getElementById('showAddTaskBtn').style.display = 'none';
-    });
-
-    document.getElementById('cancelTaskBtn').addEventListener('click', () => {
-        document.getElementById('addTaskForm').style.display = 'none';
-        document.getElementById('showAddTaskBtn').style.display = 'block';
-    });
-
-    document.getElementById('saveTaskBtn').addEventListener('click', () => {
-        const task = {
-            id: Utils.generateId(),
-            dealId: deal.id,
-            title: document.getElementById('taskTitle').value,
-            stage: document.getElementById('taskStage').value,
-            due: document.getElementById('taskDue').value || null,
-            status: document.getElementById('taskStatus').value,
-            assignee: document.getElementById('taskAssignee').value,
-            notes: ''
-        };
-
-        deal.tasks.push(task);
-        deal.updatedAt = new Date().toISOString();
-        saveDeals();
-        renderTasksList(deal);
-        
-        // Reset form
-        document.getElementById('taskTitle').value = '';
-        document.getElementById('taskDue').value = '';
-        document.getElementById('taskAssignee').value = '';
-        document.getElementById('addTaskForm').style.display = 'none';
-        document.getElementById('showAddTaskBtn').style.display = 'block';
-        
-        Utils.showToast('Task added', 'success');
-    });
-}
-
-function renderTasksList(deal) {
-    const list = document.getElementById('tasksList');
-    
-    if (deal.tasks.length === 0) {
-        list.innerHTML = '<p class="text-muted">No tasks yet.</p>';
-        return;
-    }
-
-    // Sort by status (Todo -> Doing -> Done) then by due date
-    const sorted = [...deal.tasks].sort((a, b) => {
-        const statusOrder = { 'Todo': 0, 'Doing': 1, 'Done': 2 };
-        if (statusOrder[a.status] !== statusOrder[b.status]) {
-            return statusOrder[a.status] - statusOrder[b.status];
+        function createDeal(e) {
+            e.preventDefault();
+            const newDeal = {
+                id: Utils.generateId(),
+                name: document.getElementById('dealName').value,
+                vertical: document.getElementById('dealVertical').value,
+                location: document.getElementById('dealLocation').value,
+                revenue: parseFloat(document.getElementById('dealRevenue').value) || 0,
+                ebitda: parseFloat(document.getElementById('dealEbitda').value) || 0,
+                stage: 'Sourcing',
+                notes: ''
+            };
+            deals.push(newDeal);
+            saveDeals();
+            renderKanban();
+            closeModal();
+            Utils.showToast('Deal created', 'success');
         }
-        if (a.due && b.due) return new Date(a.due) - new Date(b.due);
-        return 0;
-    });
 
-    list.innerHTML = sorted.map(task => `
-        <div class="item-card">
-            <div class="item-card-header">
-                <div>
-                    <strong>${Utils.sanitizeHTML(task.title)}</strong>
-                    <div class="text-muted">${task.stage} • ${task.status}</div>
-                </div>
-                <div class="item-actions">
-                    <button class="icon-btn danger" onclick="deleteTask('${deal.id}', '${task.id}')" aria-label="Delete task">🗑</button>
-                </div>
-            </div>
-            <div>
-                ${task.due ? `<div>Due: ${Utils.formatDate(task.due)}</div>` : ''}
-                ${task.assignee ? `<div>Assignee: ${task.assignee}</div>` : ''}
-            </div>
-        </div>
-    `).join('');
-}
+        function updateDeal(e) {
+            e.preventDefault();
+            currentDeal.name = document.getElementById('dealName').value;
+            currentDeal.vertical = document.getElementById('dealVertical').value;
+            currentDeal.location = document.getElementById('dealLocation').value;
+            currentDeal.revenue = parseFloat(document.getElementById('dealRevenue').value) || 0;
+            currentDeal.ebitda = parseFloat(document.getElementById('dealEbitda').value) || 0;
+            currentDeal.stage = document.getElementById('dealStage').value;
+            currentDeal.notes = document.getElementById('dealNotes').value;
+            saveDeals();
+            renderKanban();
+            closeModal();
+            Utils.showToast('Deal updated', 'success');
+        }
 
-// Delete task (global for onclick)
-window.deleteTask = function(dealId, taskId) {
-    const deal = deals.find(d => d.id === dealId);
-    if (!deal) return;
-    
-    deal.tasks = deal.tasks.filter(t => t.id !== taskId);
-    deal.updatedAt = new Date().toISOString();
-    saveDeals();
-    renderTasksList(deal);
-    Utils.showToast('Task deleted', 'success');
-};
+        function deleteDeal() {
+            if (confirm('Delete this deal?')) {
+                deals = deals.filter(d => d.id !== currentDeal.id);
+                saveDeals();
+                renderKanban();
+                closeModal();
+                Utils.showToast('Deal deleted', 'success');
+            }
+        }
 
-// Render Notes Tab
-function renderNotesTab(deal) {
-    const tab = document.getElementById('tab-notes');
-    
-    tab.innerHTML = `
-        <div class="item-list" id="notesList"></div>
-        <div class="add-item-form">
-            <h4>Add Note</h4>
-            <div class="form-group">
-                <textarea id="noteBody" rows="4" placeholder="Enter note..."></textarea>
-            </div>
-            <button class="btn btn-primary btn-sm" id="saveNoteBtn">Add Note</button>
-        </div>
-    `;
+        function exportCSV() {
+            const rows = [['Company', 'Vertical', 'Location', 'Revenue', 'EBITDA', 'Stage']];
+            deals.forEach(deal => {
+                rows.push([deal.name, deal.vertical, deal.location, deal.revenue, deal.ebitda, deal.stage]);
+            });
+            Utils.downloadCSV(rows, 'aec-deals.csv');
+            Utils.showToast('CSV exported', 'success');
+        }
 
-    renderNotesList(deal);
+        // Checklist Functions
+        const CHECKLIST_STAGES = [
+            {
+                id: 1, title: 'Sourcing & Intake',
+                purpose: 'Initial engagement and conflict screening',
+                inputs: ['Seller intro', 'Revenue/EBITDA', 'Vertical & geography'],
+                outputs: ['Intake sheet', 'Engagement letter'],
+                checklist: ['Verify licenses & bonding', 'Check union vs non-union', 'Review backlog/WIP', 'Safety metrics (EMR/TRIR)', 'Accounting method review']
+            },
+            {
+                id: 2, title: 'NDA',
+                purpose: 'Confidentiality agreement execution',
+                inputs: ['NDA template', 'Party details'],
+                outputs: ['Executed NDA', 'Buyer profile'],
+                checklist: ['Route NDA for signature', 'Set up data room access', 'Watermark policy confirmed']
+            },
+            {
+                id: 3, title: 'CIM',
+                purpose: 'Comprehensive information package',
+                inputs: ['3-5 year financials', 'Customer list', 'Project portfolio', 'Safety records'],
+                outputs: ['CIM document', 'Data room index', 'Q&A log'],
+                checklist: ['Compile financial statements', 'Organize WIP schedule', 'Document bonding capacity', 'Prepare org chart', 'Collect insurance certificates']
+            },
+            {
+                id: 4, title: 'IOIs',
+                purpose: 'Non-binding purchase indications',
+                inputs: ['IOI template', 'Valuation guidance'],
+                outputs: ['IOIs received', 'Bid comparison matrix'],
+                checklist: ['Send IOI template to buyers', 'Set submission deadline', 'Build comparison matrix', 'Evaluate structure preferences']
+            },
+            {
+                id: 5, title: 'Diligence',
+                purpose: 'Deep dive verification',
+                inputs: ['Diligence request list', 'Project files', 'Contracts'],
+                outputs: ['Diligence tracker', 'Red flag list', 'QoE report'],
+                checklist: ['Share data room v2', 'Organize site visits', 'Collect subcontractor agreements', 'Review change orders', 'Verify equipment liens', 'Confirm retainage balances']
+            },
+            {
+                id: 6, title: 'LOI',
+                purpose: 'Letter of intent with exclusivity',
+                inputs: ['LOI template', 'Price/structure terms'],
+                outputs: ['Executed LOI', 'Exclusivity period'],
+                checklist: ['Negotiate key terms', 'Define purchase price', 'Set exclusivity period', 'Outline closing conditions', 'Notify legal counsel']
+            },
+            {
+                id: 7, title: 'Closing',
+                purpose: 'Transaction completion',
+                inputs: ['Closing checklist', 'Funds flow'],
+                outputs: ['Signed documents', 'Wire confirmations', 'Press release'],
+                checklist: ['Execute all documents', 'Wire funds', 'Transfer titles/ownership', 'File necessary notices', 'Issue press announcement']
+            },
+            {
+                id: 8, title: 'Post-Close',
+                purpose: 'Integration and transition',
+                inputs: ['Integration plan', 'TSA milestones'],
+                outputs: ['30/60/90 plan', 'KPI dashboard'],
+                checklist: ['Execute transition plan', 'Monitor TSA deliverables', 'Track integration KPIs', 'Regular governance meetings', 'Release escrow as appropriate']
+            }
+        ];
 
-    document.getElementById('saveNoteBtn').addEventListener('click', () => {
-        const body = document.getElementById('noteBody').value.trim();
-        if (!body) return;
+        let checklistState = {};
 
-        const note = {
-            id: Utils.generateId(),
-            dealId: deal.id,
-            body,
-            createdAt: new Date().toISOString(),
-            author: 'User'
-        };
+        function initChecklist() {
+            loadChecklistState();
+            renderSidebar();
+            renderStages();
+        }
 
-        deal.notes.push(note);
-        deal.updatedAt = new Date().toISOString();
-        saveDeals();
-        renderNotesList(deal);
-        
-        document.getElementById('noteBody').value = '';
-        Utils.showToast('Note added', 'success');
-    });
-}
+        function loadChecklistState() {
+            const stored = localStorage.getItem('aec_checklist');
+            checklistState = stored ? JSON.parse(stored) : {};
+        }
 
-function renderNotesList(deal) {
-    const list = document.getElementById('notesList');
-    
-    if (deal.notes.length === 0) {
-        list.innerHTML = '<p class="text-muted">No notes yet.</p>';
-        return;
-    }
+        function saveChecklistState() {
+            localStorage.setItem('aec_checklist', JSON.stringify(checklistState));
+        }
 
-    // Sort by newest first
-    const sorted = [...deal.notes].sort((a, b) => 
-        new Date(b.createdAt) - new Date(a.createdAt)
-    );
+        function renderSidebar() {
+            const nav = document.getElementById('sideNav');
+            nav.innerHTML = CHECKLIST_STAGES.map(stage => {
+                const isComplete = checklistState[`stage-${stage.id}-complete`];
+                return `<a href="#stage-${stage.id}" class="${isComplete ? 'complete' : ''}">${stage.id}. ${stage.title}</a>`;
+            }).join('');
+        }
 
-    list.innerHTML = sorted.map(note => `
-        <div class="item-card">
-            <div class="item-card-header">
-                <div>
-                    <div class="text-muted">${Utils.formatDateTime(note.createdAt)}</div>
-                </div>
-                <div class="item-actions">
-                    <button class="icon-btn danger" onclick="deleteNote('${deal.id}', '${note.id}')" aria-label="Delete note">🗑</button>
-                </div>
-            </div>
-            <div>${Utils.sanitizeHTML(note.body)}</div>
-        </div>
-    `).join('');
-}
-
-// Delete note (global for onclick)
-window.deleteNote = function(dealId, noteId) {
-    const deal = deals.find(d => d.id === dealId);
-    if (!deal) return;
-    
-    deal.notes = deal.notes.filter(n => n.id !== noteId);
-    deal.updatedAt = new Date().toISOString();
-    saveDeals();
-    renderNotesList(deal);
-    Utils.showToast('Note deleted', 'success');
-};
-
-// Render Documents Tab
-function renderDocumentsTab(deal) {
-    const tab = document.getElementById('tab-documents');
-    
-    tab.innerHTML = `
-        <div class="item-list" id="documentsList"></div>
-        <div class="add-item-form" id="addDocForm" style="display: none;">
-            <h4>Add Document/Link</h4>
-            <div class="form-group">
-                <label for="docLabel">Label</label>
-                <input type="text" id="docLabel">
-            </div>
-            <div class="form-group">
-                <label for="docUrl">URL</label>
-                <input type="url" id="docUrl" placeholder="https://">
-            </div>
-            <button class="btn btn-primary btn-sm" id="saveDocBtn">Add Document</button>
-            <button class="btn btn-outline btn-sm" id="cancelDocBtn">Cancel</button>
-        </div>
-        <button class="btn btn-outline btn-sm" id="showAddDocBtn" style="margin-top: 1rem;">+ Add Document/Link</button>
-    `;
-
-    renderDocumentsList(deal);
-
-    document.getElementById('showAddDocBtn').addEventListener('click', () => {
-        document.getElementById('addDocForm').style.display = 'block';
-        document.getElementById('showAddDocBtn').style.display = 'none';
-    });
-
-    document.getElementById('cancelDocBtn').addEventListener('click', () => {
-        document.getElementById('addDocForm').style.display = 'none';
-        document.getElementById('showAddDocBtn').style.display = 'block';
-    });
-
-    document.getElementById('saveDocBtn').addEventListener('click', () => {
-        const doc = {
-            id: Utils.generateId(),
-            dealId: deal.id,
-            label: document.getElementById('docLabel').value,
-            url: document.getElementById('docUrl').value
-        };
-
-        deal.documents.push(doc);
-        deal.updatedAt = new Date().toISOString();
-        saveDeals();
-        renderDocumentsList(deal);
-        
-        document.getElementById('docLabel').value = '';
-        document.getElementById('docUrl').value = '';
-        document.getElementById('addDocForm').style.display = 'none';
-        document.getElementById('showAddDocBtn').style.display = 'block';
-        
-        Utils.showToast('Document added', 'success');
-    });
-}
-
-function renderDocumentsList(deal) {
-    const list = document.getElementById('documentsList');
-    
-    if (deal.documents.length === 0) {
-        list.innerHTML = '<p class="text-muted">No documents yet.</p>';
-        return;
-    }
-
-    list.innerHTML = deal.documents.map(doc => `
-        <div class="item-card">
-            <div class="item-card-header">
-                <div>
-                    <strong>${Utils.sanitizeHTML(doc.label)}</strong>
-                    <div><a href="${doc.url}" target="_blank" rel="noopener">${doc.url}</a></div>
-                </div>
-                <div class="item-actions">
-                    <button class="icon-btn danger" onclick="deleteDocument('${deal.id}', '${doc.id}')" aria-label="Delete document">🗑</button>
-                </div>
-            </div>
-        </div>
-    `).join('');
-}
-
-// Delete document (global for onclick)
-window.deleteDocument = function(dealId, docId) {
-    const deal = deals.find(d => d.id === dealId);
-    if (!deal) return;
-    
-    deal.documents = deal.documents.filter(d => d.id !== docId);
-    deal.updatedAt = new Date().toISOString();
-    saveDeals();
-    renderDocumentsList(deal);
-    Utils.showToast('Document deleted', 'success');
-};
-
-// Render Metrics Tab
-function renderMetricsTab(deal) {
-    const tab = document.getElementById('tab-metrics');
-    
-    const multiple = deal.revenue && deal.evEstimate 
-        ? ((deal.evEstimate.min + deal.evEstimate.max) / 2 / deal.revenue).toFixed(2)
-        : 'N/A';
-    
-    const ebitdaMargin = deal.revenue && deal.ebitda
-        ? ((deal.ebitda / deal.revenue) * 100).toFixed(1) + '%'
-        : 'N/A';
-
-    tab.innerHTML = `
-        <div class="form-group">
-            <h4>Financial Summary</h4>
-            <table style="width: 100%; margin-top: 1rem;">
-                <tr>
-                    <td><strong>Revenue:</strong></td>
-                    <td>${Utils.formatCurrency(deal.revenue)}</td>
-                </tr>
-                <tr>
-                    <td><strong>EBITDA:</strong></td>
-                    <td>${Utils.formatCurrency(deal.ebitda)}</td>
-                </tr>
-                <tr>
-                    <td><strong>EBITDA Margin:</strong></td>
-                    <td>${ebitdaMargin}</td>
-                </tr>
-                <tr>
-                    <td><strong>EV Estimate:</strong></td>
-                    <td>${deal.evEstimate ? `${Utils.formatCurrency(deal.evEstimate.min)} - ${Utils.formatCurrency(deal.evEstimate.max)}` : 'N/A'}</td>
-                </tr>
-                <tr>
-                    <td><strong>Implied Multiple (EV/Rev):</strong></td>
-                    <td>${multiple}</td>
-                </tr>
-            </table>
-        </div>
-
-        <div class="form-group" style="margin-top: 2rem;">
-            <h4>Quick Calculators</h4>
-            <div class="form-row">
-                <div class="form-group">
-                    <label>EV Based on Revenue Multiple</label>
-                    <input type="number" id="revMultiple" placeholder="Multiple (e.g., 1.5)" step="0.1">
-                    <div style="margin-top: 0.5rem;">
-                        <strong>Estimated EV:</strong> <span id="evFromRev">—</span>
+        function renderStages() {
+            const content = document.getElementById('checklistContent');
+            content.innerHTML = CHECKLIST_STAGES.map(stage => {
+                const isComplete = checklistState[`stage-${stage.id}-complete`];
+                return `
+                    <div class="stage-card" id="stage-${stage.id}">
+                        <div class="stage-header" onclick="toggleStage(${stage.id})">
+                            <h3>${stage.id}. ${stage.title}</h3>
+                            <span>▼</span>
+                        </div>
+                        <div class="stage-body">
+                            <p><strong>Purpose:</strong> ${stage.purpose}</p>
+                            <h4>Inputs</h4>
+                            <ul>${stage.inputs.map(i => `<li>${i}</li>`).join('')}</ul>
+                            <h4>Outputs</h4>
+                            <ul>${stage.outputs.map(o => `<li>${o}</li>`).join('')}</ul>
+                            <h4>Checklist</h4>
+                            <div class="checklist-items">
+                                ${stage.checklist.map((item, idx) => {
+                                    const itemId = `${stage.id}-${idx}`;
+                                    const checked = checklistState[itemId] || false;
+                                    return `
+                                        <div class="checklist-item ${checked ? 'checked' : ''}">
+                                            <input type="checkbox" id="check-${itemId}" ${checked ? 'checked' : ''} 
+                                                   onchange="toggleChecklistItem('${itemId}')">
+                                            <label for="check-${itemId}">${item}</label>
+                                        </div>
+                                    `;
+                                }).join('')}
+                            </div>
+                            <div style="margin-top: 1rem;">
+                                <button class="btn btn-${isComplete ? 'secondary' : 'primary'} btn-sm" 
+                                        onclick="markStageComplete(${stage.id})">
+                                    ${isComplete ? '✓ Completed' : 'Mark Complete'}
+                                </button>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label>EV Based on EBITDA Multiple</label>
-                    <input type="number" id="ebitdaMultiple" placeholder="Multiple (e.g., 6.0)" step="0.1">
-                    <div style="margin-top: 0.5rem;">
-                        <strong>Estimated EV:</strong> <span id="evFromEbitda">—</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    `;
-
-    document.getElementById('revMultiple')?.addEventListener('input', (e) => {
-        const mult = parseFloat(e.target.value);
-        if (mult && deal.revenue) {
-            const ev = deal.revenue * mult;
-            document.getElementById('evFromRev').textContent = Utils.formatCurrency(ev);
-        } else {
-            document.getElementById('evFromRev').textContent = '—';
+                `;
+            }).join('');
+            renderSidebar();
         }
-    });
 
-    document.getElementById('ebitdaMultiple')?.addEventListener('input', (e) => {
-        const mult = parseFloat(e.target.value);
-        if (mult && deal.ebitda) {
-            const ev = deal.ebitda * mult;
-            document.getElementById('evFromEbitda').textContent = Utils.formatCurrency(ev);
-        } else {
-            document.getElementById('evFromEbitda').textContent = '—';
+        function toggleStage(stageId) {
+            const card = document.querySelector(`#stage-${stageId}`);
+            const body = card.querySelector('.stage-body');
+            body.style.display = body.style.display === 'none' ? 'block' : 'none';
         }
-    });
-}
 
-// Export to CSV
-function exportCSV() {
-    const rows = [
-        ['Company', 'Vertical', 'Geography', 'Stage', 'Revenue', 'EBITDA', 'EV Min', 'EV Max', 'Owner Timeline (Months)']
-    ];
+        function toggleChecklistItem(itemId) {
+            checklistState[itemId] = !checklistState[itemId];
+            saveChecklistState();
+            renderStages();
+        }
 
-    deals.forEach(deal => {
-        rows.push([
-            deal.companyName,
-            deal.vertical,
-            deal.geography,
-            deal.stage,
-            deal.revenue,
-            deal.ebitda,
-            deal.evEstimate?.min || '',
-            deal.evEstimate?.max || '',
-            deal.ownerTimelineMonths || ''
-        ]);
-    });
+        function markStageComplete(stageId) {
+            const stage = CHECKLIST_STAGES.find(s => s.id === stageId);
+            const allChecked = stage.checklist.every((_, idx) => checklistState[`${stageId}-${idx}`]);
+            if (!allChecked) {
+                alert('Please complete all checklist items first');
+                return;
+            }
+            checklistState[`stage-${stageId}-complete`] = new Date().toISOString();
+            saveChecklistState();
+            renderStages();
+            Utils.showToast(`${stage.title} marked complete`, 'success');
+        }
 
-    const filename = `aec-deals-${new Date().toISOString().split('T')[0]}.csv`;
-    Utils.downloadCSV(rows, filename);
-    Utils.showToast('CSV exported successfully', 'success');
-}
+        function resetChecklist() {
+            if (confirm('Reset all checklist progress?')) {
+                checklistState = {};
+                saveChecklistState();
+                renderStages();
+                Utils.showToast('Checklist reset', 'success');
+            }
+        }
 
+        // Initialize
+        loadDeals();
+    </script>
+</body>
+</html>
