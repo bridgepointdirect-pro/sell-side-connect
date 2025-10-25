@@ -1,180 +1,707 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>AEC M&A Platform</title>
-  <link rel="stylesheet" href="./assets/css/style.css">
+
+  <style>
+    /* ===================== Design Tokens ===================== */
+    :root{
+      --primary-600:#2563eb; /* blue */
+      --primary-700:#1d4ed8;
+      --teal-500:#14b8a6;
+      --danger:#ef4444;
+
+      --bg:#f8fafc;         /* slate-50 */
+      --card:#ffffff;
+      --ink:#0f172a;        /* slate-900 */
+      --muted:#475569;      /* slate-600 */
+      --line:#e2e8f0;       /* slate-200 */
+
+      --radius:14px;
+      --shadow-lg:0 20px 40px rgba(2,6,23,.12);
+      --shadow-md:0 12px 24px rgba(2,6,23,.10);
+      --shadow-sm:0 6px 14px rgba(2,6,23,.08);
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,system-ui,Arial,sans-serif;
+      color:var(--ink);
+      background:var(--bg);
+      line-height:1.55;
+    }
+    .container{max-width:1200px;margin:0 auto;padding:0 1rem}
+
+    /* ===================== Buttons ===================== */
+    .btn{
+      display:inline-block;
+      padding:0.95rem 1.25rem;
+      border-radius:12px;
+      border:1px solid transparent;
+      font-weight:800;
+      letter-spacing:.2px;
+      color:#fff;
+      background:linear-gradient(135deg,var(--primary-600),var(--teal-500));
+      box-shadow:var(--shadow-sm);
+      transition:transform .15s ease, box-shadow .2s ease, filter .2s ease;
+      cursor:pointer;
+      text-decoration:none;
+      user-select:none;
+    }
+    .btn:hover{ transform:translateY(-1px); box-shadow:var(--shadow-md); filter:brightness(.98); }
+    .btn:active{ transform:translateY(0); box-shadow:var(--shadow-sm); }
+    .btn-outline{
+      background:#fff; color:var(--ink); border-color:var(--line);
+    }
+    .btn-danger{ background:linear-gradient(135deg,#ef4444,#dc2626); }
+    .btn-sm{ padding:.6rem .9rem; border-radius:10px; }
+
+    /* ===================== Header ===================== */
+    .header{position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid var(--line);}
+    .header nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 0}
+    .logo{font-weight:900;color:var(--primary-600);text-decoration:none;letter-spacing:.3px}
+    .nav{display:flex;gap:1.25rem}
+    .nav a{color:var(--muted);text-decoration:none;font-weight:700;border-bottom:2px solid transparent;padding-bottom:.2rem}
+    .nav a.active{color:var(--primary-600);border-bottom-color:var(--primary-600)}
+    .user-info{display:flex;align-items:center;gap:.75rem}
+    .user-email{font-size:.9rem;color:var(--muted)}
+    .logout-btn{color:var(--primary-600);text-decoration:underline;cursor:pointer;font-size:.9rem}
+
+    /* ===================== Pages (SPA) ===================== */
+    .page{display:none}
+    .page.active{display:block}
+
+    /* ===================== Login ===================== */
+    .login-wrap{
+      min-height:100vh; display:grid; place-items:center; padding:2rem;
+      background:radial-gradient(1200px 500px at 10% -10%,rgba(29,78,216,.20),transparent 60%),
+                 radial-gradient(800px 400px at 110% 10%,rgba(20,184,166,.18),transparent 60%),
+                 linear-gradient(180deg,#f8fafc,#e2e8f0);
+    }
+    .auth-card{
+      width:100%; max-width:440px; background:var(--card); border:1px solid var(--line);
+      border-radius:var(--radius); box-shadow:var(--shadow-lg); padding:1.6rem;
+    }
+    .auth-title{margin:0 0 .25rem;font-size:1.9rem;line-height:1.2}
+    .auth-sub{margin:.15rem 0 1.1rem;color:var(--muted)}
+
+    .tabs{display:flex;gap:.6rem;background:#f1f5f9;border:1px solid var(--line);padding:.35rem;border-radius:12px;margin-bottom:1rem}
+    .tab{
+      flex:1; padding:.65rem .75rem; border-radius:10px; font-weight:800; letter-spacing:.2px; cursor:pointer; text-align:center;
+      color:var(--muted); background:transparent; border:none; transition:background .2s,color .2s,transform .1s;
+    }
+    .tab.active{ background:#fff; color:var(--primary-600); box-shadow:var(--shadow-sm); }
+    .tab:active{ transform:translateY(1px); }
+
+    .form{display:none}
+    .form.active{display:block}
+    .form-group{margin:.85rem 0}
+    .form-group label{display:block;font-size:.9rem;color:var(--muted);margin-bottom:.35rem}
+    .input{
+      width:100%; border:1px solid var(--line); background:#fff; color:var(--ink);
+      padding:.8rem .9rem; border-radius:12px; outline:0; transition:box-shadow .15s,border-color .15s;
+    }
+    .input:focus{border-color:var(--primary-600); box-shadow:0 0 0 4px rgba(37,99,235,.12)}
+    .error{background:#fee;color:#b91c1c;border:1px solid #fecaca;padding:.6rem .75rem;border-radius:10px;font-size:.9rem;display:none}
+
+    /* ===================== Hero ===================== */
+    .hero{
+      min-height:80vh; display:grid; place-items:center; text-align:center; color:#fff;
+      background:linear-gradient(135deg,#1e3a8a 0%, var(--primary-600) 50%, var(--teal-500) 100%);
+      padding:4rem 1rem; position:relative; overflow:hidden;
+    }
+    .hero h1{font-size:3.4rem; font-weight:900; letter-spacing:.3px; margin:0 0 .6rem}
+    .hero-sub{font-size:1.15rem; opacity:.95; margin:0 0 2rem}
+    .hero-actions{display:flex; gap:1rem; justify-content:center; flex-wrap:wrap}
+    .hero-actions .btn{font-size:1.1rem; padding:1rem 2rem}
+
+    .home-footer{background:#fff;border-top:1px solid var(--line); text-align:center; padding:2rem 1rem}
+    .footer-actions{ display:flex; gap:.75rem; justify-content:center; flex-wrap:wrap; margin-top:.75rem }
+
+    /* ===================== Toolbar ===================== */
+    .toolbar{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin:1.25rem 0}
+    .toolbar h1{font-size:1.4rem;margin:0}
+
+    /* ===================== Kanban ===================== */
+    .kanban{display:grid;grid-template-columns:repeat(4,minmax(260px,1fr));gap:1rem;align-items:start}
+    @media (max-width:1100px){.kanban{grid-template-columns:repeat(3,1fr)}}
+    @media (max-width:880px){.kanban{grid-template-columns:repeat(2,1fr)}}
+    @media (max-width:620px){.kanban{grid-template-columns:1fr}}
+
+    .kanban-col{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;display:flex;flex-direction:column;min-height:220px}
+    .kanban-head{padding:.65rem .8rem;background:#f8fafc;border-bottom:1px solid var(--line);font-weight:900;font-size:.95rem}
+    .kanban-drop{flex:1;padding:.6rem;min-height:140px}
+    .kanban-drop.drag-over{outline:2px dashed var(--primary-600); outline-offset:-6px}
+    .card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:.6rem .7rem;margin-bottom:.6rem;cursor:grab;box-shadow:var(--shadow-sm)}
+    .card h4{margin:.1rem 0 .3rem;font-size:1rem}
+    .meta{display:flex;flex-wrap:wrap;gap:.4rem .6rem;font-size:.8rem;color:var(--muted)}
+    .tag{background:#f1f5f9;border:1px solid var(--line);border-radius:999px;padding:.15rem .5rem;font-weight:700}
+
+    /* ===================== Checklist ===================== */
+    .checklist-layout{
+      display:flex;flex-direction:row;align-items:flex-start;justify-content:center;gap:1.5rem;
+      padding:1.5rem; max-width:1200px; margin:0 auto; overflow-x:hidden;
+    }
+    .sidebar{
+      flex:0 0 260px; background:#fff; border:1px solid var(--line); border-radius:12px; padding:1rem;
+      position:sticky; top:78px; max-height:calc(100vh - 92px); overflow:auto;
+    }
+    .sidebar h2{margin:.2rem 0 .6rem;font-size:1.05rem}
+    .sidebar nav a{display:block;padding:.45rem .55rem;border-radius:8px;text-decoration:none;color:var(--ink);font-size:.95rem}
+    .sidebar nav a:hover{background:#f1f5f9}
+    .main-content{flex:1;background:#fff;border:1px solid var(--line);border-radius:12px;padding:1rem;min-width:0;overflow-x:hidden}
+    .stage{background:#fff;border:1px solid var(--line);border-radius:12px;padding:1rem;margin:0 0 1rem}
+    .stage h3{margin:.25rem 0 .4rem;font-size:1.05rem}
+    .muted{color:var(--muted);font-size:.92rem}
+    .lists{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:.5rem}
+    @media (max-width:900px){.lists{grid-template-columns:1fr}}
+    .lists ul{padding-left:1.1rem}
+    .check-items{margin-top:.6rem}
+    .check-items label{display:flex;gap:.5rem;align-items:flex-start;margin:.35rem 0;cursor:pointer}
+    .stage-actions{margin-top:.6rem;display:flex;gap:.5rem;flex-wrap:wrap}
+
+    /* ===================== Modal & Toast ===================== */
+    .modal{position:fixed;inset:0;background:rgba(2,6,23,.35);display:none;align-items:center;justify-content:center;padding:1rem;z-index:50}
+    .modal.active{display:flex}
+    .modal-content{width:100%;max-width:720px;background:#fff;border-radius:12px;box-shadow:var(--shadow-lg);overflow:hidden}
+    .modal-header{display:flex;align-items:center;justify-content:space-between;padding:.9rem 1rem;border-bottom:1px solid var(--line)}
+    .modal-body{padding:1rem}
+    .modal-close{background:none;border:none;font-size:1.5rem;cursor:pointer;line-height:1}
+
+    #toast{position:fixed;bottom:1.25rem;right:1.25rem;background:#0f172a;color:#fff;padding:.8rem 1rem;border-radius:12px;box-shadow:var(--shadow-md);opacity:0;transform:translateY(10px);transition:.25s;z-index:80}
+    #toast.show{opacity:1;transform:translateY(0)}
+    #toast.success{background:linear-gradient(135deg,var(--teal-500),#059669)}
+    #toast.error{background:linear-gradient(135deg,#ef4444,#dc2626)}
+
+    /* ===================== Print (Checklist) ===================== */
+    @media print{
+      .header,.sidebar,.toolbar,.home-footer,.hero{display:none!important}
+      .stage{page-break-inside:avoid;margin:0 0 1rem}
+    }
+  </style>
 </head>
+
 <body>
-  <!-- Login (shown if not authenticated) -->
-  <div id="loginScreen" class="page">
-    <div class="login-container">
-      <div class="login-box" role="dialog" aria-labelledby="loginTitle">
-        <h1 id="loginTitle">AEC M&A Platform</h1>
-        <p>Secure access for authorized users</p>
+  <!-- ===================== LOGIN SCREEN ===================== -->
+  <div id="loginScreen" class="page active">
+    <section class="login-wrap">
+      <div class="auth-card">
+        <h1 class="auth-title">AEC M&A Platform</h1>
+        <p class="auth-sub">Secure access for authorized users</p>
 
-        <div class="login-tabs" role="tablist">
-          <button class="login-tab active" role="tab" aria-selected="true" onclick="switchLoginTab('login')">Login</button>
-          <button class="login-tab" role="tab" aria-selected="false" onclick="switchLoginTab('signup')">Sign Up</button>
+        <div class="tabs" role="tablist">
+          <button id="tabLogin" class="tab active" role="tab" aria-selected="true" onclick="switchLoginTab('login')">Login</button>
+          <button id="tabSignup" class="tab" role="tab" aria-selected="false" onclick="switchLoginTab('signup')">Sign Up</button>
         </div>
 
-        <div id="loginForm" class="login-form active">
-          <form id="loginFormEl">
-            <div class="form-group">
-              <label for="loginEmail">Email</label>
-              <input type="email" id="loginEmail" required autocomplete="username">
-            </div>
-            <div class="form-group">
-              <label for="loginPassword">Password</label>
-              <input type="password" id="loginPassword" required autocomplete="current-password">
-            </div>
-            <div id="loginError" class="error-message" style="display:none;"></div>
-            <button type="submit" class="btn">Login</button>
-          </form>
-        </div>
+        <!-- Login -->
+        <form id="loginForm" class="form active" onsubmit="handleLogin(event)">
+          <div class="form-group">
+            <label for="loginEmail">Email</label>
+            <input id="loginEmail" class="input" type="email" required autocomplete="username"/>
+          </div>
+          <div class="form-group">
+            <label for="loginPassword">Password</label>
+            <input id="loginPassword" class="input" type="password" required autocomplete="current-password"/>
+          </div>
+          <div id="loginError" class="error"></div>
+          <button class="btn" type="submit" style="width:100%;margin-top:.3rem">Login</button>
+        </form>
 
-        <div id="signupForm" class="login-form" aria-hidden="true">
-          <form id="signupFormEl">
-            <div class="form-group">
-              <label for="accessCode">6-Digit Access Code</label>
-              <input type="text" id="accessCode" maxlength="6" pattern="[0-9]{6}" required placeholder="Enter 6-digit code" inputmode="numeric">
-            </div>
-            <div class="form-group">
-              <label for="signupUsername">Username</label>
-              <input type="text" id="signupUsername" required autocomplete="nickname">
-            </div>
-            <div class="form-group">
-              <label for="signupEmail">Email</label>
-              <input type="email" id="signupEmail" required autocomplete="email">
-            </div>
-            <div class="form-group">
-              <label for="signupPassword">Password</label>
-              <input type="password" id="signupPassword" minlength="6" required autocomplete="new-password">
-            </div>
-            <div class="form-group">
-              <label for="signupPasswordConfirm">Confirm Password</label>
-              <input type="password" id="signupPasswordConfirm" minlength="6" required autocomplete="new-password">
-            </div>
-            <div id="signupError" class="error-message" style="display:none;"></div>
-            <button type="submit" class="btn">Create Account</button>
-          </form>
-        </div>
+        <!-- Sign up (email + password only) -->
+        <form id="signupForm" class="form" onsubmit="handleSignup(event)">
+          <div class="form-group">
+            <label for="signupEmail">Email</label>
+            <input id="signupEmail" class="input" type="email" required autocomplete="email"/>
+          </div>
+          <div class="form-group">
+            <label for="signupPassword">Password</label>
+            <input id="signupPassword" class="input" type="password" minlength="6" required autocomplete="new-password"/>
+          </div>
+          <div id="signupError" class="error"></div>
+          <button class="btn" type="submit" style="width:100%;margin-top:.3rem">Create Account</button>
+        </form>
       </div>
-    </div>
+    </section>
   </div>
 
-  <!-- Home (shown if authenticated) -->
+  <!-- ===================== HOME / HERO ===================== -->
   <div id="homePage" class="page">
     <header class="header">
       <nav class="container">
-        <a class="logo" href="./index.html">AEC M&A</a>
+        <a class="logo" onclick="showPage('home')">AEC M&A</a>
         <div class="user-info">
-          <span class="user-email" id="headerUserEmail"></span>
-          <span class="logout-btn">Logout</span>
+          <span id="headerUserEmail" class="user-email"></span>
+          <span class="logout-btn" onclick="logout()">Logout</span>
         </div>
       </nav>
     </header>
 
     <section class="hero">
-      <div class="hero-content">
+      <div class="hero-content container">
         <h1>AEC M&A Platform</h1>
-        <p class="hero-subhead">Architecture, Engineering & Construction | $2M–$50M Deals</p>
+        <p class="hero-sub">Architecture, Engineering & Construction | $2M–$50M Deals</p>
         <div class="hero-actions">
-          <a class="btn" href="./crm.html" aria-label="Open CRM">CRM</a>
-          <a class="btn btn-secondary" href="./checklist.html" aria-label="Open Checklist">Checklist</a>
+          <button class="btn" onclick="showPage('crm')">CRM</button>
+          <button class="btn btn-outline" onclick="showPage('checklist')">Checklist</button>
         </div>
       </div>
     </section>
 
-    <footer class="home-footer" aria-label="Data tools">
+    <footer class="home-footer">
       <div class="container">
-        <h2>Data Management</h2>
-        <p>Export and import your CRM data</p>
+        <h2 style="margin:0 0 .25rem">Data Management</h2>
+        <p style="margin:.25rem 0 1rem;color:var(--muted)">Export and import your CRM & checklist data</p>
         <div class="footer-actions">
-          <button class="btn btn-outline" id="exportJsonBtn">Export Data (JSON)</button>
-          <button class="btn btn-outline" id="importJsonBtn">Import Data</button>
-          <input type="file" id="importFile" accept=".json" style="display:none">
+          <button class="btn btn-outline" onclick="exportData()">Export Data (JSON)</button>
+          <button class="btn btn-outline" onclick="document.getElementById('importFile').click()">Import Data</button>
+          <input id="importFile" type="file" accept=".json" style="display:none" onchange="importData(event)"/>
         </div>
       </div>
     </footer>
   </div>
 
+  <!-- ===================== CRM PAGE ===================== -->
+  <div id="crmPage" class="page">
+    <header class="header">
+      <nav class="container">
+        <a class="logo" onclick="showPage('home')">AEC M&A</a>
+        <div class="nav">
+          <a class="active" onclick="showPage('crm')">CRM</a>
+          <a onclick="showPage('checklist')">Checklist</a>
+        </div>
+        <div class="user-info">
+          <span id="crmUserEmail" class="user-email"></span>
+          <span class="logout-btn" onclick="logout()">Logout</span>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container" style="padding:1rem 0 2rem">
+      <div class="toolbar">
+        <h1>Deal Pipeline</h1>
+        <div class="toolbar-actions">
+          <button class="btn btn-sm" onclick="openDealModal(null)">+ New Deal</button>
+          <button class="btn btn-outline btn-sm" onclick="exportCSV()">Export CSV</button>
+        </div>
+      </div>
+
+      <div id="kanban" class="kanban" aria-live="polite"></div>
+    </main>
+  </div>
+
+  <!-- ===================== CHECKLIST PAGE ===================== -->
+  <div id="checklistPage" class="page">
+    <header class="header">
+      <nav class="container">
+        <a class="logo" onclick="showPage('home')">AEC M&A</a>
+        <div class="nav">
+          <a onclick="showPage('crm')">CRM</a>
+          <a class="active" onclick="showPage('checklist')">Checklist</a>
+        </div>
+        <div class="user-info">
+          <span id="checklistUserEmail" class="user-email"></span>
+          <span class="logout-btn" onclick="logout()">Logout</span>
+        </div>
+      </nav>
+    </header>
+
+    <div class="checklist-layout">
+      <aside class="sidebar">
+        <h2>Stages</h2>
+        <nav id="sideNav"></nav>
+      </aside>
+
+      <main class="main-content">
+        <div class="toolbar">
+          <h1>Deal Checklist</h1>
+          <div class="toolbar-actions">
+            <button class="btn btn-outline btn-sm" onclick="window.print()">Print / PDF</button>
+            <button class="btn btn-outline btn-sm" onclick="resetChecklist()">Reset</button>
+          </div>
+        </div>
+        <div id="checklistContent"></div>
+      </main>
+    </div>
+  </div>
+
+  <!-- ===================== MODAL & TOAST ===================== -->
+  <div id="dealModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modalTitle">Deal Details</h2>
+        <button class="modal-close" aria-label="Close" onclick="closeModal()">&times;</button>
+      </div>
+      <div id="modalBody" class="modal-body"></div>
+    </div>
+  </div>
+
   <div id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
 
-  <script src="./assets/js/app.js"></script>
   <script>
-    // Inline auth + page switcher specific to index.html
-    const VALID_ACCESS_CODE = '123456'; // change if you like
+    /* ===================== State Keys & Utils ===================== */
+    const KEYS = {
+      users:'aec_users',
+      currentUser:'aec_current_user',
+      deals:'mna_crm_deals_v1',
+      checklist:'mna_checklist_state_v1'
+    };
 
-    function switchLoginTab(tab){
-      document.querySelectorAll('.login-tab').forEach(t=>t.classList.remove('active'));
-      document.querySelectorAll('.login-form').forEach(f=>f.classList.remove('active'));
-      if (tab==='login'){
-        document.querySelector('.login-tab:first-child').classList.add('active');
+    const Utils = {
+      id: () => '_' + Math.random().toString(36).slice(2,10),
+      toast(msg,type){
+        const t = document.getElementById('toast'); if(!t) return;
+        t.textContent = msg; t.className = type ? 'show '+type : 'show';
+        clearTimeout(t._hide); t._hide = setTimeout(()=>{ t.className=''; t.textContent=''; }, 2600);
+      },
+      money(v){ if(v==null||isNaN(v)) return '-'; return '$' + Number(v).toLocaleString(); },
+      csvEscape(s){ if (s==null) return ''; s=String(s); return /[,"\\n]/.test(s)? `"${s.replace(/"/g,'""')}"` : s; }
+    };
+
+    /* ===================== Auth + Routing ===================== */
+    let currentUser = null;
+
+    function switchLoginTab(which){
+      document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+      document.querySelectorAll('.form').forEach(f=>f.classList.remove('active'));
+      if(which==='login'){
+        document.getElementById('tabLogin').classList.add('active');
         document.getElementById('loginForm').classList.add('active');
-      } else {
-        document.querySelector('.login-tab:last-child').classList.add('active');
+      }else{
+        document.getElementById('tabSignup').classList.add('active');
         document.getElementById('signupForm').classList.add('active');
       }
     }
-    function showPage(id){
-      document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-      document.getElementById(id).classList.add('active');
+
+    function handleSignup(e){
+      e.preventDefault();
+      const email = document.getElementById('signupEmail').value.trim().toLowerCase();
+      const pw = document.getElementById('signupPassword').value;
+      const err = document.getElementById('signupError'); err.style.display='none'; err.textContent='';
+
+      if(!email || pw.length < 6){ err.textContent='Enter a valid email and a 6+ character password.'; err.style.display='block'; return; }
+      const users = JSON.parse(localStorage.getItem(KEYS.users)||'[]');
+      if(users.find(u=>u.email===email)){ err.textContent='An account with this email already exists.'; err.style.display='block'; return; }
+      users.push({ id:Utils.id(), email, password:pw, createdAt:new Date().toISOString() });
+      localStorage.setItem(KEYS.users, JSON.stringify(users));
+      localStorage.setItem(KEYS.currentUser, JSON.stringify({ email }));
+      Utils.toast('Account created','success');
+      showMainApp();
     }
-    function initIndex(){
-      const u = JSON.parse(localStorage.getItem('aec_current_user')||'null');
-      const params = new URLSearchParams(location.search);
-      if (u && !params.get('login')){
-        showPage('homePage');
-        const email = u.email || u.username || '';
-        const el=document.getElementById('headerUserEmail'); if (el) el.textContent=email;
-      } else {
-        showPage('loginScreen');
+
+    function handleLogin(e){
+      e.preventDefault();
+      const email = (document.getElementById('loginEmail').value||'').trim().toLowerCase();
+      const pw = document.getElementById('loginPassword').value;
+      const err = document.getElementById('loginError'); err.style.display='none'; err.textContent='';
+      const users = JSON.parse(localStorage.getItem(KEYS.users)||'[]');
+      const user = users.find(u=>u.email===email && u.password===pw);
+      if(!user){ err.textContent='Invalid email or password.'; err.style.display='block'; return; }
+      localStorage.setItem(KEYS.currentUser, JSON.stringify({ email:user.email }));
+      Utils.toast('Login successful','success');
+      showMainApp();
+    }
+
+    function logout(){
+      if(confirm('Logout?')){
+        localStorage.removeItem(KEYS.currentUser);
+        currentUser = null;
+        showPage('login');
       }
-      document.querySelectorAll('.logout-btn').forEach(b=> b.addEventListener('click', ()=>{
-        if (confirm('Logout?')){
-          localStorage.removeItem('aec_current_user');
-          location.href='./index.html?login=1';
-        }
-      }));
-      // Login
-      document.getElementById('loginFormEl').addEventListener('submit', (e)=>{
-        e.preventDefault();
-        const email = (document.getElementById('loginEmail').value||'').trim().toLowerCase();
-        const pw = document.getElementById('loginPassword').value;
-        const err = document.getElementById('loginError'); err.style.display='none'; err.textContent='';
-        const users = JSON.parse(localStorage.getItem('aec_users')||'[]');
-        const user = users.find(u=>u.email===email && u.password===pw);
-        if (!user){ err.textContent='Invalid email or password.'; err.style.display='block'; return; }
-        localStorage.setItem('aec_current_user', JSON.stringify({email:user.email, username:user.username}));
-        location.href = './index.html';
-      });
-      // Signup
-      document.getElementById('signupFormEl').addEventListener('submit', (e)=>{
-        e.preventDefault();
-        const code = document.getElementById('accessCode').value.trim();
-        const username = document.getElementById('signupUsername').value.trim();
-        const email = document.getElementById('signupEmail').value.trim().toLowerCase();
-        const pw = document.getElementById('signupPassword').value;
-        const pw2 = document.getElementById('signupPasswordConfirm').value;
-        const err = document.getElementById('signupError'); err.style.display='none'; err.textContent='';
-        if (code !== VALID_ACCESS_CODE){ err.textContent='Invalid access code.'; err.style.display='block'; return; }
-        if (pw !== pw2){ err.textContent='Passwords do not match.'; err.style.display='block'; return; }
-        if (!email || !username || pw.length < 6){ err.textContent='Enter valid username/email and a 6+ char password.'; err.style.display='block'; return; }
-        const users = JSON.parse(localStorage.getItem('aec_users')||'[]');
-        if (users.find(u=>u.email===email)){ err.textContent='Email already exists.'; err.style.display='block'; return; }
-        users.push({ id:'_'+Math.random().toString(36).slice(2,10), username, email, password:pw, createdAt:new Date().toISOString() });
-        localStorage.setItem('aec_users', JSON.stringify(users));
-        localStorage.setItem('aec_current_user', JSON.stringify({email, username}));
-        location.href = './index.html';
-      });
-      // Export/Import
-      document.getElementById('exportJsonBtn').addEventListener('click', APP.exportData);
-      document.getElementById('importJsonBtn').addEventListener('click', ()=> document.getElementById('importFile').click());
-      document.getElementById('importFile').addEventListener('change', APP.importData);
     }
-    document.addEventListener('DOMContentLoaded', initIndex);
+
+    function showMainApp(){
+      currentUser = JSON.parse(localStorage.getItem(KEYS.currentUser)||'null');
+      ['headerUserEmail','crmUserEmail','checklistUserEmail'].forEach(id=>{
+        const el=document.getElementById(id);
+        if(el) el.textContent = currentUser ? (currentUser.email || '') : '';
+      });
+      showPage('home');
+    }
+
+    function showPage(which){
+      document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+      const map = { login:'loginScreen', home:'homePage', crm:'crmPage', checklist:'checklistPage' };
+      const target = document.getElementById(map[which]||which);
+      (target || document.getElementById('homePage')).classList.add('active');
+      // redirect to login if not authed and trying to see inner pages
+      if((which==='crm' || which==='checklist' || which==='home') && !localStorage.getItem(KEYS.currentUser)){
+        document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+        document.getElementById('loginScreen').classList.add('active');
+      }
+    }
+
+    function initAuth(){
+      const u = JSON.parse(localStorage.getItem(KEYS.currentUser)||'null');
+      if(u){ showMainApp(); } else { showPage('login'); }
+    }
+
+    /* ===================== Export / Import ===================== */
+    function exportData(){
+      const blob = new Blob([JSON.stringify({
+        users: JSON.parse(localStorage.getItem(KEYS.users)||'[]'),
+        currentUser: JSON.parse(localStorage.getItem(KEYS.currentUser)||'null'),
+        deals: JSON.parse(localStorage.getItem(KEYS.deals)||'[]'),
+        checklist: JSON.parse(localStorage.getItem(KEYS.checklist)||'{}'),
+      }, null, 2)], {type:'application/json'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href=url; a.download='aec-export.json'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+      Utils.toast('Exported JSON','success');
+    }
+    function importData(ev){
+      const file = ev.target.files && ev.target.files[0]; if(!file) return;
+      const reader = new FileReader();
+      reader.onload = e=>{
+        try{
+          const json = JSON.parse(e.target.result);
+          if(json.users) localStorage.setItem(KEYS.users, JSON.stringify(json.users));
+          if(json.currentUser) localStorage.setItem(KEYS.currentUser, JSON.stringify(json.currentUser));
+          if(json.deals) localStorage.setItem(KEYS.deals, JSON.stringify(json.deals));
+          if(json.checklist) localStorage.setItem(KEYS.checklist, JSON.stringify(json.checklist));
+          Utils.toast('Import successful','success');
+          location.reload();
+        }catch{ Utils.toast('Invalid file','error'); }
+      };
+      reader.readAsText(file);
+    }
+
+    /* ===================== CRM ===================== */
+    const DealStages = [
+      "Sourcing","NDA","Teaser Sent","CIM Shared","Qualified Buyers",
+      "Management Calls","IOIs","Diligence","LOI","Confirmatory Diligence",
+      "Financing/Docs","SPA/APA","Closing","Post-Close"
+    ];
+    const seedDeals = [
+      { id:Utils.id(), companyName:"BlueBeam Studio Architects", vertical:"Architecture", geography:"Seattle, WA", revenue:14200000, ebitda:2100000, evEstimate:{min:18000000,max:24000000}, stage:"CIM Shared", tags:["AEC"] },
+      { id:Utils.id(), companyName:"Cascade Civil Engineers", vertical:"Engineering", geography:"Portland, OR", revenue:9800000, ebitda:1600000, evEstimate:null, stage:"Diligence", tags:["AEC"] },
+      { id:Utils.id(), companyName:"Redline General Contractors", vertical:"Construction", geography:"Boise, ID", revenue:42000000, ebitda:4800000, evEstimate:null, stage:"Sourcing", tags:["GC"] }
+    ];
+    function loadDeals(){
+      let deals=[]; try{ deals = JSON.parse(localStorage.getItem(KEYS.deals)||'[]'); }catch{}
+      if(!deals || !deals.length){ deals = seedDeals; localStorage.setItem(KEYS.deals, JSON.stringify(deals)); }
+      return deals;
+    }
+    function saveDeals(deals){ localStorage.setItem(KEYS.deals, JSON.stringify(deals)); }
+
+    function renderKanban(){
+      const el = document.getElementById('kanban'); if(!el) return;
+      const deals = loadDeals();
+      el.innerHTML = '';
+      for(const stage of DealStages){
+        const col = document.createElement('section');
+        col.className='kanban-col';
+        col.innerHTML = `<div class="kanban-head">${stage}</div><div class="kanban-drop" data-stage="${stage}"></div>`;
+        el.appendChild(col);
+      }
+      for(const d of deals){
+        const card = document.createElement('article');
+        card.className='card'; card.draggable=true; card.dataset.id=d.id;
+        card.innerHTML = `
+          <h4>${d.companyName}</h4>
+          <div class="meta">
+            <span class="tag">${d.vertical||'-'}</span>
+            <span>${d.geography||''}</span>
+            <span>${d.revenue? Utils.money(d.revenue)+' rev':''}</span>
+            <span>${d.ebitda? Utils.money(d.ebitda)+' EBITDA':''}</span>
+          </div>`;
+        card.addEventListener('dragstart', e=> e.dataTransfer.setData('text/plain', d.id));
+        card.addEventListener('dblclick', ()=> openDealModal(d.id));
+        const drop = el.querySelector(`.kanban-drop[data-stage="${d.stage}"]`) || el.querySelector('.kanban-drop');
+        drop.appendChild(card);
+      }
+      // Drag & drop behavior
+      el.querySelectorAll('.kanban-drop').forEach(drop=>{
+        drop.addEventListener('dragover', e=>{ e.preventDefault(); drop.classList.add('drag-over'); });
+        drop.addEventListener('dragleave', ()=> drop.classList.remove('drag-over'));
+        drop.addEventListener('drop', e=>{
+          e.preventDefault(); drop.classList.remove('drag-over');
+          const id = e.dataTransfer.getData('text/plain'); if(!id) return;
+          const stage = drop.dataset.stage;
+          const ds = loadDeals();
+          const deal = ds.find(x=>x.id===id); if(!deal) return;
+          deal.stage = stage; deal.updatedAt = new Date().toISOString();
+          saveDeals(ds); renderKanban(); Utils.toast(`Moved to ${stage}`,'success');
+        });
+      });
+    }
+
+    function openDealModal(id){
+      const modal = document.getElementById('dealModal');
+      const body = document.getElementById('modalBody');
+      const title = document.getElementById('modalTitle');
+      const deals = loadDeals();
+      const editing = id ? deals.find(d=>d.id===id) : null;
+      title.textContent = editing ? 'Edit Deal' : 'New Deal';
+
+      body.innerHTML = `
+        <form id="dealForm">
+          <div class="form-group"><label>Company Name</label><input class="input" required name="companyName" value="${editing?.companyName||''}"></div>
+          <div class="form-group"><label>Vertical</label>
+            <select class="input" name="vertical">
+              <option ${editing?.vertical==='Architecture'?'selected':''}>Architecture</option>
+              <option ${editing?.vertical==='Engineering'?'selected':''}>Engineering</option>
+              <option ${editing?.vertical==='Construction'?'selected':''}>Construction</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Geography</label><input class="input" name="geography" value="${editing?.geography||''}"></div>
+          <div class="form-group"><label>Revenue</label><input class="input" type="number" name="revenue" min="0" step="1000" value="${editing?.revenue??''}"></div>
+          <div class="form-group"><label>EBITDA</label><input class="input" type="number" name="ebitda" min="0" step="1000" value="${editing?.ebitda??''}"></div>
+          <div class="form-group"><label>EV Min</label><input class="input" type="number" name="evMin" min="0" step="1000" value="${editing?.evEstimate?.min??''}"></div>
+          <div class="form-group"><label>EV Max</label><input class="input" type="number" name="evMax" min="0" step="1000" value="${editing?.evEstimate?.max??''}"></div>
+          <div class="form-group"><label>Stage</label>
+            <select class="input" name="stage">
+              ${DealStages.map(s=>`<option ${editing?.stage===s?'selected':''}>${s}</option>`).join('')}
+            </select>
+          </div>
+          <div style="display:flex;gap:.5rem;justify-content:flex-end;margin-top:.5rem">
+            <button type="button" class="btn btn-outline btn-sm" onclick="closeModal()">Cancel</button>
+            ${editing? `<button type="button" class="btn btn-danger btn-sm" id="deleteDealBtn">Delete</button>`:''}
+            <button class="btn btn-sm" type="submit">${editing?'Save':'Create'}</button>
+          </div>
+        </form>
+      `;
+      modal.classList.add('active');
+
+      if (editing){
+        document.getElementById('deleteDealBtn').onclick = ()=>{
+          if(!confirm('Delete this deal?')) return;
+          saveDeals(loadDeals().filter(d=>d.id!==editing.id));
+          modal.classList.remove('active'); renderKanban(); Utils.toast('Deleted','success');
+        };
+      }
+
+      document.getElementById('dealForm').onsubmit = (e)=>{
+        e.preventDefault();
+        const fd = new FormData(e.target);
+        const obj = Object.fromEntries(fd.entries());
+        const ds = loadDeals();
+        if (editing){
+          const d = ds.find(x=>x.id===editing.id);
+          d.companyName=obj.companyName; d.vertical=obj.vertical; d.geography=obj.geography;
+          d.revenue=obj.revenue?Number(obj.revenue):null;
+          d.ebitda=obj.ebitda?Number(obj.ebitda):null;
+          d.evEstimate=(obj.evMin||obj.evMax)?{min:Number(obj.evMin||0),max:Number(obj.evMax||0)}:null;
+          d.stage=obj.stage; d.updatedAt=new Date().toISOString();
+        } else {
+          ds.push({
+            id:Utils.id(), companyName:obj.companyName, vertical:obj.vertical, geography:obj.geography,
+            revenue:obj.revenue?Number(obj.revenue):null, ebitda:obj.ebitda?Number(obj.ebitda):null,
+            evEstimate:(obj.evMin||obj.evMax)?{min:Number(obj.evMin||0),max:Number(obj.evMax||0)}:null,
+            stage:obj.stage, tags:[]
+          });
+        }
+        saveDeals(ds); modal.classList.remove('active'); renderKanban(); Utils.toast('Saved','success');
+      };
+    }
+    function closeModal(){ document.getElementById('dealModal').classList.remove('active'); }
+
+    function exportCSV(){
+      const deals = loadDeals();
+      const header = ['Company','Vertical','Geography','Revenue','EBITDA','EV Min','EV Max','Stage'];
+      const rows = deals.map(d=>[d.companyName,d.vertical||'',d.geography||'',d.revenue??'',d.ebitda??'',d.evEstimate?.min??'',d.evEstimate?.max??'',d.stage]);
+      let csv = header.map(Utils.csvEscape).join(',') + '\n';
+      csv += rows.map(r=>r.map(Utils.csvEscape).join(',')).join('\n');
+      const blob = new Blob([csv],{type:'text/csv'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href=url; a.download='deals.csv'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+      Utils.toast('CSV exported','success');
+    }
+
+    /* ===================== Checklist ===================== */
+    const ChecklistStages = [
+      { id:'sourcing', title:'Sourcing & Intake', purpose:'Capture seller profile, confirm fit, and kick off engagement.', inputs:['Seller intro','Rev/EBITDA/headcount','Vertical (Arch/Eng/GC)','Geography','Owner goals'], outputs:['Intake sheet','Conflict check','Prelim valuation range','Engagement letter (sell-side)'], list:[ 'Verify licenses & bonding','Identify union vs non-union','Review backlog / WIP','Safety metrics (EMR/TRIR)','%-of-completion accounting','Retainage exposure' ] },
+      { id:'nda', title:'NDA (Mutual or One-Way)', purpose:'Protect confidentiality prior to deeper sharing.', inputs:['NDA template','Parties & agents'], outputs:['Fully executed NDA','Buyer profile form'], list:['Provision data room post-NDA','Confirm watermark policy'] },
+      { id:'teaser', title:'Teaser (Blind Profile)', purpose:'Gauge buyer interest without revealing identity.', inputs:['One-pager teaser','Anonymized highlights'], outputs:['Teaser PDF','Interest tracking log'], list:['QA teaser highlights','Track sends & responses'] },
+      { id:'cim', title:'CIM (Confidential Information Memorandum)', purpose:'Provide a comprehensive view of the business.', inputs:['3–5 yrs financials','WIP schedule','Customer concentration','Project list','Org chart','Equipment list','Safety/OSHA logs','Bonding & insurance (GL/WC)','Licenses/permits'], outputs:['CIM PDF','Initial Q&A log','Data room index v1'], list:['Watermark policy in CIM','Open Q&A log','Validate data room index'] },
+      { id:'buyer', title:'Buyer Qualification', purpose:'Ensure fit and readiness to transact.', inputs:['Buyer profile','Proof of funds/mandate fit'], outputs:['Shortlist','Communication cadence'], list:['Score buyers against criteria','Confirm POF / mandate'] },
+      { id:'mgmt', title:'Management Calls / Site Visit', purpose:'Facilitate informed buyer diligence.', inputs:['BQ&A','Agendas','Demo materials'], outputs:['Call notes','Updated Q&A'], list:['Schedule site visit','Capture call notes','Update Q&A items'] },
+      { id:'ioi', title:'IOIs (Indications of Interest)', purpose:'Collect preliminary bids and terms.', inputs:['IOI template','Valuation/multiple guidance','Structure (asset vs stock)'], outputs:['IOIs received','Bid comparison matrix'], list:['Set IOI deadline','Build bid matrix','Communicate guidance'] },
+      { id:'predd', title:'Diligence (pre-LOI)', purpose:'Address key risks early to streamline LOI.', inputs:['Data room index v2','Diligence request list'], outputs:['Updated financials','QoE (if applicable)','Red-flag list'], list:['Share DR index v2','Track red flags','Request QoE if needed'] },
+      { id:'loi', title:'LOI (Letter of Intent)', purpose:'Lock price/structure & start exclusivity.', inputs:['LOI template (price, structure, exclusivity, timeline)'], outputs:['Executed LOI','Exclusivity clock starts'], list:['Confirm exclusivity length','Outline timeline & milestones'] },
+      { id:'confdd', title:'Confirmatory Diligence', purpose:'Deep dive post-LOI to finalize terms.', inputs:['WIP by project','Retainage','Change orders','Lien releases','Subcontractor agreements','Safety incident logs','EMR letters','Equipment fleet & liens','Bonding capacity letters','Environmental compliance','Licenses/permits'], outputs:['DD tracker (G/Y/R)','Integration considerations','Financing package'], list:['Maintain DD tracker','Collect EMR/bonding letters','Confirm liens/equipment list'] },
+      { id:'fin', title:'Financing & Docs', purpose:'Document and finance the transaction.', inputs:['Debt term sheets','Guarantees','Collateral schedules'], outputs:['Draft SPA/APA','Schedules & disclosures','Escrow agreement','TSA (if needed)','Non-compete','Employment/consulting'], list:['Coordinate lender diligence','Draft SPA/APA','Prep disclosure schedules'] },
+      { id:'closing', title:'Closing', purpose:'Execute and fund the transaction.', inputs:['Closing checklist','Funds flow','Signatures'], outputs:['Executed SPA/APA','Bill of sale','Wire confirmations','Press plan'], list:['Final signatures','Confirm wires','Issue press note'] },
+      { id:'post', title:'Post-Close', purpose:'Transition & track KPIs.', inputs:['Integration checklist','30/60/90 plan'], outputs:['Transition cadence','KPI handoff'], list:['Stand-up cadence','Assign KPI owners','Kick off 30/60/90'] }
+    ];
+
+    function loadChecklist(){ try{ return JSON.parse(localStorage.getItem(KEYS.checklist)||'{}'); }catch{ return {}; } }
+    function saveChecklist(state){ localStorage.setItem(KEYS.checklist, JSON.stringify(state||{})); }
+
+    function renderChecklist(){
+      const state = loadChecklist();
+      const side = document.getElementById('sideNav');
+      const wrap = document.getElementById('checklistContent');
+      if(!side || !wrap) return;
+      side.innerHTML=''; wrap.innerHTML='';
+
+      ChecklistStages.forEach((stg, i)=>{
+        const link = document.createElement('a');
+        link.href = `#stage-${stg.id}`;
+        link.textContent = `${i+1}. ${stg.title}`;
+        side.appendChild(link);
+
+        const checks = (state[stg.id] && Array.isArray(state[stg.id])) ? state[stg.id] : stg.list.map(()=>false);
+        const sec = document.createElement('section');
+        sec.className = 'stage'; sec.id = `stage-${stg.id}`;
+        sec.innerHTML = `
+          <h3>${i+1}. ${stg.title}</h3>
+          <p class="muted">${stg.purpose}</p>
+          <div class="lists">
+            <div><strong>Inputs</strong><ul>${stg.inputs.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+            <div><strong>Outputs / Required Docs</strong><ul>${stg.outputs.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+            <div>
+              <strong>Checklist</strong>
+              <div class="check-items">
+                ${stg.list.map((txt,idx)=>`
+                  <label><input type="checkbox" data-stage="${stg.id}" data-idx="${idx}" ${checks[idx]?'checked':''}><span>${txt}</span></label>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+          <div class="stage-actions">
+            <button class="btn btn-outline btn-sm" data-complete="${stg.id}">Mark Stage Complete</button>
+          </div>
+        `;
+        wrap.appendChild(sec);
+      });
+
+      wrap.querySelectorAll('input[type="checkbox"][data-stage]').forEach(cb=>{
+        cb.addEventListener('change', e=>{
+          const stg = e.target.dataset.stage;
+          const idx = Number(e.target.dataset.idx);
+          const s = loadChecklist();
+          if(!s[stg]) s[stg] = ChecklistStages.find(x=>x.id===stg).list.map(()=>false);
+          s[stg][idx] = e.target.checked;
+          saveChecklist(s);
+        });
+      });
+
+      wrap.querySelectorAll('button[data-complete]').forEach(btn=>{
+        btn.addEventListener('click', e=>{
+          const id = e.currentTarget.getAttribute('data-complete');
+          const s = loadChecklist();
+          const stage = ChecklistStages.find(x=>x.id===id);
+          s[id] = stage.list.map(()=>true);
+          saveChecklist(s); renderChecklist(); Utils.toast('Stage marked complete','success');
+        });
+      });
+    }
+
+    function resetChecklist(){
+      if(!confirm('Reset all checklist progress?')) return;
+      saveChecklist({}); renderChecklist(); Utils.toast('Checklist reset','success');
+    }
+
+    /* ===================== Boot ===================== */
+    document.addEventListener('DOMContentLoaded', ()=>{
+      initAuth();
+      renderKanban();
+      renderChecklist();
+    });
   </script>
 </body>
 </html>
