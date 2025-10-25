@@ -165,23 +165,52 @@
         font-size: 0.875rem;
         width: auto;
     }
+.btn-primary {
+            background: var(--primary);
+            color: white;
+        }
 
-    .btn-primary {
-        background: var(--primary);
-        color: white;
-    }
+        .btn-primary:hover {
+            background: #1e40af;
+        }
 
-    .btn-primary:hover {
-        background: #1e40af;
-    }
+        .btn-secondary {
+            background: var(--secondary);
+            color: white;
+        }
 
-    .btn-secondary {
-        background: var(--secondary);
-        color: white;
-    }
+        .btn-secondary:hover {
+            background: #059669;
+        }
 
-    .btn-secondary:hover {
-        background: #059669;
+        /* Hero page specific button styling */
+        .hero .btn {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            font-size: 1.1rem;
+            padding: 1rem 2rem;
+        }
+
+        .hero .btn-primary {
+            background: white;
+            color: var(--primary);
+            border: 2px solid white;
+        }
+
+        .hero .btn-primary:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .hero .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .hero .btn-secondary:hover {
+            background: white;
+            color: var(--secondary);
+        }
     }
 
     .btn-outline {
