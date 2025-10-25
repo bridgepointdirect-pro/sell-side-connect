@@ -1155,37 +1155,41 @@
             loadDeals();
             const kanban = document.getElementById('kanban');
             kanban.innerHTML = '';
-            
-            STAGES.forEach(stage => {
-                const col = document.createElement('div');
-                col.className = 'kanban-col';
-                col.innerHTML = `<h3>${stage}</h3><div class="kanban-cards"></div>`;
-                
-                const stageDeals = deals.filter(d => d.stage === stage);
-                const cards = col.querySelector('.kanban-cards');
-                
-                stageDeals.forEach(deal => {
-                    const card = document.createElement('div');
-                    card.className = 'deal-card';
-                    card.innerHTML = `
-                        <h4>${deal.name}</h4>
-                        <p>${deal.location}</p>
-                        <p>Rev: ${Utils.formatCurrency(deal.revenue)}</p>
-                        <p>EBITDA: ${Utils.formatCurrency(deal.ebitda)}</p>
-                        <div class="tags"><span class="tag">${deal.vertical}</span></div>
-                    `;
-                    card.onclick = () => openDealModal(deal.id);
-                    cards.appendChild(card);
-                });
-                
-                kanban.appendChild(col);
-            });
-        }
-
-        function openDealModal(dealId) {
-            const modal = document.getElementById('dealModal');
-            const title = document.getElementById('modalTitle');
-            const body = document.getElementById('modalBody');
+deals = [
+                    {
+                        id: Utils.generateId(),
+                        name: 'BlueBeam Architects',
+                        vertical: 'Architecture',
+                        location: 'Seattle, WA',
+                        revenue: 14200000,
+                        ebitda: 2100000,
+                        stage: 'CIM Shared',
+                        notes: '',
+                        tasks: []
+                    },
+                    {
+                        id: Utils.generateId(),
+                        name: 'Cascade Engineers',
+                        vertical: 'Engineering',
+                        location: 'Portland, OR',
+                        revenue: 9800000,
+                        ebitda: 1600000,
+                        stage: 'Diligence',
+                        notes: '',
+                        tasks: []
+                    },
+                    {
+                        id: Utils.generateId(),
+                        name: 'Redline GC',
+                        vertical: 'Construction',
+                        location: 'Boise, ID',
+                        revenue: 42000000,
+                        ebitda: 4800000,
+                        stage: 'Sourcing',
+                        notes: '',
+                        tasks: []
+                    }
+                ];
             
             if (dealId) {
                 currentDeal = deals.find(d => d.id === dealId);
