@@ -1,763 +1,180 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>AEC M&A Platform - Login</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --primary: #2563eb;
-            --secondary: #10b981;
-            --danger: #ef4444;
-            --gray-50: #f9fafb;
-            --gray-100: #f3f4f6;
-            --gray-200: #e5e7eb;
-            --gray-600: #4b5563;
-            --gray-800: #1f2937;
-            --gray-900: #111827;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            line-height: 1.6;
-            color: var(--gray-800);
-            background: var(--gray-50);
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 1rem;
-        }
-
-        /* Login Screen */
-        .login-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-        }
-
-        .login-box {
-            background: white;
-            border-radius: 12px;
-            padding: 3rem;
-            width: 100%;
-            max-width: 450px;
-            box-shadow: 0 20px 25px rgba(0,0,0,0.15);
-        }
-
-        .login-box h1 {
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
-            color: var(--gray-900);
-            text-align: center;
-        }
-
-        .login-box p {
-            text-align: center;
-            color: var(--gray-600);
-            margin-bottom: 2rem;
-        }
-
-        .login-tabs {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 2rem;
-            border-bottom: 2px solid var(--gray-200);
-        }
-
-        .login-tab {
-            flex: 1;
-            padding: 0.75rem;
-            background: none;
-            border: none;
-            border-bottom: 2px solid transparent;
-            cursor: pointer;
-            font-weight: 500;
-            color: var(--gray-600);
-            transition: all 0.2s;
-        }
-
-        .login-tab.active {
-            color: var(--primary);
-            border-bottom-color: var(--primary);
-        }
-
-        .login-form {
-            display: none;
-        }
-
-        .login-form.active {
-            display: block;
-        }
-
-        .btn {
-            display: inline-block;
-            padding: 0.75rem 1rem;
-            border-radius: 6px;
-            border: none;
-            cursor: pointer;
-            background: var(--primary);
-            color: white;
-            font-weight: 600;
-        }
-
-        .btn-outline {
-            background: white;
-            color: var(--gray-800);
-            border: 1px solid var(--gray-200);
-        }
-
-        .btn-secondary {
-            background: var(--secondary);
-            color: white;
-        }
-
-        .btn-danger {
-            background: var(--danger);
-            color: white;
-        }
-
-        .hero {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 70vh;
-            background: linear-gradient(135deg, #1e3a8a 0%, var(--primary) 50%, var(--secondary) 100%);
-            color: white;
-            text-align: center;
-            padding: 3rem 1rem;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .home-footer {
-            background: white;
-            padding: 3rem 1rem;
-            text-align: center;
-            border-top: 1px solid var(--gray-200);
-        }
-
-        .header {
-            background: white;
-            border-bottom: 1px solid var(--gray-200);
-            padding: 1rem 0;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .header nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: var(--primary);
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        .nav {
-            display: flex;
-            gap: 2rem;
-            align-items: center;
-        }
-
-        .nav a {
-            color: var(--gray-600);
-            text-decoration: none;
-            font-weight: 500;
-            cursor: pointer;
-        }
-
-        .nav a.active {
-            color: var(--primary);
-            border-bottom: 2px solid var(--primary);
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .user-email {
-            font-size: 0.875rem;
-            color: var(--gray-600);
-        }
-
-        .logout-btn {
-            font-size: 0.875rem;
-            color: var(--primary);
-            cursor: pointer;
-            text-decoration: underline;
-        }
-
-        .toast {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            background: var(--gray-900);
-            color: white;
-            padding: 1rem 1.5rem;
-            border-radius: 8px;
-            box-shadow: 0 10px 15px rgba(0,0,0,0.2);
-            opacity: 0;
-            transform: translateY(100%);
-            transition: all 0.3s;
-            z-index: 2000;
-        }
-
-        .toast.show {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .toast.success {
-            background: var(--secondary);
-        }
-
-        .toast.error {
-            background: var(--danger);
-        }
-
-        .error-message {
-            background: #fee;
-            color: var(--danger);
-            padding: 0.75rem;
-            border-radius: 4px;
-            margin-bottom: 1rem;
-            font-size: 0.875rem;
-        }
-
-        /* Page visibility */
-        .page {
-            display: none;
-        }
-        .page.active {
-            display: block;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .login-box { padding: 2rem; }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AEC M&A Platform</title>
+  <link rel="stylesheet" href="./assets/css/style.css">
 </head>
 <body>
-    <!-- LOGIN SCREEN -->
-    <div id="loginScreen" class="page active">
-        <div class="login-container">
-            <div class="login-box">
-                <h1>AEC M&A Platform</h1>
-                <p>Secure access for authorized users</p>
+  <!-- Login (shown if not authenticated) -->
+  <div id="loginScreen" class="page">
+    <div class="login-container">
+      <div class="login-box" role="dialog" aria-labelledby="loginTitle">
+        <h1 id="loginTitle">AEC M&A Platform</h1>
+        <p>Secure access for authorized users</p>
 
-                <div class="login-tabs">
-                    <button class="login-tab active" onclick="switchLoginTab('login')">Login</button>
-                    <button class="login-tab" onclick="switchLoginTab('signup')">Sign Up</button>
-                </div>
-
-.hero {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 70vh;
-    background: linear-gradient(135deg, #1e3a8a 0%, var(--primary) 50%, var(--secondary) 100%);
-    color: white;
-    text-align: center;
-    padding: 3rem 1rem;
-    position: relative;
-    overflow: hidden;
-}
-
-                            <input type="password" id="loginPassword" required>
-                        </div>
-                        <div id="loginError" class="error-message" style="display:none;"></div>
-                        <button type="submit" class="btn btn-primary">Login</button>
-                    </form>
-                </div>
-
-                <!-- Signup Form -->
-                <div id="signupForm" class="login-form">
-                    <form onsubmit="handleSignup(event)">
-                        <div class="form-group">
-                            <label>6-Digit Access Code</label>
-                            <input type="text" id="accessCode" maxlength="6" pattern="[0-9]{6}" required placeholder="Enter 6-digit code">
-                        </div>
-                        <div class="form-group">
-                            <label>Username</label>
-                            <input type="text" id="signupUsername" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Email</label>
-                            <input type="email" id="signupEmail" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Password</label>
-                            <input type="password" id="signupPassword" minlength="6" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Confirm Password</label>
-                            <input type="password" id="signupPasswordConfirm" minlength="6" required>
-                        </div>
-                        <div id="signupError" class="error-message" style="display:none;"></div>
-                        <button type="submit" class="btn btn-primary">Create Account</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- HOME PAGE -->
-    <div id="homePage" class="page">
-        <header class="header">
-            <nav class="container">
-                <span class="logo" onclick="showPage('home')">AEC M&A</span>
-                <div class="user-info">
-                    <span class="user-email" id="headerUserEmail"></span>
-                    <span class="logout-btn" onclick="logout()">Logout</span>
-                </div>
-            </nav>
-        </header>
-
-        <div class="hero">
-            <div class="hero-content">
-                <h1>AEC M&A Platform</h1>
-                <p class="hero-subhead">Architecture, Engineering & Construction | $2M–$50M Deals</p>
-                <div class="hero-actions">
-                    <button class="btn btn-primary" onclick="showPage('crm')">CRM</button>
-                    <button class="btn btn-secondary" onclick="showPage('checklist')">Checklist</button>
-                </div>
-            </div>
+        <div class="login-tabs" role="tablist">
+          <button class="login-tab active" role="tab" aria-selected="true" onclick="switchLoginTab('login')">Login</button>
+          <button class="login-tab" role="tab" aria-selected="false" onclick="switchLoginTab('signup')">Sign Up</button>
         </div>
 
-        <footer class="home-footer">
-            <div class="container">
-                <h2>Data Management</h2>
-                <p>Export and import your CRM data</p>
-                <div class="footer-actions">
-                    <button class="btn btn-outline" onclick="exportData()">Export Data</button>
-                    <button class="btn btn-outline" onclick="document.getElementById('importFile').click()">Import Data</button>
-                    <input type="file" id="importFile" accept=".json" style="display:none;" onchange="importData(event)">
-                </div>
+        <div id="loginForm" class="login-form active">
+          <form id="loginFormEl">
+            <div class="form-group">
+              <label for="loginEmail">Email</label>
+              <input type="email" id="loginEmail" required autocomplete="username">
             </div>
-        </footer>
-    </div>
-
-    <!-- CRM PAGE -->
-    <div id="crmPage" class="page">
-        <header class="header">
-            <nav class="container">
-                <span class="logo" onclick="showPage('home')">AEC M&A</span>
-                <div class="nav">
-                    <a onclick="showPage('crm')" class="active">CRM</a>
-                    <a onclick="showPage('checklist')">Checklist</a>
-                </div>
-                <div class="user-info">
-                    <span class="user-email" id="crmUserEmail"></span>
-                    <span class="logout-btn" onclick="logout()">Logout</span>
-                </div>
-            </nav>
-        </header>
-
-        <main class="container" style="padding: 2rem 1rem;">
-            <div class="toolbar">
-                <h1>Deal Pipeline</h1>
-                <div class="toolbar-actions">
-                    <button class="btn btn-primary btn-sm" onclick="openDealModal(null)">+ New Deal</button>
-                    <button class="btn btn-outline btn-sm" onclick="exportCSV()">Export CSV</button>
-                </div>
+            <div class="form-group">
+              <label for="loginPassword">Password</label>
+              <input type="password" id="loginPassword" required autocomplete="current-password">
             </div>
-
-            <div class="kanban" id="kanban"></div>
-        </main>
-    </div>
-
-    <!-- CHECKLIST PAGE -->
-    <div id="checklistPage" class="page">
-        <header class="header">
-            <nav class="container">
-                <span class="logo" onclick="showPage('home')">AEC M&A</span>
-                <div class="nav">
-                    <a onclick="showPage('crm')">CRM</a>
-                    <a onclick="showPage('checklist')" class="active">Checklist</a>
-                </div>
-                <div class="user-info">
-                    <span class="user-email" id="checklistUserEmail"></span>
-                    <span class="logout-btn" onclick="logout()">Logout</span>
-                </div>
-            </nav>
-        </header>
-
-        <div class="checklist-layout">
-            <aside class="sidebar">
-                <h2>Stages</h2>
-                <nav id="sideNav"></nav>
-            </aside>
-
-            <main class="main-content">
-                <div class="toolbar">
-                    <h1>Deal Checklist</h1>
-                    <div class="toolbar-actions">
-                        <button class="btn btn-outline btn-sm" onclick="window.print()">Print PDF</button>
-                        <button class="btn btn-outline btn-sm" onclick="resetChecklist()">Reset</button>
-                    </div>
-                </div>
-
-                <div id="checklistContent"></div>
-            </main>
+            <div id="loginError" class="error-message" style="display:none;"></div>
+            <button type="submit" class="btn">Login</button>
+          </form>
         </div>
-    </div>
 
-    <!-- DEAL MODAL -->
-    <div class="modal" id="dealModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 id="modalTitle">Deal Details</h2>
-                <button class="modal-close" onclick="closeModal()">&times;</button>
+        <div id="signupForm" class="login-form" aria-hidden="true">
+          <form id="signupFormEl">
+            <div class="form-group">
+              <label for="accessCode">6-Digit Access Code</label>
+              <input type="text" id="accessCode" maxlength="6" pattern="[0-9]{6}" required placeholder="Enter 6-digit code" inputmode="numeric">
             </div>
-            <div class="modal-body" id="modalBody"></div>
+            <div class="form-group">
+              <label for="signupUsername">Username</label>
+              <input type="text" id="signupUsername" required autocomplete="nickname">
+            </div>
+            <div class="form-group">
+              <label for="signupEmail">Email</label>
+              <input type="email" id="signupEmail" required autocomplete="email">
+            </div>
+            <div class="form-group">
+              <label for="signupPassword">Password</label>
+              <input type="password" id="signupPassword" minlength="6" required autocomplete="new-password">
+            </div>
+            <div class="form-group">
+              <label for="signupPasswordConfirm">Confirm Password</label>
+              <input type="password" id="signupPasswordConfirm" minlength="6" required autocomplete="new-password">
+            </div>
+            <div id="signupError" class="error-message" style="display:none;"></div>
+            <button type="submit" class="btn">Create Account</button>
+          </form>
         </div>
+      </div>
     </div>
+  </div>
 
-    <div id="toast" class="toast"></div>
+  <!-- Home (shown if authenticated) -->
+  <div id="homePage" class="page">
+    <header class="header">
+      <nav class="container">
+        <a class="logo" href="./index.html">AEC M&A</a>
+        <div class="user-info">
+          <span class="user-email" id="headerUserEmail"></span>
+          <span class="logout-btn">Logout</span>
+        </div>
+      </nav>
+    </header>
 
-    <script>
-        // ACCESS CODE - Change this to your desired 6-digit code
-        const VALID_ACCESS_CODE = '123456';
+    <section class="hero">
+      <div class="hero-content">
+        <h1>AEC M&A Platform</h1>
+        <p class="hero-subhead">Architecture, Engineering & Construction | $2M–$50M Deals</p>
+        <div class="hero-actions">
+          <a class="btn" href="./crm.html" aria-label="Open CRM">CRM</a>
+          <a class="btn btn-secondary" href="./checklist.html" aria-label="Open Checklist">Checklist</a>
+        </div>
+      </div>
+    </section>
 
-        // Authentication State
-        let currentUser = null;
+    <footer class="home-footer" aria-label="Data tools">
+      <div class="container">
+        <h2>Data Management</h2>
+        <p>Export and import your CRM data</p>
+        <div class="footer-actions">
+          <button class="btn btn-outline" id="exportJsonBtn">Export Data (JSON)</button>
+          <button class="btn btn-outline" id="importJsonBtn">Import Data</button>
+          <input type="file" id="importFile" accept=".json" style="display:none">
+        </div>
+      </div>
+    </footer>
+  </div>
 
-        //
-        // Minimal shims & fallbacks to prevent ReferenceError and to ensure login works
-        // These are safe no-ops / small implementations — if you have a full Utils or showMainApp
-        // implementation elsewhere, you can remove or replace these shims.
-        //
-        (function ensureShims() {
-            if (typeof window.Utils === 'undefined') {
-                window.Utils = {
-                    generateId: function() {
-                        return '_' + Math.random().toString(36).substr(2, 9);
-                    },
-                    showToast: function(message, type) {
-                        try {
-                            const t = document.getElementById('toast');
-                            if (!t) return;
-                            t.textContent = message;
-                            t.className = 'toast show' + (type ? ' ' + type : '');
-                            clearTimeout(t._hideTimeout);
-                            t._hideTimeout = setTimeout(() => {
-                                t.className = 'toast';
-                                t.textContent = '';
-                            }, 3000);
-                        } catch (e) {
-                            // swallow in shim
-                            console.error('Toast error:', e);
-                        }
-                    }
-                };
-            }
+  <div id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
 
-            if (typeof window.showMainApp !== 'function') {
-                window.showMainApp = function() {
-                    // Hide all pages then show the home page
-                    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-                    const home = document.getElementById('homePage');
-                    if (home) home.classList.add('active');
+  <script src="./assets/js/app.js"></script>
+  <script>
+    // Inline auth + page switcher specific to index.html
+    const VALID_ACCESS_CODE = '123456'; // change if you like
 
-                    // update header emails if available
-                    const email = (currentUser && (currentUser.email || currentUser.username)) || '';
-                    ['headerUserEmail', 'crmUserEmail', 'checklistUserEmail'].forEach(id => {
-                        const el = document.getElementById(id);
-                        if (el) el.textContent = email;
-                    });
-                };
-            }
-        })();
-
-        // Check if user is logged in on page load
-        function initAuth() {
-            const storedUser = localStorage.getItem('aec_current_user');
-            if (storedUser) {
-                try {
-                    currentUser = JSON.parse(storedUser);
-                } catch (e) {
-                    console.warn('Invalid stored user, clearing.');
-                    localStorage.removeItem('aec_current_user');
-                    currentUser = null;
-                }
-                if (currentUser) {
-                    showMainApp();
-                    return;
-                }
-            }
-            // show login screen
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            const loginScreen = document.getElementById('loginScreen');
-            if (loginScreen) loginScreen.classList.add('active');
+    function switchLoginTab(tab){
+      document.querySelectorAll('.login-tab').forEach(t=>t.classList.remove('active'));
+      document.querySelectorAll('.login-form').forEach(f=>f.classList.remove('active'));
+      if (tab==='login'){
+        document.querySelector('.login-tab:first-child').classList.add('active');
+        document.getElementById('loginForm').classList.add('active');
+      } else {
+        document.querySelector('.login-tab:last-child').classList.add('active');
+        document.getElementById('signupForm').classList.add('active');
+      }
+    }
+    function showPage(id){
+      document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+    function initIndex(){
+      const u = JSON.parse(localStorage.getItem('aec_current_user')||'null');
+      const params = new URLSearchParams(location.search);
+      if (u && !params.get('login')){
+        showPage('homePage');
+        const email = u.email || u.username || '';
+        const el=document.getElementById('headerUserEmail'); if (el) el.textContent=email;
+      } else {
+        showPage('loginScreen');
+      }
+      document.querySelectorAll('.logout-btn').forEach(b=> b.addEventListener('click', ()=>{
+        if (confirm('Logout?')){
+          localStorage.removeItem('aec_current_user');
+          location.href='./index.html?login=1';
         }
-
-        // Switch between login and signup tabs
-        function switchLoginTab(tab) {
-            document.querySelectorAll('.login-tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.login-form').forEach(f => f.classList.remove('active'));
-
-            if (tab === 'login') {
-                const first = document.querySelector('.login-tab:first-child');
-                if (first) first.classList.add('active');
-                const lf = document.getElementById('loginForm');
-                if (lf) lf.classList.add('active');
-            } else {
-                const last = document.querySelector('.login-tab:last-child');
-                if (last) last.classList.add('active');
-                const sf = document.getElementById('signupForm');
-                if (sf) sf.classList.add('active');
-            }
-        }
-
-        // Handle Signup
-        function handleSignup(event) {
-            event.preventDefault();
-
-            const code = document.getElementById('accessCode').value.trim();
-            const username = document.getElementById('signupUsername').value.trim();
-            const email = document.getElementById('signupEmail').value.trim().toLowerCase();
-            const password = document.getElementById('signupPassword').value;
-            const passwordConfirm = document.getElementById('signupPasswordConfirm').value;
-            const errorDiv = document.getElementById('signupError');
-
-            errorDiv.style.display = 'none';
-            errorDiv.textContent = '';
-
-            // Validate access code
-            if (code !== VALID_ACCESS_CODE) {
-                errorDiv.textContent = 'Invalid access code. Please contact your administrator.';
-                errorDiv.style.display = 'block';
-                return;
-            }
-
-            // Validate passwords match
-            if (password !== passwordConfirm) {
-                errorDiv.textContent = 'Passwords do not match.';
-                errorDiv.style.display = 'block';
-                return;
-            }
-
-            // Basic email/username validation
-            if (!email || !username || password.length < 6) {
-                errorDiv.textContent = 'Please provide a valid username, email and a password (min 6 chars).';
-                errorDiv.style.display = 'block';
-                return;
-            }
-
-            // Get existing users
-            const users = JSON.parse(localStorage.getItem('aec_users') || '[]');
-
-            // Check if email already exists
-            if (users.find(u => u.email === email)) {
-                errorDiv.textContent = 'An account with this email already exists.';
-                errorDiv.style.display = 'block';
-                return;
-            }
-
-            // Create new user
-            const newUser = {
-                id: Utils.generateId(),
-                username: username,
-                email: email,
-                password: password, // In production, this should be hashed!
-                createdAt: new Date().toISOString()
-            };
-
-            users.push(newUser);
-            localStorage.setItem('aec_users', JSON.stringify(users));
-
-            // Auto-login after signup
-            currentUser = { email: newUser.email, username: newUser.username };
-            localStorage.setItem('aec_current_user', JSON.stringify(currentUser));
-
-            Utils.showToast('Account created successfully!', 'success');
-            showMainApp();
-        }
-
-        // Handle Login
-        function handleLogin(event) {
-            event.preventDefault();
-
-            const email = (document.getElementById('loginEmail').value || '').trim().toLowerCase();
-            const password = document.getElementById('loginPassword').value;
-            const errorDiv = document.getElementById('loginError');
-            errorDiv.style.display = 'none';
-            errorDiv.textContent = '';
-
-            // Get existing users
-            const users = JSON.parse(localStorage.getItem('aec_users') || '[]');
-
-            // Find user
-            const user = users.find(u => u.email === email && u.password === password);
-
-            if (!user) {
-                errorDiv.textContent = 'Invalid email or password.';
-                errorDiv.style.display = 'block';
-                return;
-            }
-
-            // Login successful
-            currentUser = { email: user.email, username: user.username };
-            localStorage.setItem('aec_current_user', JSON.stringify(currentUser));
-
-            Utils.showToast('Login successful!', 'success');
-            showMainApp();
-        }
-
-        // Logout
-        function logout() {
-            if (!confirm || confirm('Are you sure you want to logout?')) {
-                currentUser = null;
-                localStorage.removeItem('aec_current_user');
-
-                // Hide all pages
-                document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-
-                // Show login screen
-                const loginScreen = document.getElementById('loginScreen');
-                if (loginScreen) loginScreen.classList.add('active');
-
-                // Clear login form
-                const le = document.getElementById('loginEmail');
-                const lp = document.getElementById('loginPassword');
-                if (le) le.value = '';
-                if (lp) lp.value = '';
-            }
-        }
-
-        // Simple page switcher
-        function showPage(page) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            const el = {
-                home: document.getElementById('homePage'),
-                crm: document.getElementById('crmPage'),
-                checklist: document.getElementById('checklistPage'),
-                login: document.getElementById('loginScreen')
-            }[page] || document.getElementById(page + 'Page') || document.getElementById(page);
-            if (el) {
-                el.classList.add('active');
-            } else {
-                // fallback to home
-                const home = document.getElementById('homePage');
-                if (home) home.classList.add('active');
-            }
-
-            // update header emails if available
-            const email = (currentUser && (currentUser.email || currentUser.username)) || '';
-            ['headerUserEmail', 'crmUserEmail', 'checklistUserEmail'].forEach(id => {
-                const node = document.getElementById(id);
-                if (node) node.textContent = email;
-            });
-        }
-
-        // --- Small stubs for other app features so they don't throw errors ---
-        function exportData() {
-            try {
-                const data = {
-                    users: JSON.parse(localStorage.getItem('aec_users') || '[]'),
-                    currentUser: JSON.parse(localStorage.getItem('aec_current_user') || 'null')
-                };
-                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'aec-export.json';
-                document.body.appendChild(a);
-                a.click();
-                a.remove();
-                URL.revokeObjectURL(url);
-                Utils.showToast('Export started', 'success');
-            } catch (e) {
-                console.error(e);
-                Utils.showToast('Export failed', 'error');
-            }
-        }
-
-        function importData(event) {
-            try {
-                const file = event.target.files && event.target.files[0];
-                if (!file) return;
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    try {
-                        const json = JSON.parse(e.target.result);
-                        if (json.users) localStorage.setItem('aec_users', JSON.stringify(json.users));
-                        if (json.currentUser) localStorage.setItem('aec_current_user', JSON.stringify(json.currentUser));
-                        Utils.showToast('Import successful', 'success');
-                        initAuth();
-                    } catch (err) {
-                        Utils.showToast('Invalid file', 'error');
-                    }
-                };
-                reader.readAsText(file);
-            } catch (e) {
-                console.error(e);
-                Utils.showToast('Import failed', 'error');
-            }
-        }
-
-        function openDealModal(id) {
-            const modal = document.getElementById('dealModal');
-            const body = document.getElementById('modalBody');
-            const title = document.getElementById('modalTitle');
-            if (!modal || !body || !title) return;
-            title.textContent = id ? 'Edit Deal' : 'New Deal';
-            body.innerHTML = '<p>Deal form would go here (stub)</p>';
-            modal.classList.add('active');
-        }
-
-        function closeModal() {
-            const modal = document.getElementById('dealModal');
-            if (modal) modal.classList.remove('active');
-        }
-
-        function exportCSV() {
-            Utils.showToast('CSV export not implemented in this stub', 'error');
-        }
-
-        function resetChecklist() {
-            Utils.showToast('Checklist reset (stub)', 'success');
-        }
-
-        // Ensure initAuth runs once the DOM is ready
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initAuth);
-        } else {
-            // Already loaded
-            setTimeout(initAuth, 0);
-        }
-
-        // Expose some functions to window (in case other inline handlers rely on them)
-        window.switchLoginTab = switchLoginTab;
-        window.handleSignup = handleSignup;
-        window.handleLogin = handleLogin;
-        window.logout = logout;
-        window.showPage = showPage;
-        window.openDealModal = openDealModal;
-        window.closeModal = closeModal;
-        window.exportData = exportData;
-        window.importData = importData;
-        window.exportCSV = exportCSV;
-        window.resetChecklist = resetChecklist;
-    </script>
+      }));
+      // Login
+      document.getElementById('loginFormEl').addEventListener('submit', (e)=>{
+        e.preventDefault();
+        const email = (document.getElementById('loginEmail').value||'').trim().toLowerCase();
+        const pw = document.getElementById('loginPassword').value;
+        const err = document.getElementById('loginError'); err.style.display='none'; err.textContent='';
+        const users = JSON.parse(localStorage.getItem('aec_users')||'[]');
+        const user = users.find(u=>u.email===email && u.password===pw);
+        if (!user){ err.textContent='Invalid email or password.'; err.style.display='block'; return; }
+        localStorage.setItem('aec_current_user', JSON.stringify({email:user.email, username:user.username}));
+        location.href = './index.html';
+      });
+      // Signup
+      document.getElementById('signupFormEl').addEventListener('submit', (e)=>{
+        e.preventDefault();
+        const code = document.getElementById('accessCode').value.trim();
+        const username = document.getElementById('signupUsername').value.trim();
+        const email = document.getElementById('signupEmail').value.trim().toLowerCase();
+        const pw = document.getElementById('signupPassword').value;
+        const pw2 = document.getElementById('signupPasswordConfirm').value;
+        const err = document.getElementById('signupError'); err.style.display='none'; err.textContent='';
+        if (code !== VALID_ACCESS_CODE){ err.textContent='Invalid access code.'; err.style.display='block'; return; }
+        if (pw !== pw2){ err.textContent='Passwords do not match.'; err.style.display='block'; return; }
+        if (!email || !username || pw.length < 6){ err.textContent='Enter valid username/email and a 6+ char password.'; err.style.display='block'; return; }
+        const users = JSON.parse(localStorage.getItem('aec_users')||'[]');
+        if (users.find(u=>u.email===email)){ err.textContent='Email already exists.'; err.style.display='block'; return; }
+        users.push({ id:'_'+Math.random().toString(36).slice(2,10), username, email, password:pw, createdAt:new Date().toISOString() });
+        localStorage.setItem('aec_users', JSON.stringify(users));
+        localStorage.setItem('aec_current_user', JSON.stringify({email, username}));
+        location.href = './index.html';
+      });
+      // Export/Import
+      document.getElementById('exportJsonBtn').addEventListener('click', APP.exportData);
+      document.getElementById('importJsonBtn').addEventListener('click', ()=> document.getElementById('importFile').click());
+      document.getElementById('importFile').addEventListener('change', APP.importData);
+    }
+    document.addEventListener('DOMContentLoaded', initIndex);
+  </script>
 </body>
 </html>
