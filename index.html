@@ -97,7 +97,10 @@
     .tab.active{ background:#fff; color:var(--primary-600); box-shadow:var(--shadow-sm); }
     .tab:active{ transform:translateY(1px); }
 
-    .form{display:none}
+/* Ensure both legacy (.login-form) and new (.form) markup toggle correctly */
+.form, .login-form { display:none; }
+.form.active, .login-form.active { display:block; }
+
     .form.active{display:block}
     .form-group{margin:.85rem 0}
     .form-group label{display:block;font-size:.9rem;color:var(--muted);margin-bottom:.35rem}
@@ -385,12 +388,7 @@
     };
 
 /* ===================== Auth + Routing ===================== */
-const KEYS = {
-  users:'aec_users',
-  currentUser:'aec_current_user',
-  deals:'mna_crm_deals_v1',
-  checklist:'mna_checklist_state_v1'
-};
+const KEYS = { users:'aec_users', currentUser:'aec_current_user', deals:'mna_crm_deals_v1', checklist:'mna_checklist_state_v1' };
 
 const Utils = {
   id: () => '_' + Math.random().toString(36).slice(2,10),
@@ -404,31 +402,33 @@ const Utils = {
 let currentUser = null;
 
 function switchLoginTab(which){
-  // Support either .tab or .login-tab markup
-  const tabs = document.querySelectorAll('.tab, .login-tab');
+  // Support both new (.tab/.form) and legacy (.login-tab/.login-form) structures
+  const tabs  = document.querySelectorAll('.tab, .login-tab');
   const forms = document.querySelectorAll('.form, .login-form');
 
   tabs.forEach(t=>t.classList.remove('active'));
   forms.forEach(f=>f.classList.remove('active'));
 
   if(which==='login'){
-    (document.getElementById('tabLogin') || document.querySelector('.login-tab:first-child'))?.classList.add('active');
+    (document.getElementById('tabLogin')  || document.querySelector('.login-tab:first-child'))?.classList.add('active');
     (document.getElementById('loginForm') || document.getElementById('loginFormEl'))?.classList.add('active');
-  }else{
+  } else {
     (document.getElementById('tabSignup') || document.querySelector('.login-tab:last-child'))?.classList.add('active');
-    (document.getElementById('signupForm') || document.getElementById('signupFormEl'))?.classList.add('active');
+    (document.getElementById('signupForm')|| document.getElementById('signupFormEl'))?.classList.add('active');
   }
 }
 
 function handleSignup(e){
   e?.preventDefault?.();
   const email = (document.getElementById('signupEmail')?.value || '').trim().toLowerCase();
-  const pw = (document.getElementById('signupPassword')?.value || '');
-  const err = document.getElementById('signupError'); if (err) { err.style.display='none'; err.textContent=''; }
+  const pw    = (document.getElementById('signupPassword')?.value || '');
+  const err   = document.getElementById('signupError'); if (err){ err.style.display='none'; err.textContent=''; }
 
   if(!email || pw.length < 6){ if (err){ err.textContent='Enter a valid email and a 6+ character password.'; err.style.display='block'; } return; }
+
   const users = JSON.parse(localStorage.getItem(KEYS.users) || '[]');
   if(users.find(u=>u.email===email)){ if (err){ err.textContent='An account with this email already exists.'; err.style.display='block'; } return; }
+
   users.push({ id:Utils.id(), email, password:pw, createdAt:new Date().toISOString() });
   localStorage.setItem(KEYS.users, JSON.stringify(users));
   localStorage.setItem(KEYS.currentUser, JSON.stringify({ email }));
@@ -439,12 +439,13 @@ function handleSignup(e){
 function handleLogin(e){
   e?.preventDefault?.();
   const email = (document.getElementById('loginEmail')?.value || '').trim().toLowerCase();
-  const pw = (document.getElementById('loginPassword')?.value || '');
-  const err = document.getElementById('loginError'); if (err) { err.style.display='none'; err.textContent=''; }
+  const pw    = (document.getElementById('loginPassword')?.value || '');
+  const err   = document.getElementById('loginError'); if (err){ err.style.display='none'; err.textContent=''; }
 
   const users = JSON.parse(localStorage.getItem(KEYS.users) || '[]');
-  const user = users.find(u=>u.email===email && u.password===pw);
+  const user  = users.find(u=>u.email===email && u.password===pw);
   if(!user){ if (err){ err.textContent='Invalid email or password.'; err.style.display='block'; } return; }
+
   localStorage.setItem(KEYS.currentUser, JSON.stringify({ email:user.email }));
   Utils.toast('Login successful','success');
   showMainApp();
@@ -461,8 +462,8 @@ function logout(){
 function showMainApp(){
   currentUser = JSON.parse(localStorage.getItem(KEYS.currentUser) || 'null');
   ['headerUserEmail','crmUserEmail','checklistUserEmail'].forEach(id=>{
-    const el=document.getElementById(id);
-    if(el) el.textContent = currentUser ? (currentUser.email || '') : '';
+    const el = document.getElementById(id);
+    if (el) el.textContent = currentUser ? (currentUser.email || '') : '';
   });
   showPage('home');
 }
@@ -470,28 +471,30 @@ function showMainApp(){
 function showPage(which){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   const map = { login:'loginScreen', home:'homePage', crm:'crmPage', checklist:'checklistPage' };
-  const target = document.getElementById(map[which] || which) || document.getElementById('homePage');
-  target.classList.add('active');
-  // guard inner pages
-  if((which==='crm' || which==='checklist' || which==='home') && !localStorage.getItem(KEYS.currentUser)){
+  (document.getElementById(map[which] || which) || document.getElementById('homePage')).classList.add('active');
+
+  // Guard inner pages when not authenticated
+  if ((which==='crm' || which==='checklist' || which==='home') && !localStorage.getItem(KEYS.currentUser)) {
     document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
     document.getElementById('loginScreen')?.classList.add('active');
   }
 }
 
 function initAuth(){
-  try{
+  try {
     const u = JSON.parse(localStorage.getItem(KEYS.currentUser) || 'null');
-    if(u){ showMainApp(); } else { showPage('login'); }
-  }catch{ showPage('login'); }
+    if (u) showMainApp(); else showPage('login');
+  } catch {
+    showPage('login');
+  }
 }
 
-/* make handlers available to inline onclick/onsubmit if present */
+/* Expose for inline handlers if present */
 window.switchLoginTab = switchLoginTab;
-window.handleLogin = handleLogin;
-window.handleSignup = handleSignup;
-window.logout = logout;
-window.showPage = showPage;
+window.handleLogin    = handleLogin;
+window.handleSignup   = handleSignup;
+window.logout         = logout;
+window.showPage       = showPage;
 
     /* ===================== Export / Import ===================== */
     function exportData(){
@@ -688,12 +691,39 @@ window.showPage = showPage;
       saveChecklist({}); renderChecklist(); Utils.toast('Checklist reset','success');
     }
 
-    /* ===================== Boot ===================== */
-    document.addEventListener('DOMContentLoaded', ()=>{
-      initAuth();
-      renderKanban();
-      renderChecklist();
+/* ===================== Boot ===================== */
+document.addEventListener('DOMContentLoaded', ()=>{
+  // 1) Initialize auth/page state
+  initAuth();
+
+  // 2) Wire forms whether or not inline onsubmit exists
+  const loginFormEl  = document.getElementById('loginForm')  || document.getElementById('loginFormEl');
+  const signupFormEl = document.getElementById('signupForm') || document.getElementById('signupFormEl');
+  if (loginFormEl)  loginFormEl.addEventListener('submit', handleLogin);
+  if (signupFormEl) signupFormEl.addEventListener('submit', handleSignup);
+
+  // 3) Wire tabs whether or not inline onclick exists
+  const tabLoginEl  = document.getElementById('tabLogin')  || document.querySelector('.login-tab:first-child');
+  const tabSignupEl = document.getElementById('tabSignup') || document.querySelector('.login-tab:last-child');
+  if (tabLoginEl)  tabLoginEl.addEventListener('click', ()=> switchLoginTab('login'));
+  if (tabSignupEl) tabSignupEl.addEventListener('click', ()=> switchLoginTab('signup'));
+
+  // 4) Fallback: if neither tab button is found, attempt delegation on containers
+  const tabsWrap = document.querySelector('.tabs, .login-tabs');
+  if (tabsWrap) {
+    tabsWrap.addEventListener('click', (e)=>{
+      if (e.target.matches('.tab, .login-tab')) {
+        const isSignup = /sign\s*up/i.test(e.target.textContent||'');
+        switchLoginTab(isSignup ? 'signup' : 'login');
+      }
     });
-  </script>
-</body>
-</html>
+  }
+
+  // 5) Run page initializers (if present)
+  if (typeof renderKanban === 'function')    renderKanban();
+  if (typeof renderChecklist === 'function') renderChecklist();
+
+  // 6) Hide any stale errors on load
+  document.querySelectorAll('#loginError,#signupError').forEach(el=>{ el.style.display='none'; el.textContent=''; });
+});
+
