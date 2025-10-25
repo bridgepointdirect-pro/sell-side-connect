@@ -281,15 +281,37 @@
       </nav>
     </header>
 
-    <main class="container" style="padding:1rem 0 2rem">
-      <div class="toolbar">
-        <h1>Deal Pipeline</h1>
+    <main class="container" style="padding:1rem 0 2rem;">
+      <!-- Toolbar -->
+      <div class="toolbar" style="align-items:center;">
+        <h1 style="font-size:1.4rem;margin:0;">Lead Management</h1>
         <div class="toolbar-actions">
-          <button class="btn btn-sm" onclick="openDealModal(null)">+ New Deal</button>
+          <button class="btn btn-sm" onclick="renderLeadTable()">Lead List</button>
+          <button class="btn btn-outline btn-sm" onclick="openDealModal(null)">+ New Deal</button>
           <button class="btn btn-outline btn-sm" onclick="exportCSV()">Export CSV</button>
         </div>
       </div>
 
+      <!-- Lead Table -->
+      <div id="leadTableContainer" style="display:none;">
+        <div style="overflow-x:auto;">
+          <table id="leadTable" style="width:100%;border-collapse:collapse;">
+            <thead style="background:#f8fafc;">
+              <tr>
+                <th style="text-align:left;padding:0.6rem;border-bottom:1px solid #e5e7eb;">#</th>
+                <th style="text-align:left;padding:0.6rem;border-bottom:1px solid #e5e7eb;">Company</th>
+                <th style="text-align:left;padding:0.6rem;border-bottom:1px solid #e5e7eb;">Location</th>
+                <th style="text-align:left;padding:0.6rem;border-bottom:1px solid #e5e7eb;">Contact</th>
+                <th style="text-align:left;padding:0.6rem;border-bottom:1px solid #e5e7eb;">Phone</th>
+                <th style="text-align:left;padding:0.6rem;border-bottom:1px solid #e5e7eb;">Stage</th>
+              </tr>
+            </thead>
+            <tbody id="leadRows"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Kanban (hidden until needed) -->
       <div id="kanban" class="kanban" aria-live="polite"></div>
     </main>
   </div>
@@ -609,6 +631,36 @@
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a'); a.href=url; a.download='deals.csv'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
       Utils.toast('CSV exported','success');
+    }
+
+        /* ===================== Lead List Table ===================== */
+    function renderLeadTable() {
+      const table = document.getElementById('leadTableContainer');
+      const kanban = document.getElementById('kanban');
+      if (!table || !kanban) return;
+      
+      // toggle visibility
+      const showTable = table.style.display === 'none';
+      table.style.display = showTable ? 'block' : 'none';
+      kanban.style.display = showTable ? 'none' : 'grid';
+      
+      if (!showTable) return; // closing the table
+      
+      const rows = document.getElementById('leadRows');
+      rows.innerHTML = '';
+      const deals = loadDeals();
+      deals.forEach((d, i) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td style="padding:.5rem;border-bottom:1px solid #e5e7eb;">${i+1}</td>
+          <td style="padding:.5rem;border-bottom:1px solid #e5e7eb;">${d.companyName}</td>
+          <td style="padding:.5rem;border-bottom:1px solid #e5e7eb;">${d.geography || '-'}</td>
+          <td style="padding:.5rem;border-bottom:1px solid #e5e7eb;">${d.vertical || '-'}</td>
+          <td style="padding:.5rem;border-bottom:1px solid #e5e7eb;">${d.phone || '(—)'}</td>
+          <td style="padding:.5rem;border-bottom:1px solid #e5e7eb;">${d.stage}</td>
+        `;
+        rows.appendChild(tr);
+      });
     }
 
     /* ===================== Checklist ===================== */
