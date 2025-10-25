@@ -491,149 +491,58 @@
       reader.readAsText(file);
     }
 
-    /* ===================== CRM ===================== */
-    const DealStages = [
-      "Sourcing","NDA","Teaser Sent","CIM Shared","Qualified Buyers",
-      "Management Calls","IOIs","Diligence","LOI","Confirmatory Diligence",
-      "Financing/Docs","SPA/APA","Closing","Post-Close"
-    ];
-    const seedDeals = [
-      { id:Utils.id(), companyName:"BlueBeam Studio Architects", vertical:"Architecture", geography:"Seattle, WA", revenue:14200000, ebitda:2100000, evEstimate:{min:18000000,max:24000000}, stage:"CIM Shared", tags:["AEC"] },
-      { id:Utils.id(), companyName:"Cascade Civil Engineers", vertical:"Engineering", geography:"Portland, OR", revenue:9800000, ebitda:1600000, evEstimate:null, stage:"Diligence", tags:["AEC"] },
-      { id:Utils.id(), companyName:"Redline General Contractors", vertical:"Construction", geography:"Boise, ID", revenue:42000000, ebitda:4800000, evEstimate:null, stage:"Sourcing", tags:["GC"] }
-    ];
-    function loadDeals(){
-      let deals=[]; try{ deals = JSON.parse(localStorage.getItem(KEYS.deals)||'[]'); }catch{}
-      if(!deals || !deals.length){ deals = seedDeals; localStorage.setItem(KEYS.deals, JSON.stringify(deals)); }
-      return deals;
-    }
-    function saveDeals(deals){ localStorage.setItem(KEYS.deals, JSON.stringify(deals)); }
+      <!-- ===================== CRM PAGE ===================== -->
+  <div id="crmPage" class="page">
+    <header class="header">
+      <nav class="container">
+        <a class="logo" onclick="showPage('home')">AEC M&A</a>
+        <div class="nav">
+          <a class="active" onclick="showPage('crm')">CRM</a>
+          <a onclick="showPage('checklist')">Checklist</a>
+        </div>
+        <div class="user-info">
+          <span id="crmUserEmail" class="user-email"></span>
+          <span class="logout-btn" onclick="logout()">Logout</span>
+        </div>
+      </nav>
+    </header>
 
-    function renderKanban(){
-      const el = document.getElementById('kanban'); if(!el) return;
-      const deals = loadDeals();
-      el.innerHTML = '';
-      for(const stage of DealStages){
-        const col = document.createElement('section');
-        col.className='kanban-col';
-        col.innerHTML = `<div class="kanban-head">${stage}</div><div class="kanban-drop" data-stage="${stage}"></div>`;
-        el.appendChild(col);
-      }
-      for(const d of deals){
-        const card = document.createElement('article');
-        card.className='card'; card.draggable=true; card.dataset.id=d.id;
-        card.innerHTML = `
-          <h4>${d.companyName}</h4>
-          <div class="meta">
-            <span class="tag">${d.vertical||'-'}</span>
-            <span>${d.geography||''}</span>
-            <span>${d.revenue? Utils.money(d.revenue)+' rev':''}</span>
-            <span>${d.ebitda? Utils.money(d.ebitda)+' EBITDA':''}</span>
-          </div>`;
-        card.addEventListener('dragstart', e=> e.dataTransfer.setData('text/plain', d.id));
-        card.addEventListener('dblclick', ()=> openDealModal(d.id));
-        const drop = el.querySelector(`.kanban-drop[data-stage="${d.stage}"]`) || el.querySelector('.kanban-drop');
-        drop.appendChild(card);
-      }
-      // Drag & drop behavior
-      el.querySelectorAll('.kanban-drop').forEach(drop=>{
-        drop.addEventListener('dragover', e=>{ e.preventDefault(); drop.classList.add('drag-over'); });
-        drop.addEventListener('dragleave', ()=> drop.classList.remove('drag-over'));
-        drop.addEventListener('drop', e=>{
-          e.preventDefault(); drop.classList.remove('drag-over');
-          const id = e.dataTransfer.getData('text/plain'); if(!id) return;
-          const stage = drop.dataset.stage;
-          const ds = loadDeals();
-          const deal = ds.find(x=>x.id===id); if(!deal) return;
-          deal.stage = stage; deal.updatedAt = new Date().toISOString();
-          saveDeals(ds); renderKanban(); Utils.toast(`Moved to ${stage}`,'success');
-        });
-      });
-    }
+    <main class="container" style="padding:1rem 0 2rem;">
+      <!-- Toolbar -->
+      <div class="toolbar" style="align-items:center;">
+        <h1 style="font-size:1.4rem;margin:0;">Lead Management</h1>
+        <div class="toolbar-actions">
+          <button class="btn btn-sm" onclick="renderLeadTable()">Lead List</button>
+          <button class="btn btn-outline btn-sm" onclick="openDealModal(null)">+ New Deal</button>
+          <button class="btn btn-outline btn-sm" onclick="exportCSV()">Export CSV</button>
+        </div>
+      </div>
 
-    function openDealModal(id){
-      const modal = document.getElementById('dealModal');
-      const body = document.getElementById('modalBody');
-      const title = document.getElementById('modalTitle');
-      const deals = loadDeals();
-      const editing = id ? deals.find(d=>d.id===id) : null;
-      title.textContent = editing ? 'Edit Deal' : 'New Deal';
+      <!-- Lead Table -->
+      <div id="leadTableContainer" style="display:none;">
+        <div style="overflow-x:auto;">
+          <table id="leadTable" style="width:100%;border-collapse:collapse;">
+            <thead style="background:#f8fafc;">
+              <tr>
+                <th style="text-align:left;padding:0.6rem;border-bottom:1px solid #e5e7eb;">#</th>
+                <th style="text-align:left;padding:0.6rem;border-bottom:1px solid #e5e7eb;">Company</th>
+                <th style="text-align:left;padding:0.6rem;border-bottom:1px solid #e5e7eb;">Location</th>
+                <th style="text-align:left;padding:0.6rem;border-bottom:1px solid #e5e7eb;">Contact</th>
+                <th style="text-align:left;padding:0.6rem;border-bottom:1px solid #e5e7eb;">Phone</th>
+                <th style="text-align:left;padding:0.6rem;border-bottom:1px solid #e5e7eb;">Stage</th>
+              </tr>
+            </thead>
+            <tbody id="leadRows"></tbody>
+          </table>
+        </div>
+      </div>
 
-      body.innerHTML = `
-        <form id="dealForm">
-          <div class="form-group"><label>Company Name</label><input class="input" required name="companyName" value="${editing?.companyName||''}"></div>
-          <div class="form-group"><label>Vertical</label>
-            <select class="input" name="vertical">
-              <option ${editing?.vertical==='Architecture'?'selected':''}>Architecture</option>
-              <option ${editing?.vertical==='Engineering'?'selected':''}>Engineering</option>
-              <option ${editing?.vertical==='Construction'?'selected':''}>Construction</option>
-            </select>
-          </div>
-          <div class="form-group"><label>Geography</label><input class="input" name="geography" value="${editing?.geography||''}"></div>
-          <div class="form-group"><label>Revenue</label><input class="input" type="number" name="revenue" min="0" step="1000" value="${editing?.revenue??''}"></div>
-          <div class="form-group"><label>EBITDA</label><input class="input" type="number" name="ebitda" min="0" step="1000" value="${editing?.ebitda??''}"></div>
-          <div class="form-group"><label>EV Min</label><input class="input" type="number" name="evMin" min="0" step="1000" value="${editing?.evEstimate?.min??''}"></div>
-          <div class="form-group"><label>EV Max</label><input class="input" type="number" name="evMax" min="0" step="1000" value="${editing?.evEstimate?.max??''}"></div>
-          <div class="form-group"><label>Stage</label>
-            <select class="input" name="stage">
-              ${DealStages.map(s=>`<option ${editing?.stage===s?'selected':''}>${s}</option>`).join('')}
-            </select>
-          </div>
-          <div style="display:flex;gap:.5rem;justify-content:flex-end;margin-top:.5rem">
-            <button type="button" class="btn btn-outline btn-sm" onclick="closeModal()">Cancel</button>
-            ${editing? `<button type="button" class="btn btn-danger btn-sm" id="deleteDealBtn">Delete</button>`:''}
-            <button class="btn btn-sm" type="submit">${editing?'Save':'Create'}</button>
-          </div>
-        </form>
-      `;
-      modal.classList.add('active');
+      <!-- Kanban (hidden until needed) -->
+      <div id="kanban" class="kanban" aria-live="polite"></div>
+    </main>
+  </div>
 
-      if (editing){
-        document.getElementById('deleteDealBtn').onclick = ()=>{
-          if(!confirm('Delete this deal?')) return;
-          saveDeals(loadDeals().filter(d=>d.id!==editing.id));
-          modal.classList.remove('active'); renderKanban(); Utils.toast('Deleted','success');
-        };
-      }
-
-      document.getElementById('dealForm').onsubmit = (e)=>{
-        e.preventDefault();
-        const fd = new FormData(e.target);
-        const obj = Object.fromEntries(fd.entries());
-        const ds = loadDeals();
-        if (editing){
-          const d = ds.find(x=>x.id===editing.id);
-          d.companyName=obj.companyName; d.vertical=obj.vertical; d.geography=obj.geography;
-          d.revenue=obj.revenue?Number(obj.revenue):null;
-          d.ebitda=obj.ebitda?Number(obj.ebitda):null;
-          d.evEstimate=(obj.evMin||obj.evMax)?{min:Number(obj.evMin||0),max:Number(obj.evMax||0)}:null;
-          d.stage=obj.stage; d.updatedAt=new Date().toISOString();
-        } else {
-          ds.push({
-            id:Utils.id(), companyName:obj.companyName, vertical:obj.vertical, geography:obj.geography,
-            revenue:obj.revenue?Number(obj.revenue):null, ebitda:obj.ebitda?Number(obj.ebitda):null,
-            evEstimate:(obj.evMin||obj.evMax)?{min:Number(obj.evMin||0),max:Number(obj.evMax||0)}:null,
-            stage:obj.stage, tags:[]
-          });
-        }
-        saveDeals(ds); modal.classList.remove('active'); renderKanban(); Utils.toast('Saved','success');
-      };
-    }
-    function closeModal(){ document.getElementById('dealModal').classList.remove('active'); }
-
-    function exportCSV(){
-      const deals = loadDeals();
-      const header = ['Company','Vertical','Geography','Revenue','EBITDA','EV Min','EV Max','Stage'];
-      const rows = deals.map(d=>[d.companyName,d.vertical||'',d.geography||'',d.revenue??'',d.ebitda??'',d.evEstimate?.min??'',d.evEstimate?.max??'',d.stage]);
-      let csv = header.map(Utils.csvEscape).join(',') + '\n';
-      csv += rows.map(r=>r.map(Utils.csvEscape).join(',')).join('\n');
-      const blob = new Blob([csv],{type:'text/csv'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a'); a.href=url; a.download='deals.csv'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
-      Utils.toast('CSV exported','success');
-    }
-
-        /* ===================== Lead List Table ===================== */
+    /* ===================== Lead List Table ===================== */
     function renderLeadTable() {
       const table = document.getElementById('leadTableContainer');
       const kanban = document.getElementById('kanban');
