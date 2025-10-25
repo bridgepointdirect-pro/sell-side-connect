@@ -99,34 +99,73 @@
             display: block;
         }
 
-        /* Hero */
+/* Hero */
         .hero {
             display: flex;
             align-items: center;
             justify-content: center;
             min-height: 70vh;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: linear-gradient(135deg, #1e3a8a 0%, var(--primary) 50%, var(--secondary) 100%);
             color: white;
             text-align: center;
-            padding: 2rem 1rem;
+            padding: 3rem 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 600px;
+            height: 600px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: -5%;
+            width: 400px;
+            height: 400px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
         }
 
         .hero-content h1 {
-            font-size: 3rem;
+            font-size: 3.5rem;
             margin-bottom: 1rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
 
         .hero-subhead {
-            font-size: 1.25rem;
-            margin-bottom: 2rem;
+            font-size: 1.4rem;
+            margin-bottom: 3rem;
             opacity: 0.95;
+            font-weight: 300;
+            letter-spacing: 0.3px;
         }
 
         .hero-actions {
             display: flex;
-            gap: 1rem;
+            gap: 1.5rem;
             justify-content: center;
             flex-wrap: wrap;
+            position: relative;
+            z-index: 2;
         }
 
         .home-footer {
@@ -141,36 +180,55 @@
             gap: 1rem;
             justify-content: center;
             flex-wrap: wrap;
-            margin-top: 1rem;
+/* Hero page specific button styling */
+        .hero-actions .btn {
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+            font-size: 1.1rem;
+            padding: 1rem 2.5rem;
+            min-width: 160px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 10px;
         }
 
-        /* Buttons */
-        .btn {
-            display: inline-block;
-            padding: 0.75rem 1.5rem;
-            font-size: 1rem;
-            font-weight: 500;
-            border-radius: 8px;
-            cursor: pointer;
-            border: none;
-            text-decoration: none;
-            transition: all 0.2s;
+        .hero-actions .btn-primary {
+            background: white;
+            color: var(--primary);
+            border: 2px solid white;
         }
 
-        .btn-sm {
-            padding: 0.5rem 1rem;
-            font-size: 0.875rem;
+        .hero-actions .btn-primary:hover {
+            background: rgba(255, 255, 255, 0.9);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.35);
         }
 
-        .btn-primary {
-            background: var(--primary);
+        .hero-actions .btn-secondary {
+            background: rgba(16, 185, 129, 0.95);
             color: white;
+            border: 2px solid white;
         }
 
-        .btn-primary:hover {
-            background: #1e40af;
+        .hero-actions .btn-secondary:hover {
+            background: white;
+            color: var(--secondary);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.35);
         }
 
+        .hero-actions .btn-danger {
+            background: rgba(239, 68, 68, 0.95);
+            color: white;
+            border: 2px solid white;
+        }
+
+        .hero-actions .btn-danger:hover {
+            background: white;
+            color: var(--danger);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.35);
+        }
         .btn-secondary {
             background: var(--secondary);
             color: white;
