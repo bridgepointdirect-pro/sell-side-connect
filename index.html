@@ -1,540 +1,159 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>AEC M&A Platform</title>
-
-  <style>
-    /* ===================== Design Tokens ===================== */
-    :root{
-      --primary-600:#2563eb; /* blue */
-      --primary-700:#1d4ed8;
-      --teal-500:#14b8a6;
-      --danger:#ef4444;
-
-      --bg:#f8fafc;         /* slate-50 */
-      --card:#ffffff;
-      --ink:#0f172a;        /* slate-900 */
-      --muted:#475569;      /* slate-600 */
-      --line:#e2e8f0;       /* slate-200 */
-
-      --radius:14px;
-      --shadow-lg:0 20px 40px rgba(2,6,23,.12);
-      --shadow-md:0 12px 24px rgba(2,6,23,.10);
-      --shadow-sm:0 6px 14px rgba(2,6,23,.08);
-    }
-
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,system-ui,Arial,sans-serif;
-      color:var(--ink);
-      background:var(--bg);
-      line-height:1.55;
-    }
-    .container{max-width:1200px;margin:0 auto;padding:0 1rem}
-
-    /* ===================== Buttons ===================== */
-    .btn{
-      display:inline-block;
-      padding:0.95rem 1.25rem;
-      border-radius:12px;
-      border:1px solid transparent;
-      font-weight:800;
-      letter-spacing:.2px;
-      color:#fff;
-      background:linear-gradient(135deg,var(--primary-600),var(--teal-500));
-      box-shadow:var(--shadow-sm);
-      transition:transform .15s ease, box-shadow .2s ease, filter .2s ease;
-      cursor:pointer;
-      text-decoration:none;
-      user-select:none;
-    }
-    .btn:hover{ transform:translateY(-1px); box-shadow:var(--shadow-md); filter:brightness(.98); }
-    .btn:active{ transform:translateY(0); box-shadow:var(--shadow-sm); }
-    .btn-outline{
-      background:#fff; color:var(--ink); border-color:var(--line);
-    }
-    .btn-danger{ background:linear-gradient(135deg,#ef4444,#dc2626); }
-    .btn-sm{ padding:.6rem .9rem; border-radius:10px; }
-
-    /* ===================== Header ===================== */
-    .header{position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid var(--line);}
-    .header nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 0}
-    .logo{font-weight:900;color:var(--primary-600);text-decoration:none;letter-spacing:.3px}
-    .nav{display:flex;gap:1.25rem}
-    .nav a{color:var(--muted);text-decoration:none;font-weight:700;border-bottom:2px solid transparent;padding-bottom:.2rem}
-    .nav a.active{color:var(--primary-600);border-bottom-color:var(--primary-600)}
-    .user-info{display:flex;align-items:center;gap:.75rem}
-    .user-email{font-size:.9rem;color:var(--muted)}
-    .logout-btn{color:var(--primary-600);text-decoration:underline;cursor:pointer;font-size:.9rem}
-
-    /* ===================== Pages (SPA) ===================== */
-    .page{display:none}
-    .page.active{display:block}
-
-    /* ===================== Hero ===================== */
-    .hero{
-      min-height:80vh; display:grid; place-items:center; text-align:center; color:#fff;
-      background:linear-gradient(135deg,#1e3a8a 0%, var(--primary-600) 50%, var(--teal-500) 100%);
-      padding:4rem 1rem; position:relative; overflow:hidden;
-    }
-    .hero h1{font-size:3.4rem; font-weight:900; letter-spacing:.3px; margin:0 0 .6rem}
-    .hero-sub{font-size:1.15rem; opacity:.95; margin:0 0 2rem}
-    .hero-actions{display:flex; gap:1rem; justify-content:center; flex-wrap:wrap}
-    .hero-actions .btn{font-size:1.1rem; padding:1rem 2rem}
-
-    .home-footer{background:#fff;border-top:1px solid var(--line); text-align:center; padding:2rem 1rem}
-    .footer-actions{ display:flex; gap:.75rem; justify-content:center; flex-wrap:wrap; margin-top:.75rem }
-
-    /* ===================== Toolbar ===================== */
-    .toolbar{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin:1.25rem 0}
-    .toolbar h1{font-size:1.4rem;margin:0}
-
-    /* ===================== Kanban ===================== */
-    .kanban{display:grid;grid-template-columns:repeat(4,minmax(260px,1fr));gap:1rem;align-items:start}
-    @media (max-width:1100px){.kanban{grid-template-columns:repeat(3,1fr)}}
-    @media (max-width:880px){.kanban{grid-template-columns:repeat(2,1fr)}}
-    @media (max-width:620px){.kanban{grid-template-columns:1fr}}
-
-    .kanban-col{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;display:flex;flex-direction:column;min-height:220px}
-    .kanban-head{padding:.65rem .8rem;background:#f8fafc;border-bottom:1px solid var(--line);font-weight:900;font-size:.95rem}
-    .kanban-drop{flex:1;padding:.6rem;min-height:140px}
-    .kanban-drop.drag-over{outline:2px dashed var(--primary-600); outline-offset:-6px}
-    .card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:.6rem .7rem;margin-bottom:.6rem;cursor:grab;box-shadow:var(--shadow-sm)}
-    .card h4{margin:.1rem 0 .3rem;font-size:1rem}
-    .meta{display:flex;flex-wrap:wrap;gap:.4rem .6rem;font-size:.8rem;color:var(--muted)}
-    .tag{background:#f1f5f9;border:1px solid var(--line);border-radius:999px;padding:.15rem .5rem;font-weight:700}
-
-    /* ===================== Checklist ===================== */
-    .checklist-layout{
-      display:flex;flex-direction:row;align-items:flex-start;justify-content:center;gap:1.5rem;
-      padding:1.5rem; max-width:1200px; margin:0 auto; overflow-x:hidden;
-    }
-    .sidebar{
-      flex:0 0 260px; background:#fff; border:1px solid var(--line); border-radius:12px; padding:1rem;
-      position:sticky; top:78px; max-height:calc(100vh - 92px); overflow:auto;
-    }
-    .sidebar h2{margin:.2rem 0 .6rem;font-size:1.05rem}
-    .sidebar nav a{display:block;padding:.45rem .55rem;border-radius:8px;text-decoration:none;color:var(--ink);font-size:.95rem}
-    .sidebar nav a:hover{background:#f1f5f9}
-    .main-content{flex:1;background:#fff;border:1px solid var(--line);border-radius:12px;padding:1rem;min-width:0;overflow-x:hidden}
-    .stage{background:#fff;border:1px solid var(--line);border-radius:12px;padding:1rem;margin:0 0 1rem}
-    .stage h3{margin:.25rem 0 .4rem;font-size:1.05rem}
-    .muted{color:var(--muted);font-size:.92rem}
-    .lists{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:.5rem}
-    @media (max-width:900px){.lists{grid-template-columns:1fr}}
-    .lists ul{padding-left:1.1rem}
-    .check-items{margin-top:.6rem}
-    .check-items label{display:flex;gap:.5rem;align-items:flex-start;margin:.35rem 0;cursor:pointer}
-    .stage-actions{margin-top:.6rem;display:flex;gap:.5rem;flex-wrap:wrap}
-
-    /* ===================== Modal & Toast ===================== */
-    .modal{position:fixed;inset:0;background:rgba(2,6,23,.35);display:none;align-items:center;justify-content:center;padding:1rem;z-index:50}
-    .modal.active{display:flex}
-    .modal-content{width:100%;max-width:720px;background:#fff;border-radius:12px;box-shadow:var(--shadow-lg);overflow:hidden}
-    .modal-header{display:flex;align-items:center;justify-content:space-between;padding:.9rem 1rem;border-bottom:1px solid var(--line)}
-    .modal-body{padding:1rem}
-    .modal-close{background:none;border:none;font-size:1.5rem;cursor:pointer;line-height:1}
-
-    #toast{position:fixed;bottom:1.25rem;right:1.25rem;background:#0f172a;color:#fff;padding:.8rem 1rem;border-radius:12px;box-shadow:var(--shadow-md);opacity:0;transform:translateY(10px);transition:.25s;z-index:80}
-    #toast.show{opacity:1;transform:translateY(0)}
-    #toast.success{background:linear-gradient(135deg,var(--teal-500),#059669)}
-    #toast.error{background:linear-gradient(135deg,#ef4444,#dc2626)}
-
-    /* ===================== Print (Checklist) ===================== */
-    @media print{
-      .header,.sidebar,.toolbar,.home-footer,.hero{display:none!important}
-      .stage{page-break-inside:avoid;margin:0 0 1rem}
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AEC Project Matching Platform</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            background-color: #f4f4f4;
+        }
+        header {
+            background-color: #007bff;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #007bff;
+        }
+        ul {
+            list-style-type: disc;
+            padding-left: 20px;
+        }
+        footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+    </style>
 </head>
-
 <body>
-<!-- LOGIN SCREEN (removed – no auth needed) -->
-
-  <!-- ===================== HOME / HERO ===================== -->
-  <div id="homePage" class="page">
-    <header class="header">
-      <nav class="container">
-        <a class="logo" onclick="showPage('home')">AEC M&A</a>
-        <div class="user-info">
-          <span id="headerUserEmail" class="user-email"></span>
-          <span class="logout-btn" onclick="logout()">Logout</span>
-        </div>
-      </nav>
+    <header>
+        <h1>AEC Project Matching Platform</h1>
+        <p>Connecting Architecture, Engineering, and Construction Businesses for Optimal Resource Allocation</p>
     </header>
 
-    <section class="hero">
-      <div class="hero-content container">
-        <h1>AEC M&A Platform</h1>
-        <p class="hero-sub">Architecture, Engineering & Construction | $2M–$50M Deals</p>
-        <div class="hero-actions">
-          <button class="btn" onclick="showPage('crm')">CRM</button>
-          <button class="btn btn-outline" onclick="showPage('checklist')">Checklist</button>
-        </div>
-      </div>
-    </section>
+    <div class="container">
+        <section id="concept">
+            <h2>Concept Overview</h2>
+            <p>This platform is a B2B marketplace in the AEC (Architecture, Engineering, and Construction) sector, designed for project overflow matching, subcontracting, or capacity sharing. It helps optimize resource allocation, reduce downtime for smaller firms, and prevent lost revenue for larger ones.</p>
+            <p>There are two main user types:</p>
+            <ul>
+                <li><strong>Project Providers:</strong> Businesses with an overflow of projects they cannot fulfill, leaving money on the table.</li>
+                <li><strong>Capacity Providers:</strong> Businesses with not enough work but available manpower to complete or assist with projects.</li>
+            </ul>
+            <p>The website brings these together to grow smaller companies and ensure bigger ones maximize opportunities.</p>
+        </section>
 
-    <footer class="home-footer">
-      <div class="container">
-        <h2 style="margin:0 0 .25rem">Data Management</h2>
-        <p style="margin:.25rem 0 1rem;color:var(--muted)">Export and import your CRM & checklist data</p>
-        <div class="footer-actions">
-          <button class="btn btn-outline" onclick="exportData()">Export Data (JSON)</button>
-          <button class="btn btn-outline" onclick="document.getElementById('importFile').click()">Import Data</button>
-          <input id="importFile" type="file" accept=".json" style="display:none" onchange="importData(event)"/>
-        </div>
-      </div>
+        <section id="features">
+            <h2>Core Features</h2>
+            <ol>
+                <li><strong>User Profiles and Registration:</strong>
+                    <ul>
+                        <li>Separate roles for Project Providers and Capacity Providers.</li>
+                        <li>Require verification (e.g., business licenses, insurance proof).</li>
+                        <li>Profiles include company size, expertise, location, past projects, and availability calendars.</li>
+                    </ul>
+                </li>
+                <li><strong>Project Posting and Matching:</strong>
+                    <ul>
+                        <li>Post projects with scope, timeline, budget, skills, and location.</li>
+                        <li>Filters/search for matching.</li>
+                        <li>AI-driven matching algorithm.</li>
+                    </ul>
+                </li>
+                <li><strong>Bidding and Negotiation:</strong>
+                    <ul>
+                        <li>Bids on projects (fixed-price or hourly).</li>
+                        <li>Built-in chat and contract tools.</li>
+                        <li>Payment escrow integration.</li>
+                    </ul>
+                </li>
+                <li><strong>Collaboration Tools:</strong>
+                    <ul>
+                        <li>Shared document hubs.</li>
+                        <li>Integration with AEC software (e.g., AutoCAD, Revit).</li>
+                        <li>Ratings/reviews system.</li>
+                    </ul>
+                </li>
+                <li><strong>Analytics and Insights:</strong>
+                    <ul>
+                        <li>Dashboards for market trends.</li>
+                        <li>Utilization tracking.</li>
+                    </ul>
+                </li>
+                <li><strong>Security and Compliance:</strong>
+                    <ul>
+                        <li>GDPR/CCPA compliance.</li>
+                        <li>NDA and contract templates.</li>
+                    </ul>
+                </li>
+            </ol>
+        </section>
+
+        <section id="tech-stack">
+            <h2>Tech Stack Suggestions</h2>
+            <ul>
+                <li><strong>Frontend:</strong> React.js or Vue.js with Material-UI.</li>
+                <li><strong>Backend:</strong> Node.js with Express or Python with Django/Flask.</li>
+                <li><strong>Database:</strong> PostgreSQL or MongoDB.</li>
+                <li><strong>Hosting:</strong> AWS or Heroku.</li>
+                <li><strong>Integrations:</strong> Firebase/Auth0 for auth, Stripe for payments, Elasticsearch for search.</li>
+            </ul>
+            <p>For an MVP, consider no-code tools like Bubble.io.</p>
+            <p>Aim for mobile responsiveness.</p>
+        </section>
+
+        <section id="business-model">
+            <h2>Business Model</h2>
+            <ul>
+                <li><strong>Freemium:</strong> Basic free; premium for advanced features.</li>
+                <li><strong>Transaction Fees:</strong> 5-10% per match.</li>
+                <li><strong>Subscriptions:</strong> Tiered plans.</li>
+                <li><strong>Partnerships:</strong> With AEC associations.</li>
+            </ul>
+        </section>
+
+        <section id="challenges">
+            <h2>Potential Challenges and Solutions</h2>
+            <ul>
+                <li><strong>Trust Building:</strong> Pilot in one region for testimonials.</li>
+                <li><strong>Competition:</strong> Differentiate with AEC-specific tools.</li>
+                <li><strong>Legal:</strong> Consult lawyers for construction liabilities.</li>
+                <li><strong>User Acquisition:</strong> LinkedIn, forums, incentives.</li>
+            </ul>
+        </section>
+
+        <section id="next-steps">
+            <h2>Next Steps</h2>
+            <ol>
+                <li>Validate with surveys (e.g., Reddit communities).</li>
+                <li>Build MVP focusing on core matching.</li>
+                <li>Marketing via SEO and content.</li>
+                <li>Seek funding from construction tech accelerators.</li>
+            </ol>
+        </section>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 AEC Project Matching Platform Concept | Created with Grok</p>
     </footer>
-  </div>
-
-  <!-- ===================== CRM PAGE ===================== -->
-  <div id="crmPage" class="page">
-    <header class="header">
-      <nav class="container">
-        <a class="logo" onclick="showPage('home')">AEC M&A</a>
-        <div class="nav">
-          <a class="active" onclick="showPage('crm')">CRM</a>
-          <a onclick="showPage('checklist')">Checklist</a>
-        </div>
-        <div class="user-info">
-          <span id="crmUserEmail" class="user-email"></span>
-          <span class="logout-btn" onclick="logout()">Logout</span>
-        </div>
-      </nav>
-    </header>
-
-    <main class="container" style="padding:1rem 0 2rem;">
-      <!-- Toolbar -->
-      <div class="toolbar" style="align-items:center;">
-        <h1 style="font-size:1.4rem;margin:0;">Lead Management</h1>
-        <div class="toolbar-actions">
-          <button class="btn btn-sm" onclick="renderLeadTable()">Lead List</button>
-          <button class="btn btn-outline btn-sm" onclick="openDealModal(null)">+ New Deal</button>
-          <button class="btn btn-outline btn-sm" onclick="exportCSV()">Export CSV</button>
-        </div>
-      </div>
-
-      <!-- Lead Table -->
-      <div id="leadTableContainer" style="display:none;">
-        <div style="overflow-x:auto;">
-          <table id="leadTable" style="width:100%;border-collapse:collapse;">
-            <thead style="background:#f8fafc;">
-              <tr>
-                <th style="text-align:left;padding:0.6rem;border-bottom:1px solid #e5e7eb;">#</th>
-                <th style="text-align:left;padding:0.6rem;border-bottom:1px solid #e5e7eb;">Company</th>
-                <th style="text-align:left;padding:0.6rem;border-bottom:1px solid #e5e7eb;">Location</th>
-                <th style="text-align:left;padding:0.6rem;border-bottom:1px solid #e5e7eb;">Contact</th>
-                <th style="text-align:left;padding:0.6rem;border-bottom:1px solid #e5e7eb;">Phone</th>
-                <th style="text-align:left;padding:0.6rem;border-bottom:1px solid #e5e7eb;">Stage</th>
-              </tr>
-            </thead>
-            <tbody id="leadRows"></tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- Kanban (hidden until needed) -->
-      <div id="kanban" class="kanban" aria-live="polite"></div>
-    </main>
-  </div>
-
-  <!-- ===================== CHECKLIST PAGE ===================== -->
-  <div id="checklistPage" class="page">
-    <header class="header">
-      <nav class="container">
-        <a class="logo" onclick="showPage('home')">AEC M&A</a>
-        <div class="nav">
-          <a onclick="showPage('crm')">CRM</a>
-          <a class="active" onclick="showPage('checklist')">Checklist</a>
-        </div>
-        <div class="user-info">
-          <span id="checklistUserEmail" class="user-email"></span>
-          <span class="logout-btn" onclick="logout()">Logout</span>
-        </div>
-      </nav>
-    </header>
-
-    <div class="checklist-layout">
-      <aside class="sidebar">
-        <h2>Stages</h2>
-        <nav id="sideNav"></nav>
-      </aside>
-
-      <main class="main-content">
-        <div class="toolbar">
-          <h1>Deal Checklist</h1>
-          <div class="toolbar-actions">
-            <button class="btn btn-outline btn-sm" onclick="window.print()">Print / PDF</button>
-            <button class="btn btn-outline btn-sm" onclick="resetChecklist()">Reset</button>
-          </div>
-        </div>
-        <div id="checklistContent"></div>
-      </main>
-    </div>
-  </div>
-
-  <!-- ===================== MODAL & TOAST ===================== -->
-  <div id="dealModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2 id="modalTitle">Deal Details</h2>
-        <button class="modal-close" aria-label="Close" onclick="closeModal()">&times;</button>
-      </div>
-      <div id="modalBody" class="modal-body"></div>
-    </div>
-  </div>
-
-  <div id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
-
-  <script>
-    /* ===================== State Keys & Utils ===================== */
-window.KEYS = window.KEYS || {
-  users:'aec_users',
-  currentUser:'aec_current_user',
-  deals:'mna_crm_deals_v1',
-  checklist:'mna_checklist_state_v1'
-};
-window.Utils = window.Utils || {
-  id: () => '_' + Math.random().toString(36).slice(2,10),
-  toast(msg,type){
-    const t = document.getElementById('toast'); if(!t) return;
-    t.textContent = msg; t.className = type ? 'show '+type : 'show';
-    clearTimeout(t._hide); t._hide = setTimeout(()=>{ t.className=''; t.textContent=''; }, 2600);
-  }
-};
-
-    /* ===================== Export / Import ===================== */
-    function exportData(){
-      const blob = new Blob([JSON.stringify({
-        users: JSON.parse(localStorage.getItem(KEYS.users)||'[]'),
-        currentUser: JSON.parse(localStorage.getItem(KEYS.currentUser)||'null'),
-        deals: JSON.parse(localStorage.getItem(KEYS.deals)||'[]'),
-        checklist: JSON.parse(localStorage.getItem(KEYS.checklist)||'{}'),
-      }, null, 2)], {type:'application/json'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a'); a.href=url; a.download='aec-export.json'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
-      Utils.toast('Exported JSON','success');
-    }
-    function importData(ev){
-      const file = ev.target.files && ev.target.files[0]; if(!file) return;
-      const reader = new FileReader();
-      reader.onload = e=>{
-        try{
-          const json = JSON.parse(e.target.result);
-          if(json.users) localStorage.setItem(KEYS.users, JSON.stringify(json.users));
-          if(json.currentUser) localStorage.setItem(KEYS.currentUser, JSON.stringify(json.currentUser));
-          if(json.deals) localStorage.setItem(KEYS.deals, JSON.stringify(json.deals));
-          if(json.checklist) localStorage.setItem(KEYS.checklist, JSON.stringify(json.checklist));
-          Utils.toast('Import successful','success');
-          location.reload();
-        }catch{ Utils.toast('Invalid file','error'); }
-      };
-      reader.readAsText(file);
-    }
-
-      <!-- ===================== CRM PAGE ===================== -->
-  <div id="crmPage" class="page">
-    <header class="header">
-      <nav class="container">
-        <a class="logo" onclick="showPage('home')">AEC M&A</a>
-        <div class="nav">
-          <a class="active" onclick="showPage('crm')">CRM</a>
-          <a onclick="showPage('checklist')">Checklist</a>
-        </div>
-        <div class="user-info">
-          <span id="crmUserEmail" class="user-email"></span>
-          <span class="logout-btn" onclick="logout()">Logout</span>
-        </div>
-      </nav>
-    </header>
-
-    <main class="container" style="padding:1rem 0 2rem;">
-      <!-- Toolbar -->
-      <div class="toolbar" style="align-items:center;">
-        <h1 style="font-size:1.4rem;margin:0;">Lead Management</h1>
-        <div class="toolbar-actions">
-          <button class="btn btn-sm" onclick="renderLeadTable()">Lead List</button>
-          <button class="btn btn-outline btn-sm" onclick="openDealModal(null)">+ New Deal</button>
-          <button class="btn btn-outline btn-sm" onclick="exportCSV()">Export CSV</button>
-        </div>
-      </div>
-
-      <!-- Lead Table -->
-      <div id="leadTableContainer" style="display:none;">
-        <div style="overflow-x:auto;">
-          <table id="leadTable" style="width:100%;border-collapse:collapse;">
-            <thead style="background:#f8fafc;">
-              <tr>
-                <th style="text-align:left;padding:0.6rem;border-bottom:1px solid #e5e7eb;">#</th>
-                <th style="text-align:left;padding:0.6rem;border-bottom:1px solid #e5e7eb;">Company</th>
-                <th style="text-align:left;padding:0.6rem;border-bottom:1px solid #e5e7eb;">Location</th>
-                <th style="text-align:left;padding:0.6rem;border-bottom:1px solid #e5e7eb;">Contact</th>
-                <th style="text-align:left;padding:0.6rem;border-bottom:1px solid #e5e7eb;">Phone</th>
-                <th style="text-align:left;padding:0.6rem;border-bottom:1px solid #e5e7eb;">Stage</th>
-              </tr>
-            </thead>
-            <tbody id="leadRows"></tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- Kanban (hidden until needed) -->
-      <div id="kanban" class="kanban" aria-live="polite"></div>
-    </main>
-  </div>
-
-    /* ===================== Lead List Table ===================== */
-    function renderLeadTable() {
-      const table = document.getElementById('leadTableContainer');
-      const kanban = document.getElementById('kanban');
-      if (!table || !kanban) return;
-      
-      // toggle visibility
-      const showTable = table.style.display === 'none';
-      table.style.display = showTable ? 'block' : 'none';
-      kanban.style.display = showTable ? 'none' : 'grid';
-      
-      if (!showTable) return; // closing the table
-      
-      const rows = document.getElementById('leadRows');
-      rows.innerHTML = '';
-      const deals = loadDeals();
-      deals.forEach((d, i) => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td style="padding:.5rem;border-bottom:1px solid #e5e7eb;">${i+1}</td>
-          <td style="padding:.5rem;border-bottom:1px solid #e5e7eb;">${d.companyName}</td>
-          <td style="padding:.5rem;border-bottom:1px solid #e5e7eb;">${d.geography || '-'}</td>
-          <td style="padding:.5rem;border-bottom:1px solid #e5e7eb;">${d.vertical || '-'}</td>
-          <td style="padding:.5rem;border-bottom:1px solid #e5e7eb;">${d.phone || '(—)'}</td>
-          <td style="padding:.5rem;border-bottom:1px solid #e5e7eb;">${d.stage}</td>
-        `;
-        rows.appendChild(tr);
-      });
-    }
-
-    /* ===================== Checklist ===================== */
-    const ChecklistStages = [
-      { id:'sourcing', title:'Sourcing & Intake', purpose:'Capture seller profile, confirm fit, and kick off engagement.', inputs:['Seller intro','Rev/EBITDA/headcount','Vertical (Arch/Eng/GC)','Geography','Owner goals'], outputs:['Intake sheet','Conflict check','Prelim valuation range','Engagement letter (sell-side)'], list:[ 'Verify licenses & bonding','Identify union vs non-union','Review backlog / WIP','Safety metrics (EMR/TRIR)','%-of-completion accounting','Retainage exposure' ] },
-      { id:'nda', title:'NDA (Mutual or One-Way)', purpose:'Protect confidentiality prior to deeper sharing.', inputs:['NDA template','Parties & agents'], outputs:['Fully executed NDA','Buyer profile form'], list:['Provision data room post-NDA','Confirm watermark policy'] },
-      { id:'teaser', title:'Teaser (Blind Profile)', purpose:'Gauge buyer interest without revealing identity.', inputs:['One-pager teaser','Anonymized highlights'], outputs:['Teaser PDF','Interest tracking log'], list:['QA teaser highlights','Track sends & responses'] },
-      { id:'cim', title:'CIM (Confidential Information Memorandum)', purpose:'Provide a comprehensive view of the business.', inputs:['3–5 yrs financials','WIP schedule','Customer concentration','Project list','Org chart','Equipment list','Safety/OSHA logs','Bonding & insurance (GL/WC)','Licenses/permits'], outputs:['CIM PDF','Initial Q&A log','Data room index v1'], list:['Watermark policy in CIM','Open Q&A log','Validate data room index'] },
-      { id:'buyer', title:'Buyer Qualification', purpose:'Ensure fit and readiness to transact.', inputs:['Buyer profile','Proof of funds/mandate fit'], outputs:['Shortlist','Communication cadence'], list:['Score buyers against criteria','Confirm POF / mandate'] },
-      { id:'mgmt', title:'Management Calls / Site Visit', purpose:'Facilitate informed buyer diligence.', inputs:['BQ&A','Agendas','Demo materials'], outputs:['Call notes','Updated Q&A'], list:['Schedule site visit','Capture call notes','Update Q&A items'] },
-      { id:'ioi', title:'IOIs (Indications of Interest)', purpose:'Collect preliminary bids and terms.', inputs:['IOI template','Valuation/multiple guidance','Structure (asset vs stock)'], outputs:['IOIs received','Bid comparison matrix'], list:['Set IOI deadline','Build bid matrix','Communicate guidance'] },
-      { id:'predd', title:'Diligence (pre-LOI)', purpose:'Address key risks early to streamline LOI.', inputs:['Data room index v2','Diligence request list'], outputs:['Updated financials','QoE (if applicable)','Red-flag list'], list:['Share DR index v2','Track red flags','Request QoE if needed'] },
-      { id:'loi', title:'LOI (Letter of Intent)', purpose:'Lock price/structure & start exclusivity.', inputs:['LOI template (price, structure, exclusivity, timeline)'], outputs:['Executed LOI','Exclusivity clock starts'], list:['Confirm exclusivity length','Outline timeline & milestones'] },
-      { id:'confdd', title:'Confirmatory Diligence', purpose:'Deep dive post-LOI to finalize terms.', inputs:['WIP by project','Retainage','Change orders','Lien releases','Subcontractor agreements','Safety incident logs','EMR letters','Equipment fleet & liens','Bonding capacity letters','Environmental compliance','Licenses/permits'], outputs:['DD tracker (G/Y/R)','Integration considerations','Financing package'], list:['Maintain DD tracker','Collect EMR/bonding letters','Confirm liens/equipment list'] },
-      { id:'fin', title:'Financing & Docs', purpose:'Document and finance the transaction.', inputs:['Debt term sheets','Guarantees','Collateral schedules'], outputs:['Draft SPA/APA','Schedules & disclosures','Escrow agreement','TSA (if needed)','Non-compete','Employment/consulting'], list:['Coordinate lender diligence','Draft SPA/APA','Prep disclosure schedules'] },
-      { id:'closing', title:'Closing', purpose:'Execute and fund the transaction.', inputs:['Closing checklist','Funds flow','Signatures'], outputs:['Executed SPA/APA','Bill of sale','Wire confirmations','Press plan'], list:['Final signatures','Confirm wires','Issue press note'] },
-      { id:'post', title:'Post-Close', purpose:'Transition & track KPIs.', inputs:['Integration checklist','30/60/90 plan'], outputs:['Transition cadence','KPI handoff'], list:['Stand-up cadence','Assign KPI owners','Kick off 30/60/90'] }
-    ];
-
-    function loadChecklist(){ try{ return JSON.parse(localStorage.getItem(KEYS.checklist)||'{}'); }catch{ return {}; } }
-    function saveChecklist(state){ localStorage.setItem(KEYS.checklist, JSON.stringify(state||{})); }
-
-    function renderChecklist(){
-      const state = loadChecklist();
-      const side = document.getElementById('sideNav');
-      const wrap = document.getElementById('checklistContent');
-      if(!side || !wrap) return;
-      side.innerHTML=''; wrap.innerHTML='';
-
-      ChecklistStages.forEach((stg, i)=>{
-        const link = document.createElement('a');
-        link.href = `#stage-${stg.id}`;
-        link.textContent = `${i+1}. ${stg.title}`;
-        side.appendChild(link);
-
-        const checks = (state[stg.id] && Array.isArray(state[stg.id])) ? state[stg.id] : stg.list.map(()=>false);
-        const sec = document.createElement('section');
-        sec.className = 'stage'; sec.id = `stage-${stg.id}`;
-        sec.innerHTML = `
-          <h3>${i+1}. ${stg.title}</h3>
-          <p class="muted">${stg.purpose}</p>
-          <div class="lists">
-            <div><strong>Inputs</strong><ul>${stg.inputs.map(x=>`<li>${x}</li>`).join('')}</ul></div>
-            <div><strong>Outputs / Required Docs</strong><ul>${stg.outputs.map(x=>`<li>${x}</li>`).join('')}</ul></div>
-            <div>
-              <strong>Checklist</strong>
-              <div class="check-items">
-                ${stg.list.map((txt,idx)=>`
-                  <label><input type="checkbox" data-stage="${stg.id}" data-idx="${idx}" ${checks[idx]?'checked':''}><span>${txt}</span></label>
-                `).join('')}
-              </div>
-            </div>
-          </div>
-          <div class="stage-actions">
-            <button class="btn btn-outline btn-sm" data-complete="${stg.id}">Mark Stage Complete</button>
-          </div>
-        `;
-        wrap.appendChild(sec);
-      });
-
-      wrap.querySelectorAll('input[type="checkbox"][data-stage]').forEach(cb=>{
-        cb.addEventListener('change', e=>{
-          const stg = e.target.dataset.stage;
-          const idx = Number(e.target.dataset.idx);
-          const s = loadChecklist();
-          if(!s[stg]) s[stg] = ChecklistStages.find(x=>x.id===stg).list.map(()=>false);
-          s[stg][idx] = e.target.checked;
-          saveChecklist(s);
-        });
-      });
-
-      wrap.querySelectorAll('button[data-complete]').forEach(btn=>{
-        btn.addEventListener('click', e=>{
-          const id = e.currentTarget.getAttribute('data-complete');
-          const s = loadChecklist();
-          const stage = ChecklistStages.find(x=>x.id===id);
-          s[id] = stage.list.map(()=>true);
-          saveChecklist(s); renderChecklist(); Utils.toast('Stage marked complete','success');
-        });
-      });
-    }
-
-    function resetChecklist(){
-      if(!confirm('Reset all checklist progress?')) return;
-      saveChecklist({}); renderChecklist(); Utils.toast('Checklist reset','success');
-    }
-
-/* ===================== Boot ===================== */
-document.addEventListener('DOMContentLoaded', ()=>{
-  // 1) Initialize auth/page state
-  initAuth();
-
-  // 2) Wire forms whether or not inline onsubmit exists
-  const loginFormEl  = document.getElementById('loginForm')  || document.getElementById('loginFormEl');
-  const signupFormEl = document.getElementById('signupForm') || document.getElementById('signupFormEl');
-  if (loginFormEl)  loginFormEl.addEventListener('submit', handleLogin);
-  if (signupFormEl) signupFormEl.addEventListener('submit', handleSignup);
-
-  // 3) Wire tabs whether or not inline onclick exists
-  const tabLoginEl  = document.getElementById('tabLogin')  || document.querySelector('.login-tab:first-child');
-  const tabSignupEl = document.getElementById('tabSignup') || document.querySelector('.login-tab:last-child');
-  if (tabLoginEl)  tabLoginEl.addEventListener('click', ()=> switchLoginTab('login'));
-  if (tabSignupEl) tabSignupEl.addEventListener('click', ()=> switchLoginTab('signup'));
-
-  // 4) Fallback: if neither tab button is found, attempt delegation on containers
-  const tabsWrap = document.querySelector('.tabs, .login-tabs');
-  if (tabsWrap) {
-    tabsWrap.addEventListener('click', (e)=>{
-      if (e.target.matches('.tab, .login-tab')) {
-        const isSignup = /sign\s*up/i.test(e.target.textContent||'');
-        switchLoginTab(isSignup ? 'signup' : 'login');
-      }
-    });
-  }
-
-  // 5) Run page initializers (if present)
-  if (typeof renderKanban === 'function')    renderKanban();
-  if (typeof renderChecklist === 'function') renderChecklist();
-
-  // 6) Hide any stale errors on load
-  document.querySelectorAll('#loginError,#signupError').forEach(el=>{ el.style.display='none'; el.textContent=''; });
-});
-
+</body>
+</html>
