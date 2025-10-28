@@ -3,157 +3,267 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AEC Project Matching Platform</title>
+    <title>AEC Connect - Project Matching Platform</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
             color: #333;
-            background-color: #f4f4f4;
+            background-color: #f8f9fa;
         }
         header {
             background-color: #007bff;
             color: white;
-            padding: 20px;
+            padding: 15px 0;
             text-align: center;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
         }
-        .container {
-            max-width: 1200px;
-            margin: 20px auto;
-            padding: 20px;
-            background: white;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        header nav {
+            margin-top: 10px;
         }
-        h2 {
+        header nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: bold;
+        }
+        .hero {
+            display: flex;
+            height: 100vh;
+            margin-top: 60px; /* Adjust for fixed header */
+        }
+        .hero-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 40px;
+            color: white;
+            transition: background 0.3s;
+        }
+        .left {
+            background-color: #28a745; /* Green for providers */
+        }
+        .right {
+            background-color: #ffc107; /* Yellow for capacity */
+            color: #333; /* Dark text for contrast */
+        }
+        .hero-section h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+        .hero-section p {
+            font-size: 1.2em;
+            margin-bottom: 30px;
+        }
+        .btn {
+            background-color: white;
             color: #007bff;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background 0.3s, color 0.3s;
         }
-        ul {
-            list-style-type: disc;
-            padding-left: 20px;
+        .btn:hover {
+            background-color: #007bff;
+            color: white;
+        }
+        .content-section {
+            display: none;
+            padding: 80px 20px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .content-section.active {
+            display: block;
+        }
+        form {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        }
+        form label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+        form input, form textarea, form select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        form button {
+            background-color: #007bff;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+        }
+        form button:hover {
+            background-color: #0056b3;
+        }
+        #mock-results {
+            margin-top: 40px;
+        }
+        .result-card {
+            background: white;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
         footer {
             text-align: center;
-            padding: 10px;
+            padding: 20px;
             background-color: #007bff;
             color: white;
-            position: fixed;
-            width: 100%;
-            bottom: 0;
+            margin-top: 40px;
+        }
+        @media (max-width: 768px) {
+            .hero {
+                flex-direction: column;
+            }
+            .hero-section {
+                height: 50vh;
+            }
         }
     </style>
 </head>
 <body>
     <header>
-        <h1>AEC Project Matching Platform</h1>
-        <p>Connecting Architecture, Engineering, and Construction Businesses for Optimal Resource Allocation</p>
+        <h1>AEC Connect</h1>
+        <nav>
+            <a href="#home" onclick="showSection('hero')">Home</a>
+            <a href="#about">About</a>
+            <a href="#contact">Contact</a>
+        </nav>
     </header>
 
-    <div class="container">
-        <section id="concept">
-            <h2>Concept Overview</h2>
-            <p>This platform is a B2B marketplace in the AEC (Architecture, Engineering, and Construction) sector, designed for project overflow matching, subcontracting, or capacity sharing. It helps optimize resource allocation, reduce downtime for smaller firms, and prevent lost revenue for larger ones.</p>
-            <p>There are two main user types:</p>
-            <ul>
-                <li><strong>Project Providers:</strong> Businesses with an overflow of projects they cannot fulfill, leaving money on the table.</li>
-                <li><strong>Capacity Providers:</strong> Businesses with not enough work but available manpower to complete or assist with projects.</li>
-            </ul>
-            <p>The website brings these together to grow smaller companies and ensure bigger ones maximize opportunities.</p>
-        </section>
-
-        <section id="features">
-            <h2>Core Features</h2>
-            <ol>
-                <li><strong>User Profiles and Registration:</strong>
-                    <ul>
-                        <li>Separate roles for Project Providers and Capacity Providers.</li>
-                        <li>Require verification (e.g., business licenses, insurance proof).</li>
-                        <li>Profiles include company size, expertise, location, past projects, and availability calendars.</li>
-                    </ul>
-                </li>
-                <li><strong>Project Posting and Matching:</strong>
-                    <ul>
-                        <li>Post projects with scope, timeline, budget, skills, and location.</li>
-                        <li>Filters/search for matching.</li>
-                        <li>AI-driven matching algorithm.</li>
-                    </ul>
-                </li>
-                <li><strong>Bidding and Negotiation:</strong>
-                    <ul>
-                        <li>Bids on projects (fixed-price or hourly).</li>
-                        <li>Built-in chat and contract tools.</li>
-                        <li>Payment escrow integration.</li>
-                    </ul>
-                </li>
-                <li><strong>Collaboration Tools:</strong>
-                    <ul>
-                        <li>Shared document hubs.</li>
-                        <li>Integration with AEC software (e.g., AutoCAD, Revit).</li>
-                        <li>Ratings/reviews system.</li>
-                    </ul>
-                </li>
-                <li><strong>Analytics and Insights:</strong>
-                    <ul>
-                        <li>Dashboards for market trends.</li>
-                        <li>Utilization tracking.</li>
-                    </ul>
-                </li>
-                <li><strong>Security and Compliance:</strong>
-                    <ul>
-                        <li>GDPR/CCPA compliance.</li>
-                        <li>NDA and contract templates.</li>
-                    </ul>
-                </li>
-            </ol>
-        </section>
-
-        <section id="tech-stack">
-            <h2>Tech Stack Suggestions</h2>
-            <ul>
-                <li><strong>Frontend:</strong> React.js or Vue.js with Material-UI.</li>
-                <li><strong>Backend:</strong> Node.js with Express or Python with Django/Flask.</li>
-                <li><strong>Database:</strong> PostgreSQL or MongoDB.</li>
-                <li><strong>Hosting:</strong> AWS or Heroku.</li>
-                <li><strong>Integrations:</strong> Firebase/Auth0 for auth, Stripe for payments, Elasticsearch for search.</li>
-            </ul>
-            <p>For an MVP, consider no-code tools like Bubble.io.</p>
-            <p>Aim for mobile responsiveness.</p>
-        </section>
-
-        <section id="business-model">
-            <h2>Business Model</h2>
-            <ul>
-                <li><strong>Freemium:</strong> Basic free; premium for advanced features.</li>
-                <li><strong>Transaction Fees:</strong> 5-10% per match.</li>
-                <li><strong>Subscriptions:</strong> Tiered plans.</li>
-                <li><strong>Partnerships:</strong> With AEC associations.</li>
-            </ul>
-        </section>
-
-        <section id="challenges">
-            <h2>Potential Challenges and Solutions</h2>
-            <ul>
-                <li><strong>Trust Building:</strong> Pilot in one region for testimonials.</li>
-                <li><strong>Competition:</strong> Differentiate with AEC-specific tools.</li>
-                <li><strong>Legal:</strong> Consult lawyers for construction liabilities.</li>
-                <li><strong>User Acquisition:</strong> LinkedIn, forums, incentives.</li>
-            </ul>
-        </section>
-
-        <section id="next-steps">
-            <h2>Next Steps</h2>
-            <ol>
-                <li>Validate with surveys (e.g., Reddit communities).</li>
-                <li>Build MVP focusing on core matching.</li>
-                <li>Marketing via SEO and content.</li>
-                <li>Seek funding from construction tech accelerators.</li>
-            </ol>
-        </section>
+    <div id="hero" class="hero active">
+        <div class="hero-section left">
+            <h1>Project Providers</h1>
+            <p>Have too many projects? Post your overflow and connect with capable partners to maximize your revenue.</p>
+            <a href="#provider" class="btn" onclick="showSection('provider-dashboard')">Get Started</a>
+        </div>
+        <div class="hero-section right">
+            <h1>Capacity Providers</h1>
+            <p>Have manpower but not enough work? Find projects that match your skills and grow your business.</p>
+            <a href="#capacity" class="btn" onclick="showSection('capacity-dashboard')">Get Started</a>
+        </div>
     </div>
 
+    <section id="provider-dashboard" class="content-section">
+        <h2>Project Provider Dashboard</h2>
+        <p>Welcome, Project Provider! Post a new project below.</p>
+        <form id="post-project-form" onsubmit="handlePostProject(event)">
+            <label for="project-title">Project Title</label>
+            <input type="text" id="project-title" required>
+
+            <label for="project-description">Description</label>
+            <textarea id="project-description" required></textarea>
+
+            <label for="project-timeline">Timeline</label>
+            <input type="text" id="project-timeline" placeholder="e.g., 3 months" required>
+
+            <label for="project-budget">Budget</label>
+            <input type="number" id="project-budget" placeholder="e.g., 50000" required>
+
+            <label for="project-location">Location</label>
+            <input type="text" id="project-location" required>
+
+            <button type="submit">Post Project</button>
+        </form>
+        <div id="provider-results" class="mock-results"></div>
+    </section>
+
+    <section id="capacity-dashboard" class="content-section">
+        <h2>Capacity Provider Dashboard</h2>
+        <p>Welcome, Capacity Provider! Search for available projects.</p>
+        <form id="search-projects-form" onsubmit="handleSearchProjects(event)">
+            <label for="search-expertise">Expertise</label>
+            <select id="search-expertise">
+                <option value="civil">Civil Engineering</option>
+                <option value="residential">Residential Construction</option>
+                <option value="commercial">Commercial Architecture</option>
+            </select>
+
+            <label for="search-location">Location</label>
+            <input type="text" id="search-location" required>
+
+            <button type="submit">Search Projects</button>
+        </form>
+        <div id="capacity-results" class="mock-results">
+            <!-- Mock results will appear here -->
+        </div>
+    </section>
+
+    <section id="about" class="content-section">
+        <h2>About AEC Connect</h2>
+        <p>This platform connects AEC businesses to optimize project allocation. Grow smaller companies and ensure bigger ones don't leave money on the table.</p>
+    </section>
+
+    <section id="contact" class="content-section">
+        <h2>Contact Us</h2>
+        <p>Email: info@aecconnect.com</p>
+    </section>
+
     <footer>
-        <p>&copy; 2025 AEC Project Matching Platform Concept | Created with Grok</p>
+        <p>&copy; 2025 AEC Connect | Built as a Mockup</p>
     </footer>
+
+    <script>
+        function showSection(sectionId) {
+            document.querySelectorAll('.active').forEach(el => el.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+        }
+
+        function handlePostProject(event) {
+            event.preventDefault();
+            const title = document.getElementById('project-title').value;
+            const desc = document.getElementById('project-description').value;
+            alert(`Project Posted: ${title} - ${desc}`);
+            // Mock: Add to results
+            const results = document.getElementById('provider-results');
+            results.innerHTML += `<div class="result-card"><h3>${title}</h3><p>${desc}</p><p>Status: Posted</p></div>`;
+            event.target.reset();
+        }
+
+        function handleSearchProjects(event) {
+            event.preventDefault();
+            const expertise = document.getElementById('search-expertise').value;
+            const location = document.getElementById('search-location').value;
+            // Mock search results
+            const results = document.getElementById('capacity-results');
+            results.innerHTML = `
+                <div class="result-card">
+                    <h3>Mock Project 1</h3>
+                    <p>Expertise: ${expertise}</p>
+                    <p>Location: ${location}</p>
+                    <p>Budget: $50,000 | Timeline: 3 months</p>
+                    <button onclick="alert('Bid Submitted!')">Bid Now</button>
+                </div>
+                <div class="result-card">
+                    <h3>Mock Project 2</h3>
+                    <p>Expertise: ${expertise}</p>
+                    <p>Location: ${location}</p>
+                    <p>Budget: $80,000 | Timeline: 6 months</p>
+                    <button onclick="alert('Bid Submitted!')">Bid Now</button>
+                </div>
+            `;
+        }
+    </script>
 </body>
 </html>
