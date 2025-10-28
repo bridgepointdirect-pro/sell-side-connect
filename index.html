@@ -369,28 +369,13 @@
 
   <script>
     /* ===================== State Keys & Utils ===================== */
-    const KEYS = {
-      users:'aec_users',
-      currentUser:'aec_current_user',
-      deals:'mna_crm_deals_v1',
-      checklist:'mna_checklist_state_v1'
-    };
-
-    const Utils = {
-      id: () => '_' + Math.random().toString(36).slice(2,10),
-      toast(msg,type){
-        const t = document.getElementById('toast'); if(!t) return;
-        t.textContent = msg; t.className = type ? 'show '+type : 'show';
-        clearTimeout(t._hide); t._hide = setTimeout(()=>{ t.className=''; t.textContent=''; }, 2600);
-      },
-      money(v){ if(v==null||isNaN(v)) return '-'; return '$' + Number(v).toLocaleString(); },
-      csvEscape(s){ if (s==null) return ''; s=String(s); return /[,"\\n]/.test(s)? `"${s.replace(/"/g,'""')}"` : s; }
-    };
-
-/* ===================== Auth + Routing ===================== */
-const KEYS = { users:'aec_users', currentUser:'aec_current_user', deals:'mna_crm_deals_v1', checklist:'mna_checklist_state_v1' };
-
-const Utils = {
+window.KEYS = window.KEYS || {
+  users:'aec_users',
+  currentUser:'aec_current_user',
+  deals:'mna_crm_deals_v1',
+  checklist:'mna_checklist_state_v1'
+};
+window.Utils = window.Utils || {
   id: () => '_' + Math.random().toString(36).slice(2,10),
   toast(msg,type){
     const t = document.getElementById('toast'); if(!t) return;
@@ -398,103 +383,6 @@ const Utils = {
     clearTimeout(t._hide); t._hide = setTimeout(()=>{ t.className=''; t.textContent=''; }, 2600);
   }
 };
-
-let currentUser = null;
-
-function switchLoginTab(which){
-  // Support both new (.tab/.form) and legacy (.login-tab/.login-form) structures
-  const tabs  = document.querySelectorAll('.tab, .login-tab');
-  const forms = document.querySelectorAll('.form, .login-form');
-
-  tabs.forEach(t=>t.classList.remove('active'));
-  forms.forEach(f=>f.classList.remove('active'));
-
-  if(which==='login'){
-    (document.getElementById('tabLogin')  || document.querySelector('.login-tab:first-child'))?.classList.add('active');
-    (document.getElementById('loginForm') || document.getElementById('loginFormEl'))?.classList.add('active');
-  } else {
-    (document.getElementById('tabSignup') || document.querySelector('.login-tab:last-child'))?.classList.add('active');
-    (document.getElementById('signupForm')|| document.getElementById('signupFormEl'))?.classList.add('active');
-  }
-}
-
-function handleSignup(e){
-  e?.preventDefault?.();
-  const email = (document.getElementById('signupEmail')?.value || '').trim().toLowerCase();
-  const pw    = (document.getElementById('signupPassword')?.value || '');
-  const err   = document.getElementById('signupError'); if (err){ err.style.display='none'; err.textContent=''; }
-
-  if(!email || pw.length < 6){ if (err){ err.textContent='Enter a valid email and a 6+ character password.'; err.style.display='block'; } return; }
-
-  const users = JSON.parse(localStorage.getItem(KEYS.users) || '[]');
-  if(users.find(u=>u.email===email)){ if (err){ err.textContent='An account with this email already exists.'; err.style.display='block'; } return; }
-
-  users.push({ id:Utils.id(), email, password:pw, createdAt:new Date().toISOString() });
-  localStorage.setItem(KEYS.users, JSON.stringify(users));
-  localStorage.setItem(KEYS.currentUser, JSON.stringify({ email }));
-  Utils.toast('Account created','success');
-  showMainApp();
-}
-
-function handleLogin(e){
-  e?.preventDefault?.();
-  const email = (document.getElementById('loginEmail')?.value || '').trim().toLowerCase();
-  const pw    = (document.getElementById('loginPassword')?.value || '');
-  const err   = document.getElementById('loginError'); if (err){ err.style.display='none'; err.textContent=''; }
-
-  const users = JSON.parse(localStorage.getItem(KEYS.users) || '[]');
-  const user  = users.find(u=>u.email===email && u.password===pw);
-  if(!user){ if (err){ err.textContent='Invalid email or password.'; err.style.display='block'; } return; }
-
-  localStorage.setItem(KEYS.currentUser, JSON.stringify({ email:user.email }));
-  Utils.toast('Login successful','success');
-  showMainApp();
-}
-
-function logout(){
-  if(confirm('Logout?')){
-    localStorage.removeItem(KEYS.currentUser);
-    currentUser = null;
-    showPage('login');
-  }
-}
-
-function showMainApp(){
-  currentUser = JSON.parse(localStorage.getItem(KEYS.currentUser) || 'null');
-  ['headerUserEmail','crmUserEmail','checklistUserEmail'].forEach(id=>{
-    const el = document.getElementById(id);
-    if (el) el.textContent = currentUser ? (currentUser.email || '') : '';
-  });
-  showPage('home');
-}
-
-function showPage(which){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  const map = { login:'loginScreen', home:'homePage', crm:'crmPage', checklist:'checklistPage' };
-  (document.getElementById(map[which] || which) || document.getElementById('homePage')).classList.add('active');
-
-  // Guard inner pages when not authenticated
-  if ((which==='crm' || which==='checklist' || which==='home') && !localStorage.getItem(KEYS.currentUser)) {
-    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-    document.getElementById('loginScreen')?.classList.add('active');
-  }
-}
-
-function initAuth(){
-  try {
-    const u = JSON.parse(localStorage.getItem(KEYS.currentUser) || 'null');
-    if (u) showMainApp(); else showPage('login');
-  } catch {
-    showPage('login');
-  }
-}
-
-/* Expose for inline handlers if present */
-window.switchLoginTab = switchLoginTab;
-window.handleLogin    = handleLogin;
-window.handleSignup   = handleSignup;
-window.logout         = logout;
-window.showPage       = showPage;
 
     /* ===================== Export / Import ===================== */
     function exportData(){
