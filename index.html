@@ -22,6 +22,13 @@
             top: 0;
             z-index: 1000;
         }
+        header h1 {
+            margin: 0;
+        }
+        header h1 a {
+            color: white;
+            text-decoration: none;
+        }
         header nav {
             margin-top: 10px;
         }
@@ -210,7 +217,7 @@
 </head>
 <body>
     <header>
-        <h1>Bridge Point</h1>
+        <h1><a href="#home" onclick="showSection('hero')">Bridge Point</a></h1>
         <nav>
             <a href="#home" onclick="showSection('hero')">Home</a>
             <a href="#about" onclick="showSection('about')">About</a>
@@ -342,7 +349,22 @@
 
     <section id="contact" class="content-section">
         <h2>Contact Us</h2>
-        <p>Email: info@bridgepoint.com</p>
+        <p>Reach out to us at bridgepointdirect@gmail.com or use the form below.</p>
+        <form id="contact-form" onsubmit="handleContactSubmit(event)">
+            <label for="contact-name">Your Name</label>
+            <input type="text" id="contact-name" required>
+
+            <label for="contact-company">Company Name</label>
+            <input type="text" id="contact-company" required>
+
+            <label for="contact-email">Your Email</label>
+            <input type="email" id="contact-email" required>
+
+            <label for="contact-message">Message</label>
+            <textarea id="contact-message" required></textarea>
+
+            <button type="submit">Send Message</button>
+        </form>
     </section>
 
     <footer>
@@ -388,6 +410,16 @@
                     <button onclick="alert('Bid Submitted!')">Bid Now</button>
                 </div>
             `;
+        }
+
+        function handleContactSubmit(event) {
+            event.preventDefault();
+            const name = document.getElementById('contact-name').value;
+            const company = document.getElementById('contact-company').value;
+            const email = document.getElementById('contact-email').value;
+            const message = document.getElementById('contact-message').value;
+            alert(`Message Sent from ${name} at ${company} (${email}): ${message}`);
+            event.target.reset();
         }
     </script>
 </body>
