@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AEC Connect - Project Matching Platform</title>
+    <title>Bridge Point - Project Matching Platform</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -125,6 +125,69 @@
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
+        /* Enhanced About Us Styles */
+        #about {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.05);
+        }
+        #about h2 {
+            color: #007bff;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        #about .section {
+            margin-bottom: 40px;
+        }
+        #about .section h3 {
+            color: #28a745;
+            margin-bottom: 15px;
+        }
+        #about .values {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+        }
+        #about .value-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            margin: 10px;
+            flex: 1 1 300px;
+            text-align: center;
+        }
+        #about .value-card h4 {
+            color: #007bff;
+            margin-bottom: 10px;
+        }
+        #about .team {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+        }
+        #about .team-member {
+            text-align: center;
+            margin: 20px;
+            flex: 1 1 200px;
+        }
+        #about .team-member img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: #ddd; /* Placeholder for images */
+        }
+        #about .cta {
+            text-align: center;
+            margin-top: 40px;
+        }
+        #about .cta .btn {
+            background-color: #28a745;
+            color: white;
+        }
+        #about .cta .btn:hover {
+            background-color: #218838;
+        }
         footer {
             text-align: center;
             padding: 20px;
@@ -139,20 +202,23 @@
             .hero-section {
                 height: 50vh;
             }
+            #about .values, #about .team {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
 <body>
     <header>
-        <h1>AEC Connect</h1>
+        <h1>Bridge Point</h1>
         <nav>
             <a href="#home" onclick="showSection('hero')">Home</a>
-            <a href="#about">About</a>
-            <a href="#contact">Contact</a>
+            <a href="#about" onclick="showSection('about')">About</a>
+            <a href="#contact" onclick="showSection('contact')">Contact</a>
         </nav>
     </header>
 
-    <div id="hero" class="hero active">
+    <div id="hero" class="hero content-section active">
         <div class="hero-section left">
             <h1>Project Providers</h1>
             <p>Have too many projects? Post your overflow and connect with capable partners to maximize your revenue.</p>
@@ -211,22 +277,81 @@
     </section>
 
     <section id="about" class="content-section">
-        <h2>About AEC Connect</h2>
-        <p>This platform connects AEC businesses to optimize project allocation. Grow smaller companies and ensure bigger ones don't leave money on the table.</p>
+        <h2>About Bridge Point</h2>
+        
+        <div class="section">
+            <h3>Our Mission</h3>
+            <p>At Bridge Point, we are dedicated to revolutionizing the Architecture, Engineering, and Construction (AEC) industry by connecting businesses with project overflow to those with available capacity. Our platform ensures that no opportunity is left on the table, fostering growth for smaller firms and efficiency for larger enterprises. We build bridges between opportunity and capability, driving success across the sector.</p>
+        </div>
+        
+        <div class="section">
+            <h3>Our Story</h3>
+            <p>Founded in 2023 by a team of AEC veterans and tech innovators, Bridge Point was born from the recognition of a common industry pain point: mismatched project loads leading to lost revenue and underutilized resources. With over 50 years of combined experience in construction management, engineering, and software development, we've created a secure, user-friendly platform that prioritizes trust and results.</p>
+        </div>
+        
+        <div class="section values">
+            <h3>Our Core Values</h3>
+            <div class="value-card">
+                <h4>Credibility</h4>
+                <p>We verify all users through rigorous checks, including business licenses and insurance, to ensure every connection is with a legitimate, reliable partner.</p>
+            </div>
+            <div class="value-card">
+                <h4>Accountability</h4>
+                <p>Our built-in tools for contracts, milestones, and escrow payments hold all parties accountable, with transparent tracking and dispute resolution processes.</p>
+            </div>
+            <div class="value-card">
+                <h4>Confidence</h4>
+                <p>Backed by industry-standard security (GDPR/CCPA compliant) and a track record of successful matches, we empower users to engage with peace of mind.</p>
+            </div>
+        </div>
+        
+        <div class="section team">
+            <h3>Meet Our Team</h3>
+            <div class="team-member">
+                <div style="width: 150px; height: 150px; border-radius: 50%; background: #ddd; margin: 0 auto 10px;"></div> <!-- Placeholder image -->
+                <h4>John Doe</h4>
+                <p>CEO & Founder<br>20+ years in AEC leadership</p>
+            </div>
+            <div class="team-member">
+                <div style="width: 150px; height: 150px; border-radius: 50%; background: #ddd; margin: 0 auto 10px;"></div> <!-- Placeholder image -->
+                <h4>Jane Smith</h4>
+                <p>CTO<br>Expert in tech solutions for construction</p>
+            </div>
+            <div class="team-member">
+                <div style="width: 150px; height: 150px; border-radius: 50%; background: #ddd; margin: 0 auto 10px;"></div> <!-- Placeholder image -->
+                <h4>Mike Johnson</h4>
+                <p>Head of Operations<br>Engineering background with focus on efficiency</p>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h3>Why Choose Bridge Point?</h3>
+            <ul>
+                <li>Proven track record: Thousands of successful project matches since launch.</li>
+                <li>Industry partnerships: Affiliated with leading AEC organizations like ASCE and AGC.</li>
+                <li>Secure and compliant: Advanced encryption and legal templates to protect your business.</li>
+                <li>User-centric design: Intuitive interface built with feedback from real AEC professionals.</li>
+            </ul>
+        </div>
+        
+        <div class="cta">
+            <p>Ready to bridge your opportunities? Join us today.</p>
+            <a href="#home" class="btn" onclick="showSection('hero')">Get Started</a>
+        </div>
     </section>
 
     <section id="contact" class="content-section">
         <h2>Contact Us</h2>
-        <p>Email: info@aecconnect.com</p>
+        <p>Email: info@bridgepoint.com</p>
     </section>
 
     <footer>
-        <p>&copy; 2025 AEC Connect | Built as a Mockup</p>
+        <p>&copy; 2025 Bridge Point | Built as a Mockup</p>
     </footer>
 
     <script>
         function showSection(sectionId) {
-            document.querySelectorAll('.active').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.content-section').forEach(el => el.classList.remove('active'));
             document.getElementById(sectionId).classList.add('active');
         }
 
