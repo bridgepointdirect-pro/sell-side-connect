@@ -20,19 +20,22 @@
             display: flex;
             flex-direction: column;
             min-height: 100vh;
+            overflow-x: hidden;
         }
         
         header {
             background-color: #00a89d;
             color: white;
-            padding: 15px 0;
-            text-align: center;
+            padding: 15px 20px;
             position: fixed;
             width: 100%;
             top: 0;
             z-index: 1000;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             transition: background 0.3s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         
         header:hover {
@@ -49,26 +52,141 @@
             text-decoration: none;
         }
         
-        header nav {
-            margin-top: 10px;
+        .menu-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.8em;
+            cursor: pointer;
+            padding: 5px 10px;
         }
         
-        header nav a {
-            color: white;
-            text-decoration: none;
-            margin: 0 15px;
-            font-weight: 600;
-            transition: color 0.3s;
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: -320px;
+            width: 300px;
+            height: 100vh;
+            background: white;
+            box-shadow: -4px 0 15px rgba(0,0,0,0.2);
+            transition: right 0.3s ease;
+            z-index: 2000;
+            padding: 80px 20px 20px;
+            overflow-y: auto;
+        }
+        
+        .sidebar.open {
+            right: 0;
+        }
+        
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e0f7f6;
+        }
+        
+        .sidebar-header h2 {
+            color: #00a89d;
+            font-size: 1.5em;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            color: #666;
+            font-size: 1.8em;
             cursor: pointer;
         }
         
-        header nav a:hover {
-            color: #e0f7f6;
+        .sidebar-nav {
+            margin-bottom: 30px;
+        }
+        
+        .sidebar-nav a {
+            display: block;
+            padding: 12px 0;
+            color: #333;
+            text-decoration: none;
+            font-weight: 600;
+            border-bottom: 1px solid #eee;
+            transition: color 0.3s;
+        }
+        
+        .sidebar-nav a:hover {
+            color: #00a89d;
+        }
+        
+        .auth-section {
+            margin-bottom: 30px;
+        }
+        
+        .auth-section .btn {
+            width: 100%;
+            margin: 8px 0;
+            text-align: center;
+        }
+        
+        .search-filter {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+        
+        .search-filter h3 {
+            color: #00a89d;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+        
+        .search-filter .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .search-filter label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: #00a89d;
+            font-size: 0.9em;
+        }
+        
+        .search-filter input, .search-filter select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .search-filter button {
+            background-color: #00a89d;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            width: 100%;
+            margin-top: 10px;
+            transition: all 0.3s;
+        }
+        
+        .search-filter button:hover {
+            background-color: #008c82;
         }
         
         main {
             flex: 1;
             padding-top: 80px;
+            transition: margin-right 0.3s ease;
+        }
+        
+        main.shifted {
+            margin-right: 300px;
         }
         
         .hero {
@@ -416,7 +534,7 @@
         }
         
         .pricing-card ul li:before {
-            content: "✓ ";
+            content: "Checkmark ";
             color: #00a89d;
             font-weight: bold;
             margin-right: 10px;
@@ -784,16 +902,6 @@
                 font-size: 1.4em;
             }
             
-            header nav {
-                display: flex;
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-            
-            header nav a {
-                margin: 5px 10px;
-            }
-            
             .hero h1 {
                 font-size: 2em;
             }
@@ -832,6 +940,15 @@
             .result-card .actions button {
                 width: 100%;
             }
+            
+            main.shifted {
+                margin-right: 0;
+            }
+            
+            .sidebar {
+                width: 100%;
+                right: -100%;
+            }
         }
         
         .loading {
@@ -851,128 +968,189 @@
             40% { content: '..'; }
             60%, 100% { content: '...'; }
         }
-        /* New Styles for Profile, Signup, Matching, Messages */
-        .profile-section, .signup-section, .matching-section, .messages-section {
-            padding: 80px 20px;
-            background-color: #f8f9fa;
+        /* Login Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 3000;
+            justify-content: center;
+            align-items: center;
         }
-        .profile-content, .signup-content {
-            max-width: 800px;
-            margin: 0 auto;
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
             background: white;
             padding: 40px;
             border-radius: 15px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-        }
-        .swipe-stack {
-            position: relative;
-            height: 500px;
+            width: 90%;
             max-width: 400px;
-            margin: 0 auto;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            position: relative;
         }
-        .swipe-card {
+        
+        .modal-close {
             position: absolute;
-            width: 100%;
-            background: white;
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            transition: transform 0.3s, opacity 0.3s;
-        }
-        .swipe-card.swiped-left {
-            transform: translateX(-100%);
-            opacity: 0;
-        }
-        .swipe-card.swiped-right {
-            transform: translateX(100%);
-            opacity: 0;
-        }
-        .swipe-actions {
-            display: flex;
-            justify-content: space-around;
-            margin-top: 20px;
-        }
-        .chat-list {
-            width: 30%;
-            float: left;
-            background: white;
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-        .chat-window {
-            width: 65%;
-            float: right;
-            background: white;
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            min-height: 400px;
-        }
-        .chat-message {
-            margin-bottom: 10px;
-            padding: 10px;
-            border-radius: 10px;
-        }
-        .chat-message.sent {
-            background: #00a89d;
-            color: white;
-            text-align: right;
-        }
-        .chat-message.received {
-            background: #e0f7f6;
-            color: #333;
-        }
-        .chat-input {
-            display: flex;
-            margin-top: 20px;
-        }
-        .chat-input input {
-            flex: 1;
-            padding: 10px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px 0 0 8px;
-        }
-        .chat-input button {
-            padding: 10px 20px;
-            background: #00a89d;
-            color: white;
+            top: 15px;
+            right: 15px;
+            background: none;
             border: none;
-            border-radius: 0 8px 8px 0;
-        }
-        .match-item {
-            padding: 10px;
+            font-size: 1.5em;
+            color: #666;
             cursor: pointer;
-            border-bottom: 1px solid #e0e0e0;
         }
-        .match-item.active {
-            background: #e0f7f6;
+        
+        .modal h2 {
+            color: #00a89d;
+            margin-bottom: 20px;
+            text-align: center;
         }
-        .clearfix::after {
-            content: "";
-            clear: both;
-            display: table;
+        
+        .modal .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .modal button {
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        .modal .switch-form {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+        }
+        
+        .modal .switch-form a {
+            color: #00a89d;
+            text-decoration: underline;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
     <header>
         <h1><a onclick="showSection('home')">Bridge Point</a></h1>
-        <nav>
-            <a onclick="showSection('home')">Home</a>
-            <a onclick="showSection('niches')">Industries</a>
-            <a onclick="showSection('how-it-works')">How It Works</a>
-            <a onclick="showSection('pricing')">Pricing</a>
-            <a onclick="showSection('dashboard')">Dashboard</a>
-            <a onclick="showSection('signup')">Sign Up</a>
-            <a onclick="showSection('profile')">Profile</a>
-            <a onclick="showSection('matching')">Matching</a>
-            <a onclick="showSection('messages')">Messages</a>
-            <a onclick="showSection('about')">About</a>
-            <a onclick="showSection('contact')">Contact</a>
-        </nav>
+        <button class="menu-btn" onclick="toggleSidebar()">Menu</button>
     </header>
-    <main>
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2>Menu</h2>
+            <button class="close-btn" onclick="toggleSidebar()">Close</button>
+        </div>
+        
+        <div class="sidebar-nav">
+            <a onclick="showSectionAndClose('home')">Home</a>
+            <a onclick="showSectionAndClose('niches')">Industries</a>
+            <a onclick="showSectionAndClose('how-it-works')">How It Works</a>
+            <a onclick="showSectionAndClose('pricing')">Pricing</a>
+            <a onclick="showSectionAndClose('dashboard')">Dashboard</a>
+            <a onclick="showSectionAndClose('profile')">Profile</a>
+            <a onclick="showSectionAndClose('about')">About</a>
+            <a onclick="showSectionAndClose('contact')">Contact</a>
+        </div>
+        
+        <div class="auth-section">
+            <a class="btn" onclick="openModal('login')">Login</a>
+            <a class="btn btn-secondary" onclick="openModal('signup')">Sign Up</a>
+        </div>
+        
+        <div class="search-filter">
+            <h3>Search Projects</h3>
+            <form onsubmit="handleSearch(event)">
+                <div class="form-group">
+                    <label for="search-niche">Niche</label>
+                    <select id="search-niche">
+                        <option value="">All Niches</option>
+                        <option value="green">Green Construction</option>
+                        <option value="infrastructure">Infrastructure</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="search-location">Location</label>
+                    <input type="text" id="search-location" placeholder="City, State">
+                </div>
+                <div class="form-group">
+                    <label for="search-budget">Budget Range</label>
+                    <input type="text" id="search-budget" placeholder="$50k - $500k">
+                </div>
+                <button type="submit">Search</button>
+            </form>
+        </div>
+    </div>
+    <!-- Login/Signup Modal -->
+    <div class="modal" id="auth-modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">Close</button>
+            
+            <!-- Login Form -->
+            <div id="login-form" class="auth-form">
+                <h2>Login</h2>
+                <form onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label for="login-email">Email</label>
+                        <input type="email" id="login-email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">Password</label>
+                        <input type="password" id="login-password" required>
+                    </div>
+                    <button type="submit">Login</button>
+                </form>
+                <p class="switch-form">Don't have an account? <a onclick="switchForm('signup')">Sign Up</a></p>
+            </div>
+            
+            <!-- Signup Form -->
+            <div id="signup-form" class="auth-form" style="display: none;">
+                <h2>Create Account</h2>
+                <form onsubmit="handleSignup(event)">
+                    <div class="form-group">
+                        <label for="signup-name">Full Name *</label>
+                        <input type="text" id="signup-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-email">Email Address *</label>
+                        <input type="email" id="signup-email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-password">Password *</label>
+                        <input type="password" id="signup-password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-company">Company Name *</label>
+                        <input type="text" id="signup-company" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-niche">Primary Niche *</label>
+                        <select id="signup-niche" required>
+                            <option value="">Select a niche...</option>
+                            <option value="green">Green & Sustainable Construction</option>
+                            <option value="infrastructure">Infrastructure & Public Works</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-location">Location *</label>
+                        <input type="text" id="signup-location" placeholder="City, State" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-licenses">Upload Licenses & Certifications *</label>
+                        <input type="file" id="signup-licenses" multiple required>
+                    </div>
+                    <button type="submit">Create Account</button>
+                </form>
+                <p class="switch-form">Already have an account? <a onclick="switchForm('login')">Login</a></p>
+            </div>
+        </div>
+    </div>
+    <main id="main-content">
         <!-- HOME SECTION -->
         <section id="home" class="content-section active">
             <div class="hero">
@@ -980,7 +1158,7 @@
                 <p class="tagline">Get matched with verified overflow projects in 24 hours</p>
                 <p class="subtitle">The premier B2B capacity matching platform connecting subcontractors with verified projects across Green Construction and Infrastructure.</p>
                 <div class="cta-buttons">
-                    <a onclick="showSection('signup')" class="btn">Get Started Free</a>
+                    <a onclick="openModal('signup')" class="btn">Get Started Free</a>
                     <a onclick="showSection('how-it-works')" class="btn btn-secondary">Learn More</a>
                 </div>
             </div>
@@ -1013,14 +1191,14 @@
                 
                 <div class="niches-grid">
                     <div class="niche-card">
-                        <span class="icon">🌱</span>
+                        <span class="icon">Seedling</span>
                         <h3>Green & Sustainable Construction</h3>
                         <p>Connect with LEED-certified projects, solar installations, renewable energy developments, and ESG-compliant builds. AI-powered matching based on certifications and carbon footprint audits.</p>
                         <div class="market-size">Market: $228B (2025) → $377B (2030)</div>
                     </div>
                     
                     <div class="niche-card">
-                        <span class="icon">🏗️</span>
+                        <span class="icon">Construction</span>
                         <h3>Infrastructure & Public Works</h3>
                         <p>Access IIJA-funded highway, bridge, and utility projects. Specialized HUBZone and DBE compliance tools with federal contract templates and Davis-Bacon wage tracking.</p>
                         <div class="market-size">$1.2T IIJA Funding | 105,000+ Projects</div>
@@ -1054,7 +1232,7 @@
                     <div class="step">
                         <div class="step-number">4</div>
                         <h3>Connect & Collaborate</h3>
-                        <p>Message matched partners in-platform, review profiles, and agree on terms. Secure escrow holds 10% deposit until project milestones are met.</p>
+                        <p>Review profiles and agree on terms. Secure escrow holds 10% deposit until project milestones are met.</p>
                     </div>
                 </div>
             </div>
@@ -1069,7 +1247,7 @@
                 
                 <div class="audit-types">
                     <div class="audit-card">
-                        <h3><span class="checkmark">✓</span> Green Construction</h3>
+                        <h3><span class="checkmark">Checkmark</span> Green Construction</h3>
                         <ul>
                             <li>LEED Certification Validation</li>
                             <li>ENERGY STAR Compliance</li>
@@ -1079,7 +1257,7 @@
                     </div>
                     
                     <div class="audit-card">
-                        <h3><span class="checkmark">✓</span> Infrastructure/Public Works</h3>
+                        <h3><span class="checkmark">Checkmark</span> Infrastructure/Public Works</h3>
                         <ul>
                             <li>HUBZone Status Verification</li>
                             <li>DBE Certification Check</li>
@@ -1107,11 +1285,10 @@
                         <ul>
                             <li>Create profile</li>
                             <li>Basic matching (up to 5 matches/month)</li>
-                            <li>In-platform messaging</li>
                             <li>Auto-verification check</li>
                             <li>Community support</li>
                         </ul>
-                        <a onclick="showSection('signup')" class="btn">Get Started</a>
+                        <a onclick="openModal('signup')" class="btn">Get Started</a>
                     </div>
                     
                     <div class="pricing-card featured">
@@ -1125,7 +1302,7 @@
                             <li>Email support</li>
                             <li>2% transaction fee</li>
                         </ul>
-                        <a onclick="showSection('signup')" class="btn">Start Free Trial</a>
+                        <a onclick="openModal('signup')" class="btn">Start Free Trial</a>
                     </div>
                     
                     <div class="pricing-card">
@@ -1141,11 +1318,6 @@
                         </ul>
                         <a onclick="showSection('contact')" class="btn">Contact Sales</a>
                     </div>
-                </div>
-                
-                <div style="text-align: center; margin-top: 50px; color: white;">
-                    <p style="font-size: 1.1em; margin-bottom: 15px;"><strong>Additional Services:</strong></p>
-                    <p>Premium Audits: $99-$299 | Annual Recertification: $149/year | Expedited Verification: 24-hour turnaround</p>
                 </div>
             </div>
         </section>
@@ -1163,7 +1335,7 @@
                     <!-- PROJECT OWNER DASHBOARD -->
                     <div id="project-owner-dash" class="dashboard-section active">
                         <h3 style="color: #00a89d; margin-bottom: 20px;">Post Your Overflow Project</h3>
-                        <p style="color: #666; margin-bottom: 30px;">Get matched with verified subcontractors in 24 hours. Our AI connects you with the right partners based on your project requirements.</p>
+                        <p style="color: #666; margin-bottom: 30px;">Get matched with verified subcontractors in 24 hours.</p>
                         
                         <form id="post-project-form" onsubmit="handlePostProject(event)">
                             <div class="form-group">
@@ -1200,11 +1372,6 @@
                                 <input type="text" id="project-budget" placeholder="e.g., $50,000 - $75,000" required>
                             </div>
                             
-                            <div class="form-group">
-                                <label for="project-certifications">Required Certifications</label>
-                                <input type="text" id="project-certifications" placeholder="e.g., LEED AP, HUBZone, Fire-Resistant Materials">
-                            </div>
-                            
                             <button type="submit">Post Project & Find Matches</button>
                         </form>
                         
@@ -1214,7 +1381,7 @@
                     <!-- SUBCONTRACTOR DASHBOARD -->
                     <div id="subcontractor-dash" class="dashboard-section">
                         <h3 style="color: #00a89d; margin-bottom: 20px;">Find Your Next Project</h3>
-                        <p style="color: #666; margin-bottom: 30px;">Search for verified overflow projects that match your expertise and capacity. Get paid securely through our escrow system.</p>
+                        <p style="color: #666; margin-bottom: 30px;">Search for verified overflow projects that match your expertise and capacity.</p>
                         
                         <form id="search-projects-form" onsubmit="handleSearchProjects(event)">
                             <div class="form-group">
@@ -1241,11 +1408,6 @@
                                 <input type="date" id="sub-availability" required>
                             </div>
                             
-                            <div class="form-group">
-                                <label for="sub-certifications">Your Certifications</label>
-                                <input type="text" id="sub-certifications" placeholder="e.g., LEED AP, Licensed Electrician, HUBZone Certified">
-                            </div>
-                            
                             <button type="submit">Search Available Projects</button>
                         </form>
                         
@@ -1254,60 +1416,11 @@
                 </div>
             </div>
         </section>
-        <!-- SIGNUP SECTION -->
-        <section id="signup" class="content-section signup-section">
-            <div class="dashboard-preview">
-                <h2>Create Your Account</h2>
-                <div class="signup-content">
-                    <p style="color: #666; margin-bottom: 30px;">Sign up and upload your verification documents to get started. Verification typically takes 24-48 hours.</p>
-                    <form id="signup-form" onsubmit="handleSignup(event)">
-                        <div class="form-group">
-                            <label for="signup-name">Full Name *</label>
-                            <input type="text" id="signup-name" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="signup-email">Email Address *</label>
-                            <input type="email" id="signup-email" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="signup-password">Password *</label>
-                            <input type="password" id="signup-password" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="signup-company">Company Name *</label>
-                            <input type="text" id="signup-company" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="signup-niche">Primary Niche *</label>
-                            <select id="signup-niche" required>
-                                <option value="">Select a niche...</option>
-                                <option value="green">Green & Sustainable Construction</option>
-                                <option value="infrastructure">Infrastructure & Public Works</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="signup-location">Location *</label>
-                            <input type="text" id="signup-location" placeholder="City, State" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="signup-licenses">Upload Licenses & Certifications *</label>
-                            <input type="file" id="signup-licenses" multiple required>
-                        </div>
-                        <div class="form-group">
-                            <label for="signup-insurance">Upload Insurance Documents</label>
-                            <input type="file" id="signup-insurance" multiple>
-                        </div>
-                        <button type="submit">Create Account & Submit for Verification</button>
-                    </form>
-                    <div id="signup-success" class="success-message"></div>
-                </div>
-            </div>
-        </section>
         <!-- PROFILE SECTION -->
-        <section id="profile" class="content-section profile-section">
+        <section id="profile" class="content-section">
             <div class="dashboard-preview">
                 <h2>Your Profile</h2>
-                <div class="profile-content">
+                <div class="dashboard-content">
                     <p style="color: #666; margin-bottom: 30px;">Edit your profile details and upload new documents if needed.</p>
                     <form id="profile-form" onsubmit="handleProfileUpdate(event)">
                         <div class="form-group">
@@ -1337,45 +1450,8 @@
                             <label for="profile-bio">Bio / Description</label>
                             <textarea id="profile-bio">Experienced contractor in green building projects.</textarea>
                         </div>
-                        <div class="form-group">
-                            <label for="profile-update-files">Update Documents</label>
-                            <input type="file" id="profile-update-files" multiple>
-                        </div>
                         <button type="submit">Update Profile</button>
                     </form>
-                    <div id="profile-success" class="success-message"></div>
-                </div>
-            </div>
-        </section>
-        <!-- MATCHING SECTION -->
-        <section id="matching" class="content-section matching-section">
-            <div class="dashboard-preview">
-                <h2>Tinder-Style Matching</h2>
-                <div class="swipe-stack" id="swipe-stack">
-                    <!-- Cards populated by JS -->
-                </div>
-                <div class="swipe-actions">
-                    <button class="btn btn-secondary" onclick="swipeLeft()">Pass</button>
-                    <button class="btn" onclick="swipeRight()">Match</button>
-                </div>
-                <p style="text-align: center; margin-top: 20px; color: #666;">Swipe right to match with contractors/sub-contractors.</p>
-            </div>
-        </section>
-        <!-- MESSAGES SECTION -->
-        <section id="messages" class="content-section messages-section">
-            <div class="dashboard-preview">
-                <h2>Direct Messages</h2>
-                <div class="clearfix">
-                    <div class="chat-list" id="chat-list">
-                        <!-- Match items populated by JS -->
-                    </div>
-                    <div class="chat-window" id="chat-window">
-                        <div id="chat-messages"></div>
-                        <div class="chat-input">
-                            <input type="text" id="message-input" placeholder="Type your message...">
-                            <button onclick="sendMessage()">Send</button>
-                        </div>
-                    </div>
                 </div>
             </div>
         </section>
@@ -1391,46 +1467,27 @@
                     <h3>Our Story</h3>
                     <p>Founded in 2025, Bridge Point emerged from recognizing a critical gap in B2B matching platforms. While general AEC platforms became oversaturated, specialized niches—green construction and infrastructure—remained underserved despite explosive growth potential. With combined expertise in construction management, technology innovation, and market analysis, we created a modular platform that adapts our proven matching algorithms to each niche's unique requirements.</p>
                     
-                    <p>Our platform addresses $500B+ in total market opportunity across industries experiencing labor shortages, regulatory complexity, and unprecedented government funding (including $1.2T from IIJA). By focusing on verification, compliance automation, and AI-powered matching, we've positioned Bridge Point as the trusted solution for businesses seeking reliable partnerships in specialized sectors.</p>
-                    
                     <h3>Our Core Values</h3>
                     <div class="values-grid">
                         <div class="value-card">
                             <h4>Trust Through Verification</h4>
-                            <p>Every user undergoes rigorous 3-step verification including license checks, insurance validation, and niche-specific certification audits. Our blockchain-enabled system ensures credibility and reduces bad matches that cost businesses $10K-$100K+ in delays.</p>
+                            <p>Every user undergoes rigorous 3-step verification including license checks, insurance validation, and niche-specific certification audits.</p>
                         </div>
                         
                         <div class="value-card">
                             <h4>Niche Specialization</h4>
-                            <p>We don't try to be everything to everyone. By focusing on two underserved, high-growth niches, we deliver tailored compliance tools, industry-specific matching algorithms, and specialized expertise that generic platforms cannot match.</p>
+                            <p>By focusing on two underserved, high-growth niches, we deliver tailored compliance tools, industry-specific matching algorithms, and specialized expertise.</p>
                         </div>
                         
                         <div class="value-card">
                             <h4>Innovation & Efficiency</h4>
-                            <p>Our AI-driven matching engine delivers quality connections in 24 hours. Combined with automated compliance checks, escrow systems, and predictive analytics, we reduce administrative burden by 40-50% while increasing match success rates.</p>
+                            <p>Our AI-driven matching engine delivers quality connections in 24 hours. Combined with automated compliance checks and predictive analytics, we reduce administrative burden by 40-50%.</p>
                         </div>
                     </div>
                     
-                    <h3>Market Opportunity</h3>
-                    <p>Bridge Point targets two explosive growth sectors:</p>
-                    <ul style="color: #666; line-height: 2; margin: 20px 0 20px 40px;">
-                        <li><strong>Green Construction:</strong> $228B market (2025) growing to $377B by 2030 at 10% CAGR</li>
-                        <li><strong>Infrastructure:</strong> $1.2T IIJA funding advancing 105,000+ projects</li>
-                    </ul>
-                    
-                    <h3>Why Choose Bridge Point?</h3>
-                    <ul style="color: #666; line-height: 2; margin: 20px 0 20px 40px;">
-                        <li><strong>Proven Technology:</strong> Transferable AI matching algorithms and escrow systems from successful AEC platform</li>
-                        <li><strong>Compliance Expertise:</strong> Built-in tools for LEED, HUBZone, DBE, FEMA grants, H-2A visas, and zoning APIs</li>
-                        <li><strong>Secure Transactions:</strong> Escrow system holds 10% deposits until project milestones are met</li>
-                        <li><strong>Strategic Partnerships:</strong> Collaborations with USGBC, SBA, FEMA, and industry associations</li>
-                        <li><strong>24-Hour Matching:</strong> AI delivers 5-10 quality matches within one day</li>
-                        <li><strong>Verified Community:</strong> 100% of users verified through rigorous audit process</li>
-                    </ul>
-                    
                     <div style="text-align: center; margin-top: 60px;">
                         <h3 style="margin-bottom: 20px;">Ready to Bridge Your Opportunities?</h3>
-                        <a onclick="showSection('signup')" class="btn" style="display: inline-block;">Get Started Today</a>
+                        <a onclick="openModal('signup')" class="btn" style="display: inline-block;">Get Started Today</a>
                     </div>
                 </div>
             </div>
@@ -1464,11 +1521,6 @@
                             </div>
                             
                             <div class="form-group">
-                                <label for="contact-phone">Phone Number</label>
-                                <input type="tel" id="contact-phone" placeholder="Optional">
-                            </div>
-                            
-                            <div class="form-group">
                                 <label for="contact-niche">Industry of Interest</label>
                                 <select id="contact-niche">
                                     <option value="">Select a niche...</option>
@@ -1485,22 +1537,30 @@
                             
                             <button type="submit">Send Message</button>
                         </form>
-                        
-                        <div style="text-align: center; margin-top: 30px; padding-top: 30px; border-top: 2px solid #e0e0e0;">
-                            <p style="color: #666; margin-bottom: 10px;"><strong>Email us directly:</strong></p>
-                            <p><a href="mailto:bridgepointdirect@gmail.com" style="color: #00a89d; font-size: 1.1em;">bridgepointdirect@gmail.com</a></p>
-                        </div>
                     </div>
                 </div>
             </div>
         </section>
     </main>
     <footer>
-        <p><strong>&copy; 2025 Bridge Point</strong> | Niche B2B Capacity Matching Platform</p>
+        <p><strong>© 2025 Bridge Point</strong> | Niche B2B Capacity Matching Platform</p>
         <p>Connecting verified partners across Green Construction and Infrastructure</p>
         <p style="margin-top: 15px; font-size: 0.9em;">MVP Phase | <a href="mailto:bridgepointdirect@gmail.com">bridgepointdirect@gmail.com</a></p>
     </footer>
     <script>
+        // Sidebar
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const main = document.getElementById('main-content');
+            sidebar.classList.toggle('open');
+            main.classList.toggle('shifted');
+        }
+        
+        function showSectionAndClose(sectionId) {
+            showSection(sectionId);
+            toggleSidebar();
+        }
+        
         // Navigation
         function showSection(sectionId) {
             document.querySelectorAll('.content-section').forEach(el => {
@@ -1508,6 +1568,21 @@
             });
             document.getElementById(sectionId).classList.add('active');
             window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        // Modal
+        function openModal(formType) {
+            document.getElementById('auth-modal').classList.add('active');
+            switchForm(formType);
+        }
+        
+        function closeModal() {
+            document.getElementById('auth-modal').classList.remove('active');
+        }
+        
+        function switchForm(formType) {
+            document.getElementById('login-form').style.display = formType === 'login' ? 'block' : 'none';
+            document.getElementById('signup-form').style.display = formType === 'signup' ? 'block' : 'none';
         }
         
         // Dashboard switching
@@ -1537,18 +1612,7 @@
                     location: "San Francisco, CA",
                     budget: "$450,000 - $575,000",
                     timeline: "4-6 months, Start: March 2026",
-                    certifications: "LEED AP, Licensed Electrician",
                     description: "Looking for experienced solar contractor to install 500kW rooftop system on commercial building. Must have NABCEP certification and experience with utility interconnection.",
-                    verified: true
-                },
-                {
-                    title: "Net-Zero Office Building Retrofit",
-                    niche: "Green & Sustainable Construction",
-                    location: "Austin, TX",
-                    budget: "$1.2M - $1.5M",
-                    timeline: "8-10 months, Start: April 2026",
-                    certifications: "LEED AP BD+C, Energy Auditor",
-                    description: "Comprehensive retrofit of 50,000 sq ft office building to achieve net-zero energy. Includes envelope improvements, HVAC upgrade, and renewable energy integration.",
                     verified: true
                 }
             ],
@@ -1559,18 +1623,7 @@
                     location: "Columbus, OH",
                     budget: "$2.5M - $3.2M",
                     timeline: "12 months, Start: May 2026",
-                    certifications: "HUBZone, DBE Certified",
                     description: "IIJA-funded bridge rehabilitation project. Scope includes structural repairs, deck replacement, and seismic retrofitting. Davis-Bacon wages apply.",
-                    verified: true
-                },
-                {
-                    title: "Municipal Water System Upgrade",
-                    niche: "Infrastructure & Public Works",
-                    location: "Albuquerque, NM",
-                    budget: "$850,000 - $950,000",
-                    timeline: "6 months, Start: February 2026",
-                    certifications: "Licensed Plumber, Public Works Experience",
-                    description: "Replace aging water mains and install smart metering system for 2-mile district. Federal funding through EPA WIFIA program.",
                     verified: true
                 }
             ]
@@ -1579,276 +1632,91 @@
         // Handle project posting
         function handlePostProject(event) {
             event.preventDefault();
-            
-            const button = event.target.querySelector('button');
-            button.disabled = true;
-            button.innerHTML = 'Finding Matches...';
-            
-            const title = document.getElementById('project-title').value;
-            const niche = document.getElementById('project-niche').value;
-            const description = document.getElementById('project-description').value;
-            const location = document.getElementById('project-location').value;
-            const timeline = document.getElementById('project-timeline').value;
-            const budget = document.getElementById('project-budget').value;
-            const certifications = document.getElementById('project-certifications').value;
-            
             const resultsDiv = document.getElementById('project-matches');
-            resultsDiv.innerHTML = '<div class="loading">Searching for verified subcontractors</div>';
+            resultsDiv.innerHTML = '<div class="loading">Posting project and finding matches</div>';
             
             setTimeout(() => {
                 resultsDiv.innerHTML = `
-                    <h3 style="color: #00a89d; margin: 40px 0 20px;">Your Project Has Been Posted!</h3>
+                    <h3 style="color: #00a89d; margin: 40px 0 20px;">Project Posted Successfully!</h3>
                     <div class="result-card">
-                        <h3>${title}</h3>
-                        <p style="color: #666; margin: 15px 0;">${description}</p>
-                        <div class="details">
-                            <div class="detail-item"><strong>Location:</strong> ${location}</div>
-                            <div class="detail-item"><strong>Timeline:</strong> ${timeline}</div>
-                            <div class="detail-item"><strong>Budget:</strong> ${budget}</div>
-                            ${certifications ? `<div class="detail-item"><strong>Required:</strong> ${certifications}</div>` : ''}
-                        </div>
-                        <span class="verified-badge">✓ Posted & Active</span>
-                        <p style="margin-top: 20px; color: #00a89d; font-weight: 600;">Status: Searching for matches... You'll receive notifications within 24 hours.</p>
-                    </div>
-                    
-                    <h3 style="color: #00a89d; margin: 40px 0 20px;">Potential Matches Found (2)</h3>
-                    <div class="result-card">
-                        <h3>GreenTech Contractors LLC</h3>
-                        <p style="color: #666; margin: 15px 0;">Specialized solar and renewable energy contractor with 15+ years experience. NABCEP certified team, completed 200+ commercial installations.</p>
-                        <div class="details">
-                            <div class="detail-item"><strong>Location:</strong> 35 miles from your project</div>
-                            <div class="detail-item"><strong>Crew Size:</strong> 12 certified installers</div>
-                            <div class="detail-item"><strong>Available:</strong> March 2026</div>
-                            <div class="detail-item"><strong>Certifications:</strong> LEED AP, NABCEP, Licensed Electrician</div>
-                        </div>
-                        <span class="verified-badge">✓ Verified by Bridge Point</span>
-                        <div class="actions">
-                            <button class="btn-primary" onclick="alert('Message sent! GreenTech Contractors will respond within 24 hours.')">Send Message</button>
-                            <button class="btn-secondary" onclick="alert('Profile viewing requires Professional plan upgrade.')">View Full Profile</button>
-                        </div>
-                    </div>
-                    
-                    <div class="result-card">
-                        <h3>Sustainable Solutions Co.</h3>
-                        <p style="color: #666; margin: 15px 0;">Full-service sustainable construction firm. Expertise in net-zero builds, solar integration, and energy-efficient retrofits.</p>
-                        <div class="details">
-                            <div class="detail-item"><strong>Location:</strong> 42 miles from your project</div>
-                            <div class="detail-item"><strong>Crew Size:</strong> 8-10 specialists</div>
-                            <div class="detail-item"><strong>Available:</strong> April 2026</div>
-                            <div class="detail-item"><strong>Certifications:</strong> LEED AP BD+C, BPI Certified</div>
-                        </div>
-                        <span class="verified-badge">✓ Verified by Bridge Point</span>
-                        <div class="actions">
-                            <button class="btn-primary" onclick="alert('Message sent! Sustainable Solutions will respond within 24 hours.')">Send Message</button>
-                            <button class="btn-secondary" onclick="alert('Profile viewing requires Professional plan upgrade.')">View Full Profile</button>
-                        </div>
+                        <h3>Project Posted</h3>
+                        <p style="color: #666; margin: 15px 0;">Your project is live and being matched with verified subcontractors.</p>
+                        <span class="verified-badge">Checkmark Active</span>
+                        <p style="margin-top: 20px; color: #00a89d; font-weight: 600;">You'll receive match notifications within 24 hours.</p>
                     </div>
                 `;
-                
-                button.disabled = false;
-                button.innerHTML = 'Post Another Project';
-                event.target.reset();
             }, 2000);
         }
         
         // Handle project search
         function handleSearchProjects(event) {
             event.preventDefault();
-            
-            const button = event.target.querySelector('button');
-            button.disabled = true;
-            button.innerHTML = 'Searching...';
-            
             const niche = document.getElementById('sub-niche').value;
-            const location = document.getElementById('sub-location').value;
-            const crewSize = document.getElementById('sub-crew-size').value;
-            const availability = document.getElementById('sub-availability').value;
-            const certifications = document.getElementById('sub-certifications').value;
-            
             const resultsDiv = document.getElementById('subcontractor-matches');
-            resultsDiv.innerHTML = '<div class="loading">Finding projects that match your expertise</div>';
+            resultsDiv.innerHTML = '<div class="loading">Searching for projects</div>';
             
             setTimeout(() => {
-                const projects = mockProjects[niche] || mockProjects.green;
-                let matchesHTML = `
-                    <h3 style="color: #00a89d; margin: 40px 0 20px;">Available Projects in Your Area (${projects.length})</h3>
-                `;
-                
-                projects.forEach(project => {
-                    matchesHTML += `
+                const projects = mockProjects[niche] || [];
+                let html = `<h3 style="color: #00a89d; margin: 40px 0 20px;">Found ${projects.length} Project(s)</h3>`;
+                projects.forEach(p => {
+                    html += `
                         <div class="result-card">
-                            <h3>${project.title}</h3>
-                            <p style="color: #666; margin: 15px 0;">${project.description}</p>
+                            <h3>${p.title}</h3>
+                            <p style="color: #666; margin: 15px 0;">${p.description}</p>
                             <div class="details">
-                                <div class="detail-item"><strong>Location:</strong> ${project.location}</div>
-                                <div class="detail-item"><strong>Budget:</strong> ${project.budget}</div>
-                                <div class="detail-item"><strong>Timeline:</strong> ${project.timeline}</div>
-                                <div class="detail-item"><strong>Required:</strong> ${project.certifications}</div>
+                                <div class="detail-item"><strong>Location:</strong> ${p.location}</div>
+                                <div class="detail-item"><strong>Budget:</strong> ${p.budget}</div>
+                                <div class="detail-item"><strong>Timeline:</strong> ${p.timeline}</div>
                             </div>
-                            <span class="verified-badge">✓ Verified Project Owner</span>
+                            <span class="verified-badge">Checkmark Verified Owner</span>
                             <div class="actions">
-                                <button class="btn-primary" onclick="alert('Bid submitted! Project owner will review within 48 hours. Escrow will hold 10% deposit upon acceptance.')">Submit Bid</button>
-                                <button class="btn-secondary" onclick="alert('Message sent! You can discuss project details before bidding.')">Contact Owner</button>
+                                <button class="btn-primary" onclick="alert('Bid submitted!')">Submit Bid</button>
+                                <button class="btn-secondary" onclick="alert('Contact sent!')">Contact Owner</button>
                             </div>
                         </div>
                     `;
                 });
-                
-                resultsDiv.innerHTML = matchesHTML;
-                button.disabled = false;
-                button.innerHTML = 'Search Again';
+                resultsDiv.innerHTML = html;
             }, 2000);
         }
         
-        // Handle contact form
-        function handleContactSubmit(event) {
+        // Handle login
+        function handleLogin(event) {
             event.preventDefault();
-            
-            const button = event.target.querySelector('button');
-            button.disabled = true;
-            button.innerHTML = 'Sending...';
-            
-            setTimeout(() => {
-                document.getElementById('contact-success').classList.add('show');
-                event.target.reset();
-                button.disabled = false;
-                button.innerHTML = 'Send Message';
-                
-                setTimeout(() => {
-                    document.getElementById('contact-success').classList.remove('show');
-                }, 5000);
-            }, 1000);
+            alert('Login successful! (Demo)');
+            closeModal();
+            showSection('dashboard');
         }
+        
         // Handle signup
         function handleSignup(event) {
             event.preventDefault();
-            const successDiv = document.getElementById('signup-success');
-            successDiv.innerHTML = 'Account created! Your documents are under review. Redirecting to dashboard...';
-            successDiv.classList.add('show');
-            setTimeout(() => {
-                showSection('dashboard');
-                successDiv.classList.remove('show');
-            }, 3000);
+            alert('Account created! Please check your email for verification. (Demo)');
+            closeModal();
+            showSection('dashboard');
         }
+        
         // Handle profile update
         function handleProfileUpdate(event) {
             event.preventDefault();
-            const successDiv = document.getElementById('profile-success');
-            successDiv.innerHTML = 'Profile updated successfully!';
-            successDiv.classList.add('show');
+            alert('Profile updated successfully!');
+        }
+        
+        // Handle contact
+        function handleContactSubmit(event) {
+            event.preventDefault();
+            document.getElementById('contact-success').classList.add('show');
             setTimeout(() => {
-                successDiv.classList.remove('show');
-            }, 3000);
+                document.getElementById('contact-success').classList.remove('show');
+            }, 5000);
         }
-        // Mock data for matching
-        const mockMatches = [
-            {
-                id: 1,
-                name: 'GreenTech Contractors LLC',
-                description: 'Specialized in green construction, LEED certified.',
-                niche: 'Green Construction',
-                location: 'San Francisco, CA'
-            },
-            {
-                id: 2,
-                name: 'InfraBuild Inc.',
-                description: 'Experts in public works and infrastructure projects.',
-                niche: 'Infrastructure',
-                location: 'Columbus, OH'
-            },
-            {
-                id: 3,
-                name: 'EcoBuilders Pro',
-                description: 'Sustainable building specialists.',
-                niche: 'Green Construction',
-                location: 'Austin, TX'
-            }
-        ];
-        let currentMatchIndex = 0;
-        let matches = [];
-        function loadSwipeCards() {
-            const stack = document.getElementById('swipe-stack');
-            stack.innerHTML = '';
-            if (currentMatchIndex < mockMatches.length) {
-                const card = document.createElement('div');
-                card.classList.add('swipe-card');
-                card.innerHTML = `
-                    <h3>${mockMatches[currentMatchIndex].name}</h3>
-                    <p>${mockMatches[currentMatchIndex].description}</p>
-                    <p><strong>Niche:</strong> ${mockMatches[currentMatchIndex].niche}</p>
-                    <p><strong>Location:</strong> ${mockMatches[currentMatchIndex].location}</p>
-                `;
-                stack.appendChild(card);
-            } else {
-                stack.innerHTML = '<p>No more matches available.</p>';
-            }
+        
+        // Handle sidebar search
+        function handleSearch(event) {
+            event.preventDefault();
+            alert('Search functionality would filter projects based on criteria.');
+            toggleSidebar();
         }
-        function swipeLeft() {
-            const card = document.querySelector('.swipe-card');
-            if (card) {
-                card.classList.add('swiped-left');
-                setTimeout(() => {
-                    currentMatchIndex++;
-                    loadSwipeCards();
-                }, 300);
-            }
-        }
-        function swipeRight() {
-            const card = document.querySelector('.swipe-card');
-            if (card) {
-                card.classList.add('swiped-right');
-                matches.push(mockMatches[currentMatchIndex]);
-                setTimeout(() => {
-                    currentMatchIndex++;
-                    loadSwipeCards();
-                    loadChatList();
-                }, 300);
-            }
-        }
-        // Mock messages data
-        const mockMessages = {};
-        function loadChatList() {
-            const list = document.getElementById('chat-list');
-            list.innerHTML = '';
-            matches.forEach((match, index) => {
-                const item = document.createElement('div');
-                item.classList.add('match-item');
-                item.textContent = match.name;
-                item.onclick = () => loadChat(match.id, index);
-                list.appendChild(item);
-            });
-        }
-        function loadChat(id, index) {
-            document.querySelectorAll('.match-item').forEach((item, i) => {
-                item.classList.toggle('active', i === index);
-            });
-            const window = document.getElementById('chat-messages');
-            window.innerHTML = '';
-            (mockMessages[id] || []).forEach(msg => {
-                const div = document.createElement('div');
-                div.classList.add('chat-message', msg.type);
-                div.textContent = msg.text;
-                window.appendChild(div);
-            });
-        }
-        function sendMessage() {
-            const input = document.getElementById('message-input');
-            const text = input.value.trim();
-            if (text) {
-                const activeIndex = Array.from(document.querySelectorAll('.match-item')).findIndex(item => item.classList.contains('active'));
-                if (activeIndex !== -1) {
-                    const id = matches[activeIndex].id;
-                    if (!mockMessages[id]) mockMessages[id] = [];
-                    mockMessages[id].push({ type: 'sent', text });
-                    loadChat(id, activeIndex);
-                    input.value = '';
-                } else {
-                    alert('Select a match to message.');
-                }
-            }
-        }
-        // Initialize matching
-        loadSwipeCards();
     </script>
 </body>
 </html>
