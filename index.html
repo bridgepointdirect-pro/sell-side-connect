@@ -3,1721 +3,437 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Bridge Point - B2B capacity matching platform connecting verified subcontractors with overflow projects in Green Construction and Infrastructure.">
-    <title>Bridge Point - Niche B2B Capacity Matching Platform</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>Shared Expense Tracker</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
-            font-family: 'Poppins', sans-serif;
-            color: #333;
-            background-color: #f8f9fa;
-            display: flex;
-            flex-direction: column;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            overflow-x: hidden;
-        }
-        
-        header {
-            background-color: #00a89d;
-            color: white;
-            padding: 15px 20px;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            transition: background 0.3s;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        header:hover {
-            background-color: #008c82;
-        }
-        
-        header h1 {
-            margin: 0;
-            font-size: 1.8em;
-        }
-        
-        header h1 a {
-            color: white;
-            text-decoration: none;
-        }
-        
-        .menu-btn {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 1.8em;
-            cursor: pointer;
-            padding: 5px 10px;
-        }
-        
-        .sidebar {
-            position: fixed;
-            top: 0;
-            right: -320px;
-            width: 300px;
-            height: 100vh;
-            background: white;
-            box-shadow: -4px 0 15px rgba(0,0,0,0.2);
-            transition: right 0.3s ease;
-            z-index: 2000;
-            padding: 80px 20px 20px;
-            overflow-y: auto;
-        }
-        
-        .sidebar.open {
-            right: 0;
-        }
-        
-        .sidebar-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #e0f7f6;
-        }
-        
-        .sidebar-header h2 {
-            color: #00a89d;
-            font-size: 1.5em;
-        }
-        
-        .close-btn {
-            background: none;
-            border: none;
-            color: #666;
-            font-size: 1.8em;
-            cursor: pointer;
-        }
-        
-        .sidebar-nav {
-            margin-bottom: 30px;
-        }
-        
-        .sidebar-nav a {
-            display: block;
-            padding: 12px 0;
-            color: #333;
-            text-decoration: none;
-            font-weight: 600;
-            border-bottom: 1px solid #eee;
-            transition: color 0.3s;
-        }
-        
-        .sidebar-nav a:hover {
-            color: #00a89d;
-        }
-        
-        .auth-section {
-            margin-bottom: 30px;
-        }
-        
-        .auth-section .btn {
-            width: 100%;
-            margin: 8px 0;
-            text-align: center;
-        }
-        
-        .search-filter {
-            background: #f8f9fa;
             padding: 20px;
-            border-radius: 12px;
-            margin-bottom: 30px;
         }
-        
-        .search-filter h3 {
-            color: #00a89d;
-            margin-bottom: 15px;
-            font-size: 1.2em;
-        }
-        
-        .search-filter .form-group {
-            margin-bottom: 15px;
-        }
-        
-        .search-filter label {
-            display: block;
-            margin-bottom: 6px;
-            font-weight: 600;
-            color: #00a89d;
-            font-size: 0.9em;
-        }
-        
-        .search-filter input, .search-filter select {
-            width: 100%;
-            padding: 10px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-family: 'Poppins', sans-serif;
-        }
-        
-        .search-filter button {
-            background-color: #00a89d;
-            color: white;
-            padding: 12px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            width: 100%;
-            margin-top: 10px;
-            transition: all 0.3s;
-        }
-        
-        .search-filter button:hover {
-            background-color: #008c82;
-        }
-        
-        main {
-            flex: 1;
-            padding-top: 80px;
-            transition: margin-right 0.3s ease;
-        }
-        
-        main.shifted {
-            margin-right: 300px;
-        }
-        
-        .hero {
-            background: linear-gradient(135deg, #00a89d 0%, #008c82 100%);
-            color: white;
-            padding: 80px 20px 60px;
-            text-align: center;
-            animation: fadeIn 1s ease-in;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-        .hero h1 {
-            font-size: 3em;
-            margin-bottom: 20px;
-            animation: slideDown 0.8s ease-out;
-        }
-        
-        @keyframes slideDown {
-            from { transform: translateY(-30px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        
-        .hero .tagline {
-            font-size: 1.5em;
-            margin-bottom: 15px;
-            font-weight: 300;
-        }
-        
-        .hero .subtitle {
-            font-size: 1.2em;
-            margin-bottom: 40px;
-            max-width: 900px;
-            margin-left: auto;
-            margin-right: auto;
-            line-height: 1.6;
-        }
-        
-        .cta-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            flex-wrap: wrap;
-            margin-top: 30px;
-        }
-        
-        .btn {
-            background-color: white;
-            color: #00a89d;
-            padding: 15px 35px;
-            text-decoration: none;
-            border-radius: 50px;
-            font-weight: 600;
-            transition: all 0.3s;
-            display: inline-block;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
-        
-        .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
-        }
-        
-        .btn-secondary {
-            background-color: transparent;
-            color: white;
-            border: 2px solid white;
-        }
-        
-        .btn-secondary:hover {
-            background-color: white;
-            color: #00a89d;
-        }
-        
-        .niches-section {
-            padding: 80px 20px;
-            background-color: #ffffff;
-        }
-        
-        .niches-section h2 {
-            text-align: center;
-            color: #00a89d;
-            font-size: 2.5em;
-            margin-bottom: 20px;
-        }
-        
-        .niches-section .intro-text {
-            text-align: center;
-            max-width: 800px;
-            margin: 0 auto 60px;
-            font-size: 1.1em;
-            color: #555;
-            line-height: 1.7;
-        }
-        
-        .niches-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            max-width: 1400px;
+
+        .container {
+            max-width: 600px;
             margin: 0 auto;
         }
-        
-        .niche-card {
-            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.08);
-            transition: all 0.3s;
-            border: 2px solid transparent;
-            cursor: pointer;
-        }
-        
-        .niche-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 10px 30px rgba(0,168,157,0.2);
-            border-color: #00a89d;
-        }
-        
-        .niche-card .icon {
-            font-size: 3em;
-            margin-bottom: 20px;
-            display: block;
-        }
-        
-        .niche-card h3 {
-            color: #00a89d;
-            margin-bottom: 15px;
-            font-size: 1.5em;
-        }
-        
-        .niche-card p {
-            color: #666;
-            line-height: 1.6;
-            margin-bottom: 15px;
-        }
-        
-        .niche-card .market-size {
-            background: #e0f7f6;
-            padding: 10px;
-            border-radius: 8px;
-            font-weight: 600;
-            color: #00a89d;
-            margin-top: 15px;
-        }
-        
-        .how-it-works {
-            padding: 80px 20px;
-            background: linear-gradient(135deg, #f8f9fa 0%, #e0f7f6 100%);
-        }
-        
-        .how-it-works h2 {
-            text-align: center;
-            color: #00a89d;
-            font-size: 2.5em;
-            margin-bottom: 60px;
-        }
-        
-        .steps-container {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 40px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
-        .step {
-            flex: 1;
-            min-width: 250px;
-            max-width: 350px;
+
+        .card {
             background: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            text-align: center;
-            position: relative;
-        }
-        
-        .step-number {
-            position: absolute;
-            top: -20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #00a89d;
-            color: white;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5em;
-            font-weight: bold;
-        }
-        
-        .step h3 {
-            color: #00a89d;
-            margin: 30px 0 15px;
-            font-size: 1.3em;
-        }
-        
-        .step p {
-            color: #666;
-            line-height: 1.6;
-        }
-        
-        .verification-section {
-            padding: 80px 20px;
-            background-color: #ffffff;
-        }
-        
-        .verification-section h2 {
-            text-align: center;
-            color: #00a89d;
-            font-size: 2.5em;
-            margin-bottom: 30px;
-        }
-        
-        .verification-content {
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-        
-        .audit-types {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
-            margin-top: 40px;
-        }
-        
-        .audit-card {
-            background: #f8f9fa;
-            padding: 30px;
-            border-radius: 15px;
-            border: 2px solid #e0f7f6;
-            transition: all 0.3s;
-        }
-        
-        .audit-card:hover {
-            border-color: #00a89d;
-            box-shadow: 0 6px 20px rgba(0,168,157,0.15);
-        }
-        
-        .audit-card h3 {
-            color: #00a89d;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .audit-card .checkmark {
-            color: #00a89d;
-            font-size: 1.5em;
-        }
-        
-        .audit-card ul {
-            list-style: none;
-            padding: 0;
-        }
-        
-        .audit-card ul li {
-            padding: 8px 0;
-            color: #666;
-            border-bottom: 1px solid #e0e0e0;
-        }
-        
-        .audit-card ul li:last-child {
-            border-bottom: none;
-        }
-        
-        .pricing-section {
-            padding: 80px 20px;
-            background: linear-gradient(135deg, #00a89d 0%, #008c82 100%);
-            color: white;
-        }
-        
-        .pricing-section h2 {
-            text-align: center;
-            font-size: 2.5em;
-            margin-bottom: 60px;
-        }
-        
-        .pricing-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
-        .pricing-card {
-            background: white;
-            color: #333;
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-            text-align: center;
-            transition: all 0.3s;
-        }
-        
-        .pricing-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 12px 35px rgba(0,0,0,0.3);
-        }
-        
-        .pricing-card.featured {
-            border: 3px solid #00a89d;
-            transform: scale(1.05);
-        }
-        
-        .pricing-card h3 {
-            color: #00a89d;
-            font-size: 1.8em;
-            margin-bottom: 15px;
-        }
-        
-        .pricing-card .price {
-            font-size: 2.5em;
-            font-weight: bold;
-            color: #00a89d;
-            margin: 20px 0;
-        }
-        
-        .pricing-card .price span {
-            font-size: 0.4em;
-            color: #666;
-        }
-        
-        .pricing-card ul {
-            list-style: none;
-            padding: 0;
-            margin: 30px 0;
-            text-align: left;
-        }
-        
-        .pricing-card ul li {
-            padding: 12px 0;
-            border-bottom: 1px solid #e0e0e0;
-            color: #666;
-        }
-        
-        .pricing-card ul li:before {
-            content: "Checkmark ";
-            color: #00a89d;
-            font-weight: bold;
-            margin-right: 10px;
-        }
-        
-        .pricing-card .btn {
-            width: 100%;
-            margin-top: 20px;
-        }
-        
-        .dashboard-preview {
-            padding: 80px 20px;
-            background-color: #f8f9fa;
-        }
-        
-        .dashboard-preview h2 {
-            text-align: center;
-            color: #00a89d;
-            font-size: 2.5em;
-            margin-bottom: 60px;
-        }
-        
-        .user-type-selector {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-bottom: 40px;
-            flex-wrap: wrap;
-        }
-        
-        .user-type-btn {
-            padding: 15px 40px;
-            background: white;
-            border: 2px solid #00a89d;
-            color: #00a89d;
-            border-radius: 50px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .user-type-btn:hover, .user-type-btn.active {
-            background: #00a89d;
-            color: white;
-        }
-        
-        .dashboard-content {
-            max-width: 1000px;
-            margin: 0 auto;
-            background: white;
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-        }
-        
-        .dashboard-section {
-            display: none;
-        }
-        
-        .dashboard-section.active {
-            display: block;
-            animation: fadeIn 0.5s ease-in;
-        }
-        
-        form {
-            margin-top: 30px;
-        }
-        
-        form .form-group {
-            margin-bottom: 25px;
-        }
-        
-        form label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #00a89d;
-        }
-        
-        form input, form textarea, form select {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-family: 'Poppins', sans-serif;
-            transition: border 0.3s;
-        }
-        
-        form input:focus, form textarea:focus, form select:focus {
-            outline: none;
-            border-color: #00a89d;
-        }
-        
-        form textarea {
-            min-height: 120px;
-            resize: vertical;
-        }
-        
-        form button {
-            background-color: #00a89d;
-            color: white;
-            padding: 15px 40px;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 1.1em;
-            transition: all 0.3s;
-            width: 100%;
-        }
-        
-        form button:hover {
-            background-color: #008c82;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(0,168,157,0.3);
-        }
-        
-        form button:disabled {
-            background-color: #ccc;
-            cursor: not-allowed;
-            transform: none;
-        }
-        
-        .match-results {
-            margin-top: 40px;
-        }
-        
-        .result-card {
-            background: #f8f9fa;
-            padding: 25px;
-            margin: 20px 0;
-            border-radius: 12px;
-            border-left: 5px solid #00a89d;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
-            transition: all 0.3s;
-        }
-        
-        .result-card:hover {
-            transform: translateX(5px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.12);
-        }
-        
-        .result-card h3 {
-            color: #00a89d;
-            margin-bottom: 10px;
-        }
-        
-        .result-card .details {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin: 15px 0;
-        }
-        
-        .result-card .detail-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: #666;
-        }
-        
-        .result-card .detail-item strong {
-            color: #333;
-        }
-        
-        .result-card .verified-badge {
-            display: inline-block;
-            background: #00a89d;
-            color: white;
-            padding: 5px 15px;
             border-radius: 20px;
-            font-size: 0.9em;
-            font-weight: 600;
-            margin-top: 10px;
-        }
-        
-        .result-card .actions {
-            margin-top: 20px;
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-        
-        .result-card .actions button {
-            padding: 10px 25px;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-        
-        .result-card .actions .btn-primary {
-            background: #00a89d;
-            color: white;
-        }
-        
-        .result-card .actions .btn-primary:hover {
-            background: #008c82;
-        }
-        
-        .result-card .actions .btn-secondary {
-            background: white;
-            color: #00a89d;
-            border: 2px solid #00a89d;
-        }
-        
-        .result-card .actions .btn-secondary:hover {
-            background: #e0f7f6;
-        }
-        
-        .stats-section {
-            padding: 60px 20px;
-            background: #00a89d;
-            color: white;
-        }
-        
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 40px;
-            max-width: 1200px;
-            margin: 0 auto;
-            text-align: center;
-        }
-        
-        .stat-item h3 {
-            font-size: 3em;
-            margin-bottom: 10px;
-        }
-        
-        .stat-item p {
-            font-size: 1.1em;
-            opacity: 0.9;
-        }
-        
-        .about-section {
-            padding: 80px 20px;
-            background: white;
-        }
-        
-        .about-content {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
-        .about-section h2 {
-            text-align: center;
-            color: #00a89d;
-            font-size: 2.5em;
-            margin-bottom: 30px;
-        }
-        
-        .about-section h3 {
-            color: #00a89d;
-            font-size: 1.8em;
-            margin: 40px 0 20px;
-        }
-        
-        .about-section p {
-            color: #666;
-            line-height: 1.8;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 40px;
             margin-bottom: 20px;
-            font-size: 1.1em;
         }
-        
-        .values-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin: 40px 0;
+
+        h1 {
+            color: #2d3748;
+            font-size: 32px;
+            margin-bottom: 30px;
+            text-align: center;
         }
-        
-        .value-card {
-            background: #f8f9fa;
+
+        .balance-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
             padding: 30px;
             border-radius: 15px;
-            border-top: 4px solid #00a89d;
-        }
-        
-        .value-card h4 {
-            color: #00a89d;
-            font-size: 1.5em;
-            margin-bottom: 15px;
-        }
-        
-        .value-card p {
-            color: #666;
-        }
-        
-        .contact-section {
-            padding: 80px 20px;
-            background: linear-gradient(135deg, #f8f9fa 0%, #e0f7f6 100%);
-        }
-        
-        .contact-content {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        
-        .contact-section h2 {
+            margin-bottom: 30px;
             text-align: center;
-            color: #00a89d;
-            font-size: 2.5em;
+        }
+
+        .balance-label {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+
+        .balance-amount {
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .form-group {
             margin-bottom: 20px;
         }
-        
-        .contact-section .intro {
-            text-align: center;
-            margin-bottom: 40px;
-            color: #666;
-            font-size: 1.1em;
-        }
-        
-        .contact-form {
-            background: white;
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-        }
-        
-        .success-message {
-            background: #e0f7f6;
-            color: #00a89d;
-            padding: 20px;
-            border-radius: 8px;
-            text-align: center;
-            margin-bottom: 20px;
-            font-weight: 600;
-            display: none;
-        }
-        
-        .success-message.show {
+
+        label {
             display: block;
-            animation: slideDown 0.5s ease-out;
-        }
-        
-        footer {
-            text-align: center;
-            padding: 30px 20px;
-            background-color: #00a89d;
-            color: white;
-            margin-top: auto;
-        }
-        
-        footer p {
-            margin: 5px 0;
-        }
-        
-        footer a {
-            color: white;
-            text-decoration: underline;
-        }
-        
-        .content-section {
-            display: none;
-        }
-        
-        .content-section.active {
-            display: block;
-        }
-        
-        @media (max-width: 768px) {
-            header h1 {
-                font-size: 1.4em;
-            }
-            
-            .hero h1 {
-                font-size: 2em;
-            }
-            
-            .hero .tagline {
-                font-size: 1.2em;
-            }
-            
-            .hero .subtitle {
-                font-size: 1em;
-            }
-            
-            .niches-section h2, .how-it-works h2, .verification-section h2, 
-            .pricing-section h2, .dashboard-preview h2, .about-section h2, 
-            .contact-section h2 {
-                font-size: 2em;
-            }
-            
-            .niches-grid, .pricing-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .steps-container {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .result-card .details {
-                grid-template-columns: 1fr;
-            }
-            
-            .result-card .actions {
-                flex-direction: column;
-            }
-            
-            .result-card .actions button {
-                width: 100%;
-            }
-            
-            main.shifted {
-                margin-right: 0;
-            }
-            
-            .sidebar {
-                width: 100%;
-                right: -100%;
-            }
-        }
-        
-        .loading {
-            text-align: center;
-            padding: 20px;
-            color: #00a89d;
+            color: #4a5568;
             font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
         }
-        
-        .loading:after {
-            content: '...';
-            animation: dots 1.5s steps(4, end) infinite;
-        }
-        
-        @keyframes dots {
-            0%, 20% { content: '.'; }
-            40% { content: '..'; }
-            60%, 100% { content: '...'; }
-        }
-        /* Login Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
+
+        input {
             width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 3000;
-            justify-content: center;
-            align-items: center;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
         }
-        
-        .modal.active {
-            display: flex;
+
+        input:focus {
+            outline: none;
+            border-color: #667eea;
         }
-        
-        .modal-content {
-            background: white;
-            padding: 40px;
-            border-radius: 15px;
-            width: 90%;
-            max-width: 400px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            position: relative;
+
+        .button-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
         }
-        
-        .modal-close {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: none;
+
+        button {
+            padding: 12px 24px;
             border: none;
-            font-size: 1.5em;
-            color: #666;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
             cursor: pointer;
+            transition: all 0.3s;
         }
-        
-        .modal h2 {
-            color: #00a89d;
-            margin-bottom: 20px;
-            text-align: center;
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
         }
-        
-        .modal .form-group {
-            margin-bottom: 20px;
+
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
         }
-        
-        .modal button {
+
+        .btn-secondary {
+            background: #764ba2;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #653a8a;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: #48bb78;
+            color: white;
             width: 100%;
-            margin-top: 10px;
         }
-        
-        .modal .switch-form {
-            text-align: center;
+
+        .btn-success:hover {
+            background: #38a169;
+            transform: translateY(-2px);
+        }
+
+        .btn-inactive {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+
+        .btn-inactive:hover {
+            background: #cbd5e0;
+        }
+
+        .expense-list {
             margin-top: 20px;
-            color: #666;
         }
-        
-        .modal .switch-form a {
-            color: #00a89d;
-            text-decoration: underline;
-            cursor: pointer;
+
+        .expense-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            background: #f7fafc;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+
+        .expense-info h3 {
+            color: #2d3748;
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+
+        .expense-info p {
+            color: #718096;
+            font-size: 13px;
+        }
+
+        .expense-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .expense-amount {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2d3748;
+        }
+
+        .delete-btn {
+            background: #fc8181;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .delete-btn:hover {
+            background: #f56565;
+        }
+
+        .reset-btn {
+            background: transparent;
+            color: #718096;
+            padding: 8px 16px;
+            font-size: 14px;
+            float: right;
+        }
+
+        .reset-btn:hover {
+            color: #fc8181;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        h2 {
+            color: #2d3748;
+            font-size: 20px;
+            margin-bottom: 20px;
         }
     </style>
 </head>
 <body>
-    <header>
-        <h1><a onclick="showSection('home')">Bridge Point</a></h1>
-        <button class="menu-btn" onclick="toggleSidebar()">Menu</button>
-    </header>
-    <!-- Sidebar -->
-    <div class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <h2>Menu</h2>
-            <button class="close-btn" onclick="toggleSidebar()">Close</button>
-        </div>
-        
-        <div class="sidebar-nav">
-            <a onclick="showSectionAndClose('home')">Home</a>
-            <a onclick="showSectionAndClose('niches')">Industries</a>
-            <a onclick="showSectionAndClose('how-it-works')">How It Works</a>
-            <a onclick="showSectionAndClose('pricing')">Pricing</a>
-            <a onclick="showSectionAndClose('dashboard')">Dashboard</a>
-            <a onclick="showSectionAndClose('profile')">Profile</a>
-            <a onclick="showSectionAndClose('about')">About</a>
-            <a onclick="showSectionAndClose('contact')">Contact</a>
-        </div>
-        
-        <div class="auth-section">
-            <a class="btn" onclick="openModal('login')">Login</a>
-            <a class="btn btn-secondary" onclick="openModal('signup')">Sign Up</a>
-        </div>
-        
-        <div class="search-filter">
-            <h3>Search Projects</h3>
-            <form onsubmit="handleSearch(event)">
-                <div class="form-group">
-                    <label for="search-niche">Niche</label>
-                    <select id="search-niche">
-                        <option value="">All Niches</option>
-                        <option value="green">Green Construction</option>
-                        <option value="infrastructure">Infrastructure</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="search-location">Location</label>
-                    <input type="text" id="search-location" placeholder="City, State">
-                </div>
-                <div class="form-group">
-                    <label for="search-budget">Budget Range</label>
-                    <input type="text" id="search-budget" placeholder="$50k - $500k">
-                </div>
-                <button type="submit">Search</button>
-            </form>
-        </div>
-    </div>
-    <!-- Login/Signup Modal -->
-    <div class="modal" id="auth-modal">
-        <div class="modal-content">
-            <button class="modal-close" onclick="closeModal()">Close</button>
-            
-            <!-- Login Form -->
-            <div id="login-form" class="auth-form">
-                <h2>Login</h2>
-                <form onsubmit="handleLogin(event)">
-                    <div class="form-group">
-                        <label for="login-email">Email</label>
-                        <input type="email" id="login-email" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="login-password">Password</label>
-                        <input type="password" id="login-password" required>
-                    </div>
-                    <button type="submit">Login</button>
-                </form>
-                <p class="switch-form">Don't have an account? <a onclick="switchForm('signup')">Sign Up</a></p>
+    <div class="container">
+        <!-- Names Setup Screen -->
+        <div id="setupScreen" class="card">
+            <h1>Who's Tracking?</h1>
+            <div class="form-group">
+                <label>Person 1 Name</label>
+                <input type="text" id="person1Input" placeholder="Enter name">
             </div>
-            
-            <!-- Signup Form -->
-            <div id="signup-form" class="auth-form" style="display: none;">
-                <h2>Create Account</h2>
-                <form onsubmit="handleSignup(event)">
-                    <div class="form-group">
-                        <label for="signup-name">Full Name *</label>
-                        <input type="text" id="signup-name" required>
+            <div class="form-group">
+                <label>Person 2 Name</label>
+                <input type="text" id="person2Input" placeholder="Enter name">
+            </div>
+            <button class="btn-primary" style="width: 100%;" onclick="saveNames()">Start Tracking</button>
+        </div>
+
+        <!-- Main Tracker Screen -->
+        <div id="trackerScreen" class="hidden">
+            <div class="card">
+                <button class="reset-btn" onclick="resetAll()">Reset All</button>
+                <h1>Expense Tracker</h1>
+                
+                <div class="balance-card">
+                    <div class="balance-label">Current Balance</div>
+                    <div class="balance-amount" id="balanceDisplay">All settled up! 🎉</div>
+                </div>
+
+                <div class="form-group">
+                    <label>Who paid?</label>
+                    <div class="button-group">
+                        <button class="btn-primary" id="person1Btn" onclick="selectPayer('person1')">Person 1</button>
+                        <button class="btn-inactive" id="person2Btn" onclick="selectPayer('person2')">Person 2</button>
                     </div>
-                    <div class="form-group">
-                        <label for="signup-email">Email Address *</label>
-                        <input type="email" id="signup-email" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="signup-password">Password *</label>
-                        <input type="password" id="signup-password" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="signup-company">Company Name *</label>
-                        <input type="text" id="signup-company" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="signup-niche">Primary Niche *</label>
-                        <select id="signup-niche" required>
-                            <option value="">Select a niche...</option>
-                            <option value="green">Green & Sustainable Construction</option>
-                            <option value="infrastructure">Infrastructure & Public Works</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="signup-location">Location *</label>
-                        <input type="text" id="signup-location" placeholder="City, State" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="signup-licenses">Upload Licenses & Certifications *</label>
-                        <input type="file" id="signup-licenses" multiple required>
-                    </div>
-                    <button type="submit">Create Account</button>
-                </form>
-                <p class="switch-form">Already have an account? <a onclick="switchForm('login')">Login</a></p>
+                </div>
+
+                <div class="form-group">
+                    <label>Amount</label>
+                    <input type="number" id="amountInput" placeholder="0.00" step="0.01">
+                </div>
+
+                <div class="form-group">
+                    <label>Description (optional)</label>
+                    <input type="text" id="descriptionInput" placeholder="What was this for?">
+                </div>
+
+                <button class="btn-success" onclick="addExpense()">Add Expense</button>
+            </div>
+
+            <div class="card" id="expenseListCard" style="display: none;">
+                <h2>Recent Expenses</h2>
+                <div class="expense-list" id="expenseList"></div>
             </div>
         </div>
     </div>
-    <main id="main-content">
-        <!-- HOME SECTION -->
-        <section id="home" class="content-section active">
-            <div class="hero">
-                <h1>Bridge Point</h1>
-                <p class="tagline">Get matched with verified overflow projects in 24 hours</p>
-                <p class="subtitle">The premier B2B capacity matching platform connecting subcontractors with verified projects across Green Construction and Infrastructure.</p>
-                <div class="cta-buttons">
-                    <a onclick="openModal('signup')" class="btn">Get Started Free</a>
-                    <a onclick="showSection('how-it-works')" class="btn btn-secondary">Learn More</a>
-                </div>
-            </div>
-            <div class="stats-section">
-                <div class="stats-grid">
-                    <div class="stat-item">
-                        <h3>$500B+</h3>
-                        <p>Total Market Opportunity</p>
-                    </div>
-                    <div class="stat-item">
-                        <h3>24 hrs</h3>
-                        <p>Average Match Time</p>
-                    </div>
-                    <div class="stat-item">
-                        <h3>2</h3>
-                        <p>High-Growth Niches</p>
-                    </div>
-                    <div class="stat-item">
-                        <h3>100%</h3>
-                        <p>Verified Users</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <!-- NICHES SECTION -->
-        <section id="niches" class="content-section">
-            <div class="niches-section">
-                <h2>Our Specialized Industries</h2>
-                <p class="intro-text">Bridge Point focuses on two high-growth, underserved niches where specialized matching platforms don't exist. Each niche offers explosive growth potential with minimal competition.</p>
-                
-                <div class="niches-grid">
-                    <div class="niche-card">
-                        <span class="icon">Seedling</span>
-                        <h3>Green & Sustainable Construction</h3>
-                        <p>Connect with LEED-certified projects, solar installations, renewable energy developments, and ESG-compliant builds. AI-powered matching based on certifications and carbon footprint audits.</p>
-                        <div class="market-size">Market: $228B (2025) → $377B (2030)</div>
-                    </div>
-                    
-                    <div class="niche-card">
-                        <span class="icon">Construction</span>
-                        <h3>Infrastructure & Public Works</h3>
-                        <p>Access IIJA-funded highway, bridge, and utility projects. Specialized HUBZone and DBE compliance tools with federal contract templates and Davis-Bacon wage tracking.</p>
-                        <div class="market-size">$1.2T IIJA Funding | 105,000+ Projects</div>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <!-- HOW IT WORKS SECTION -->
-        <section id="how-it-works" class="content-section">
-            <div class="how-it-works">
-                <h2>How Bridge Point Works</h2>
-                <div class="steps-container">
-                    <div class="step">
-                        <div class="step-number">1</div>
-                        <h3>Sign Up & Verify</h3>
-                        <p>Create your account and upload credentials (licenses, insurance, certifications like LEED or HUBZone). Our AI auto-checks documentation within minutes.</p>
-                    </div>
-                    
-                    <div class="step">
-                        <div class="step-number">2</div>
-                        <h3>Post or Search</h3>
-                        <p><strong>Project Owners:</strong> Post overflow projects with scope, timeline, and budget.<br><strong>Subcontractors:</strong> List your capacity, crew size, and availability.</p>
-                    </div>
-                    
-                    <div class="step">
-                        <div class="step-number">3</div>
-                        <h3>AI Matching</h3>
-                        <p>Our algorithm matches based on location (50-mile radius), skills, certifications, availability, and project requirements. Get 5-10 quality matches in 24 hours.</p>
-                    </div>
-                    
-                    <div class="step">
-                        <div class="step-number">4</div>
-                        <h3>Connect & Collaborate</h3>
-                        <p>Review profiles and agree on terms. Secure escrow holds 10% deposit until project milestones are met.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <!-- VERIFICATION SECTION -->
-        <section id="verification" class="content-section">
-            <div class="verification-section">
-                <h2>Trust Through Verification</h2>
-                <p style="text-align: center; max-width: 800px; margin: 0 auto 40px; color: #666; font-size: 1.1em;">
-                    Every user is verified through our rigorous 3-step audit process. Bad matches cost $10K-$100K+ in delays and penalties—our verification system eliminates that risk.
-                </p>
-                
-                <div class="audit-types">
-                    <div class="audit-card">
-                        <h3><span class="checkmark">Checkmark</span> Green Construction</h3>
-                        <ul>
-                            <li>LEED Certification Validation</li>
-                            <li>ENERGY STAR Compliance</li>
-                            <li>Net-Zero Project Experience</li>
-                            <li>ESG Compliance Checks</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="audit-card">
-                        <h3><span class="checkmark">Checkmark</span> Infrastructure/Public Works</h3>
-                        <ul>
-                            <li>HUBZone Status Verification</li>
-                            <li>DBE Certification Check</li>
-                            <li>Davis-Bacon Wage Compliance</li>
-                            <li>Federal Contract Eligibility</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div style="text-align: center; margin-top: 50px;">
-                    <p style="color: #00a89d; font-weight: 600; font-size: 1.2em;">
-                        Verified users see 3-5x higher match acceptance rates
-                    </p>
-                </div>
-            </div>
-        </section>
-        <!-- PRICING SECTION -->
-        <section id="pricing" class="content-section">
-            <div class="pricing-section">
-                <h2>Simple, Transparent Pricing</h2>
-                <div class="pricing-grid">
-                    <div class="pricing-card">
-                        <h3>Basic</h3>
-                        <div class="price">Free</div>
-                        <ul>
-                            <li>Create profile</li>
-                            <li>Basic matching (up to 5 matches/month)</li>
-                            <li>Auto-verification check</li>
-                            <li>Community support</li>
-                        </ul>
-                        <a onclick="openModal('signup')" class="btn">Get Started</a>
-                    </div>
-                    
-                    <div class="pricing-card featured">
-                        <h3>Professional</h3>
-                        <div class="price">$99<span>/month</span></div>
-                        <ul>
-                            <li>Unlimited matching</li>
-                            <li>Priority placement in search</li>
-                            <li>Advanced filters & analytics</li>
-                            <li>Premium verification badge</li>
-                            <li>Email support</li>
-                            <li>2% transaction fee</li>
-                        </ul>
-                        <a onclick="openModal('signup')" class="btn">Start Free Trial</a>
-                    </div>
-                    
-                    <div class="pricing-card">
-                        <h3>Enterprise</h3>
-                        <div class="price">$499<span>/month</span></div>
-                        <ul>
-                            <li>Everything in Professional</li>
-                            <li>Compliance audit reports</li>
-                            <li>Dedicated account manager</li>
-                            <li>Custom integrations</li>
-                            <li>API access</li>
-                            <li>24/7 priority support</li>
-                        </ul>
-                        <a onclick="showSection('contact')" class="btn">Contact Sales</a>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <!-- DASHBOARD SECTION -->
-        <section id="dashboard" class="content-section">
-            <div class="dashboard-preview">
-                <h2>Your Dashboard</h2>
-                
-                <div class="user-type-selector">
-                    <button class="user-type-btn active" onclick="switchDashboard('project-owner')">I Have Projects</button>
-                    <button class="user-type-btn" onclick="switchDashboard('subcontractor')">I Have Capacity</button>
-                </div>
-                
-                <div class="dashboard-content">
-                    <!-- PROJECT OWNER DASHBOARD -->
-                    <div id="project-owner-dash" class="dashboard-section active">
-                        <h3 style="color: #00a89d; margin-bottom: 20px;">Post Your Overflow Project</h3>
-                        <p style="color: #666; margin-bottom: 30px;">Get matched with verified subcontractors in 24 hours.</p>
-                        
-                        <form id="post-project-form" onsubmit="handlePostProject(event)">
-                            <div class="form-group">
-                                <label for="project-title">Project Title *</label>
-                                <input type="text" id="project-title" placeholder="e.g., Commercial Solar Installation - 500kW" required>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="project-niche">Industry Niche *</label>
-                                <select id="project-niche" required>
-                                    <option value="">Select a niche...</option>
-                                    <option value="green">Green & Sustainable Construction</option>
-                                    <option value="infrastructure">Infrastructure & Public Works</option>
-                                </select>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="project-description">Project Description *</label>
-                                <textarea id="project-description" placeholder="Describe scope, requirements, and key deliverables..." required></textarea>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="project-location">Location *</label>
-                                <input type="text" id="project-location" placeholder="City, State or ZIP code" required>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="project-timeline">Timeline *</label>
-                                <input type="text" id="project-timeline" placeholder="e.g., 3-6 months, Start: January 2026" required>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="project-budget">Budget Range *</label>
-                                <input type="text" id="project-budget" placeholder="e.g., $50,000 - $75,000" required>
-                            </div>
-                            
-                            <button type="submit">Post Project & Find Matches</button>
-                        </form>
-                        
-                        <div id="project-matches" class="match-results"></div>
-                    </div>
-                    
-                    <!-- SUBCONTRACTOR DASHBOARD -->
-                    <div id="subcontractor-dash" class="dashboard-section">
-                        <h3 style="color: #00a89d; margin-bottom: 20px;">Find Your Next Project</h3>
-                        <p style="color: #666; margin-bottom: 30px;">Search for verified overflow projects that match your expertise and capacity.</p>
-                        
-                        <form id="search-projects-form" onsubmit="handleSearchProjects(event)">
-                            <div class="form-group">
-                                <label for="sub-niche">Your Expertise *</label>
-                                <select id="sub-niche" required>
-                                    <option value="">Select your niche...</option>
-                                    <option value="green">Green & Sustainable Construction</option>
-                                    <option value="infrastructure">Infrastructure & Public Works</option>
-                                </select>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="sub-location">Your Location *</label>
-                                <input type="text" id="sub-location" placeholder="City, State or ZIP code" required>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="sub-crew-size">Crew Size</label>
-                                <input type="number" id="sub-crew-size" placeholder="e.g., 5" min="1">
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="sub-availability">Availability Start Date *</label>
-                                <input type="date" id="sub-availability" required>
-                            </div>
-                            
-                            <button type="submit">Search Available Projects</button>
-                        </form>
-                        
-                        <div id="subcontractor-matches" class="match-results"></div>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <!-- PROFILE SECTION -->
-        <section id="profile" class="content-section">
-            <div class="dashboard-preview">
-                <h2>Your Profile</h2>
-                <div class="dashboard-content">
-                    <p style="color: #666; margin-bottom: 30px;">Edit your profile details and upload new documents if needed.</p>
-                    <form id="profile-form" onsubmit="handleProfileUpdate(event)">
-                        <div class="form-group">
-                            <label for="profile-name">Full Name</label>
-                            <input type="text" id="profile-name" value="John Doe">
-                        </div>
-                        <div class="form-group">
-                            <label for="profile-email">Email Address</label>
-                            <input type="email" id="profile-email" value="john@example.com">
-                        </div>
-                        <div class="form-group">
-                            <label for="profile-company">Company Name</label>
-                            <input type="text" id="profile-company" value="Doe Construction">
-                        </div>
-                        <div class="form-group">
-                            <label for="profile-niche">Primary Niche</label>
-                            <select id="profile-niche">
-                                <option value="green" selected>Green & Sustainable Construction</option>
-                                <option value="infrastructure">Infrastructure & Public Works</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="profile-location">Location</label>
-                            <input type="text" id="profile-location" value="San Francisco, CA">
-                        </div>
-                        <div class="form-group">
-                            <label for="profile-bio">Bio / Description</label>
-                            <textarea id="profile-bio">Experienced contractor in green building projects.</textarea>
-                        </div>
-                        <button type="submit">Update Profile</button>
-                    </form>
-                </div>
-            </div>
-        </section>
-        <!-- ABOUT SECTION -->
-        <section id="about" class="content-section">
-            <div class="about-section">
-                <div class="about-content">
-                    <h2>About Bridge Point</h2>
-                    
-                    <h3>Our Mission</h3>
-                    <p>Bridge Point revolutionizes capacity matching in high-growth, underserved industries by connecting businesses with overflow projects to those with available capacity. We leverage AI-driven technology, rigorous verification processes, and niche-specific compliance tools to ensure optimal resource utilization and sustainable growth across two specialized sectors.</p>
-                    
-                    <h3>Our Story</h3>
-                    <p>Founded in 2025, Bridge Point emerged from recognizing a critical gap in B2B matching platforms. While general AEC platforms became oversaturated, specialized niches—green construction and infrastructure—remained underserved despite explosive growth potential. With combined expertise in construction management, technology innovation, and market analysis, we created a modular platform that adapts our proven matching algorithms to each niche's unique requirements.</p>
-                    
-                    <h3>Our Core Values</h3>
-                    <div class="values-grid">
-                        <div class="value-card">
-                            <h4>Trust Through Verification</h4>
-                            <p>Every user undergoes rigorous 3-step verification including license checks, insurance validation, and niche-specific certification audits.</p>
-                        </div>
-                        
-                        <div class="value-card">
-                            <h4>Niche Specialization</h4>
-                            <p>By focusing on two underserved, high-growth niches, we deliver tailored compliance tools, industry-specific matching algorithms, and specialized expertise.</p>
-                        </div>
-                        
-                        <div class="value-card">
-                            <h4>Innovation & Efficiency</h4>
-                            <p>Our AI-driven matching engine delivers quality connections in 24 hours. Combined with automated compliance checks and predictive analytics, we reduce administrative burden by 40-50%.</p>
-                        </div>
-                    </div>
-                    
-                    <div style="text-align: center; margin-top: 60px;">
-                        <h3 style="margin-bottom: 20px;">Ready to Bridge Your Opportunities?</h3>
-                        <a onclick="openModal('signup')" class="btn" style="display: inline-block;">Get Started Today</a>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <!-- CONTACT SECTION -->
-        <section id="contact" class="content-section">
-            <div class="contact-section">
-                <div class="contact-content">
-                    <h2>Contact Us</h2>
-                    <p class="intro">Have questions? Want to learn more about how Bridge Point can help your business? Reach out to us and we'll respond within 24 hours.</p>
-                    
-                    <div class="contact-form">
-                        <div id="contact-success" class="success-message">
-                            Thank you for reaching out! We'll respond to your message within 24 hours.
-                        </div>
-                        
-                        <form id="contact-form" onsubmit="handleContactSubmit(event)">
-                            <div class="form-group">
-                                <label for="contact-name">Your Name *</label>
-                                <input type="text" id="contact-name" required>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="contact-company">Company Name *</label>
-                                <input type="text" id="contact-company" required>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="contact-email">Email Address *</label>
-                                <input type="email" id="contact-email" required>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="contact-niche">Industry of Interest</label>
-                                <select id="contact-niche">
-                                    <option value="">Select a niche...</option>
-                                    <option value="green">Green & Sustainable Construction</option>
-                                    <option value="infrastructure">Infrastructure & Public Works</option>
-                                    <option value="general">General Inquiry</option>
-                                </select>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="contact-message">Message *</label>
-                                <textarea id="contact-message" required placeholder="Tell us how we can help..."></textarea>
-                            </div>
-                            
-                            <button type="submit">Send Message</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </main>
-    <footer>
-        <p><strong>© 2025 Bridge Point</strong> | Niche B2B Capacity Matching Platform</p>
-        <p>Connecting verified partners across Green Construction and Infrastructure</p>
-        <p style="margin-top: 15px; font-size: 0.9em;">MVP Phase | <a href="mailto:bridgepointdirect@gmail.com">bridgepointdirect@gmail.com</a></p>
-    </footer>
+
     <script>
-        // Sidebar
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const main = document.getElementById('main-content');
-            sidebar.classList.toggle('open');
-            main.classList.toggle('shifted');
-        }
-        
-        function showSectionAndClose(sectionId) {
-            showSection(sectionId);
-            toggleSidebar();
-        }
-        
-        // Navigation
-        function showSection(sectionId) {
-            document.querySelectorAll('.content-section').forEach(el => {
-                el.classList.remove('active');
-            });
-            document.getElementById(sectionId).classList.add('active');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-        
-        // Modal
-        function openModal(formType) {
-            document.getElementById('auth-modal').classList.add('active');
-            switchForm(formType);
-        }
-        
-        function closeModal() {
-            document.getElementById('auth-modal').classList.remove('active');
-        }
-        
-        function switchForm(formType) {
-            document.getElementById('login-form').style.display = formType === 'login' ? 'block' : 'none';
-            document.getElementById('signup-form').style.display = formType === 'signup' ? 'block' : 'none';
-        }
-        
-        // Dashboard switching
-        function switchDashboard(type) {
-            document.querySelectorAll('.user-type-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            event.target.classList.add('active');
-            
-            document.querySelectorAll('.dashboard-section').forEach(section => {
-                section.classList.remove('active');
-            });
-            
-            if (type === 'project-owner') {
-                document.getElementById('project-owner-dash').classList.add('active');
-            } else {
-                document.getElementById('subcontractor-dash').classList.add('active');
+        let person1Name = '';
+        let person2Name = '';
+        let expenses = [];
+        let currentPayer = 'person1';
+
+        // Load data from localStorage
+        function loadData() {
+            const savedNames = localStorage.getItem('expenseTrackerNames');
+            const savedExpenses = localStorage.getItem('expenseTrackerExpenses');
+
+            if (savedNames) {
+                const names = JSON.parse(savedNames);
+                person1Name = names.person1;
+                person2Name = names.person2;
+                document.getElementById('setupScreen').classList.add('hidden');
+                document.getElementById('trackerScreen').classList.remove('hidden');
+                updatePersonButtons();
+            }
+
+            if (savedExpenses) {
+                expenses = JSON.parse(savedExpenses);
+                updateDisplay();
             }
         }
-        
-        // Mock data for projects
-        const mockProjects = {
-            green: [
-                {
-                    title: "Commercial Solar Installation - 500kW System",
-                    niche: "Green & Sustainable Construction",
-                    location: "San Francisco, CA",
-                    budget: "$450,000 - $575,000",
-                    timeline: "4-6 months, Start: March 2026",
-                    description: "Looking for experienced solar contractor to install 500kW rooftop system on commercial building. Must have NABCEP certification and experience with utility interconnection.",
-                    verified: true
-                }
-            ],
-            infrastructure: [
-                {
-                    title: "Highway Bridge Repair - State Route 45",
-                    niche: "Infrastructure & Public Works",
-                    location: "Columbus, OH",
-                    budget: "$2.5M - $3.2M",
-                    timeline: "12 months, Start: May 2026",
-                    description: "IIJA-funded bridge rehabilitation project. Scope includes structural repairs, deck replacement, and seismic retrofitting. Davis-Bacon wages apply.",
-                    verified: true
-                }
-            ]
-        };
-        
-        // Handle project posting
-        function handlePostProject(event) {
-            event.preventDefault();
-            const resultsDiv = document.getElementById('project-matches');
-            resultsDiv.innerHTML = '<div class="loading">Posting project and finding matches</div>';
-            
-            setTimeout(() => {
-                resultsDiv.innerHTML = `
-                    <h3 style="color: #00a89d; margin: 40px 0 20px;">Project Posted Successfully!</h3>
-                    <div class="result-card">
-                        <h3>Project Posted</h3>
-                        <p style="color: #666; margin: 15px 0;">Your project is live and being matched with verified subcontractors.</p>
-                        <span class="verified-badge">Checkmark Active</span>
-                        <p style="margin-top: 20px; color: #00a89d; font-weight: 600;">You'll receive match notifications within 24 hours.</p>
-                    </div>
-                `;
-            }, 2000);
+
+        function saveNames() {
+            const p1 = document.getElementById('person1Input').value.trim();
+            const p2 = document.getElementById('person2Input').value.trim();
+
+            if (p1 && p2) {
+                person1Name = p1;
+                person2Name = p2;
+                localStorage.setItem('expenseTrackerNames', JSON.stringify({
+                    person1: p1,
+                    person2: p2
+                }));
+                document.getElementById('setupScreen').classList.add('hidden');
+                document.getElementById('trackerScreen').classList.remove('hidden');
+                updatePersonButtons();
+            } else {
+                alert('Please enter both names');
+            }
         }
-        
-        // Handle project search
-        function handleSearchProjects(event) {
-            event.preventDefault();
-            const niche = document.getElementById('sub-niche').value;
-            const resultsDiv = document.getElementById('subcontractor-matches');
-            resultsDiv.innerHTML = '<div class="loading">Searching for projects</div>';
-            
-            setTimeout(() => {
-                const projects = mockProjects[niche] || [];
-                let html = `<h3 style="color: #00a89d; margin: 40px 0 20px;">Found ${projects.length} Project(s)</h3>`;
-                projects.forEach(p => {
-                    html += `
-                        <div class="result-card">
-                            <h3>${p.title}</h3>
-                            <p style="color: #666; margin: 15px 0;">${p.description}</p>
-                            <div class="details">
-                                <div class="detail-item"><strong>Location:</strong> ${p.location}</div>
-                                <div class="detail-item"><strong>Budget:</strong> ${p.budget}</div>
-                                <div class="detail-item"><strong>Timeline:</strong> ${p.timeline}</div>
+
+        function updatePersonButtons() {
+            document.getElementById('person1Btn').textContent = person1Name;
+            document.getElementById('person2Btn').textContent = person2Name;
+        }
+
+        function selectPayer(person) {
+            currentPayer = person;
+            const btn1 = document.getElementById('person1Btn');
+            const btn2 = document.getElementById('person2Btn');
+
+            if (person === 'person1') {
+                btn1.className = 'btn-primary';
+                btn2.className = 'btn-inactive';
+            } else {
+                btn1.className = 'btn-inactive';
+                btn2.className = 'btn-secondary';
+            }
+        }
+
+        function addExpense() {
+            const amount = parseFloat(document.getElementById('amountInput').value);
+            const description = document.getElementById('descriptionInput').value.trim() || 'Expense';
+
+            if (amount && amount > 0) {
+                const expense = {
+                    id: Date.now(),
+                    amount: amount,
+                    description: description,
+                    paidBy: currentPayer,
+                    date: new Date().toLocaleDateString()
+                };
+
+                expenses.push(expense);
+                localStorage.setItem('expenseTrackerExpenses', JSON.stringify(expenses));
+                
+                document.getElementById('amountInput').value = '';
+                document.getElementById('descriptionInput').value = '';
+                
+                updateDisplay();
+            } else {
+                alert('Please enter a valid amount');
+            }
+        }
+
+        function deleteExpense(id) {
+            if (confirm('Delete this expense?')) {
+                expenses = expenses.filter(exp => exp.id !== id);
+                localStorage.setItem('expenseTrackerExpenses', JSON.stringify(expenses));
+                updateDisplay();
+            }
+        }
+
+        function calculateBalance() {
+            let balance = 0;
+            expenses.forEach(exp => {
+                if (exp.paidBy === 'person1') {
+                    balance += exp.amount;
+                } else {
+                    balance -= exp.amount;
+                }
+            });
+            return balance;
+        }
+
+        function updateDisplay() {
+            const balance = calculateBalance();
+            const balanceDisplay = document.getElementById('balanceDisplay');
+
+            if (balance === 0) {
+                balanceDisplay.textContent = 'All settled up! 🎉';
+            } else if (balance > 0) {
+                balanceDisplay.textContent = `${person2Name} owes ${person1Name} $${Math.abs(balance).toFixed(2)}`;
+            } else {
+                balanceDisplay.textContent = `${person1Name} owes ${person2Name} $${Math.abs(balance).toFixed(2)}`;
+            }
+
+            // Update expense list
+            const expenseList = document.getElementById('expenseList');
+            const expenseListCard = document.getElementById('expenseListCard');
+
+            if (expenses.length > 0) {
+                expenseListCard.style.display = 'block';
+                expenseList.innerHTML = '';
+                
+                expenses.slice().reverse().forEach(exp => {
+                    const payer = exp.paidBy === 'person1' ? person1Name : person2Name;
+                    const expenseHTML = `
+                        <div class="expense-item">
+                            <div class="expense-info">
+                                <h3>${exp.description}</h3>
+                                <p>Paid by ${payer} • ${exp.date}</p>
                             </div>
-                            <span class="verified-badge">Checkmark Verified Owner</span>
-                            <div class="actions">
-                                <button class="btn-primary" onclick="alert('Bid submitted!')">Submit Bid</button>
-                                <button class="btn-secondary" onclick="alert('Contact sent!')">Contact Owner</button>
+                            <div class="expense-right">
+                                <div class="expense-amount">$${exp.amount.toFixed(2)}</div>
+                                <button class="delete-btn" onclick="deleteExpense(${exp.id})">Delete</button>
                             </div>
                         </div>
                     `;
+                    expenseList.innerHTML += expenseHTML;
                 });
-                resultsDiv.innerHTML = html;
-            }, 2000);
+            } else {
+                expenseListCard.style.display = 'none';
+            }
         }
-        
-        // Handle login
-        function handleLogin(event) {
-            event.preventDefault();
-            alert('Login successful! (Demo)');
-            closeModal();
-            showSection('dashboard');
+
+        function resetAll() {
+            if (confirm('Are you sure you want to reset everything? This will delete all names and expenses.')) {
+                localStorage.removeItem('expenseTrackerNames');
+                localStorage.removeItem('expenseTrackerExpenses');
+                person1Name = '';
+                person2Name = '';
+                expenses = [];
+                document.getElementById('person1Input').value = '';
+                document.getElementById('person2Input').value = '';
+                document.getElementById('trackerScreen').classList.add('hidden');
+                document.getElementById('setupScreen').classList.remove('hidden');
+            }
         }
-        
-        // Handle signup
-        function handleSignup(event) {
-            event.preventDefault();
-            alert('Account created! Please check your email for verification. (Demo)');
-            closeModal();
-            showSection('dashboard');
-        }
-        
-        // Handle profile update
-        function handleProfileUpdate(event) {
-            event.preventDefault();
-            alert('Profile updated successfully!');
-        }
-        
-        // Handle contact
-        function handleContactSubmit(event) {
-            event.preventDefault();
-            document.getElementById('contact-success').classList.add('show');
-            setTimeout(() => {
-                document.getElementById('contact-success').classList.remove('show');
-            }, 5000);
-        }
-        
-        // Handle sidebar search
-        function handleSearch(event) {
-            event.preventDefault();
-            alert('Search functionality would filter projects based on criteria.');
-            toggleSidebar();
-        }
+
+        // Load data on page load
+        loadData();
     </script>
 </body>
 </html>
-
